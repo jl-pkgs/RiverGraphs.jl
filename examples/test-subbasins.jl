@@ -1,12 +1,12 @@
 include("main_vis.jl")
-using Ipaper, Ipaper.sf, ArchGDAL, DataFrames, MarrMot
+using Ipaper, Ipaper.sf, ArchGDAL, DataFrames, RiverGraphs, Test
 
 # flowdir, image(A) should looks normal
 begin
   f = path_flowdir_GuanShan
   g = RiverGraph(f)
 
-  min_sto = 5
+  min_sto = 4
   @time strord, links, basinId = subbasins(g; min_sto)
   strord_2d, links_2d, basinId_2d =
     Matrix(g, strord, -1), Matrix(g, links), Matrix(g, basinId)
@@ -15,7 +15,13 @@ begin
   flow_path(g, info_node, strord; min_sto)
 end
 
-@test maximum(info_node.length) ≈ 11.61633647162445
+
+fig = Figure(; size=(800, 600))
+imagesc!(fig, g.lon, g.lat, Matrix(g, g.toposort))
+fig
+
+
+# @test maximum(info_node.length) ≈ 11.61633647162445
 
 function check_river_length()
   LON, LAT = MarrMot.meshgrid(g.lon, g.lat)
@@ -30,16 +36,15 @@ function check_river_length()
 end
 # check_river_length()
 
-begin
-  inds = g.index[info_node.index[2]]
-  z = deepcopy(links_2d) .* 0
-  z[inds] .= 1
-
-  fig = Figure(; size=(600, 400) .* 1)
-  _imagesc!(fig[1, 1], links_2d)
-  imagesc!(fig[1, 2], z)
-  fig
-end
+# begin
+#   inds = g.index[info_node.index[2]]
+#   z = deepcopy(links_2d) .* 0
+#   z[inds] .= 1
+#   fig = Figure(; size=(600, 400) .* 1)
+#   _imagesc!(fig[1, 1], links_2d)
+#   imagesc!(fig[1, 2], z)
+#   fig
+# end
 
 begin
   xs, ys = get_coord(links_2d .!= 0)
@@ -52,6 +57,8 @@ begin
 
   axs, plts, cbar = _imagesc!(fig[1, 2], strord_2d; nodata=-1, 
     titles=["Stream Order"], gap=0, fun_axis=rm_ticks!)
+  
+  # links, 关键节点
   scatter!(axs[1], xs, ys; color=:black) # colormap not work
   text!(axs[1], xs, ys, text=string.(vals))
 
@@ -71,5 +78,5 @@ imagesc(River)
 
 b = st_bbox(path_flowdir_GuanShan)
 ra = rast(basinId_2d[:, end:-1:1], b)
-write_gdal(ra, "Guanshan_subbasins.tif")
-gdal_polygonize("Guanshan_subbasins.tif", "Guanshan_subbasins.shp")
+# write_gdal(ra, "Guanshan_subbasins.tif")
+# gdal_polygonize("Guanshan_subbasins.tif", "data/shp/Guanshan_subbasins.shp")
