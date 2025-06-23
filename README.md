@@ -6,3 +6,6 @@
 [![Codecov](https://codecov.io/gh/jl-pkgs/RiverGraphs.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/jl-pkgs/RiverGraphs.jl)
 
 > Dongdong Kong
+
+
+![](./docs/Figure1_孤山-河网结构_L3.png)
