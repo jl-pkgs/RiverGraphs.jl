@@ -1,17 +1,18 @@
 """
     fillnodata_upstream(g, toposort, data, nodata)
 
-Fill `nodata` upstream cells with the value from the first downstream valid cell, based on
-directed acyclic graph `g`, topological order `toposort`, nodata value `nodata` and `data`
-containing missing values. Returns filled data `data_out`.
+Fill `nodata` upstream cells with the value from the first downstream valid
+cell, based on directed acyclic graph `g`, topological order `toposort`, nodata
+value `nodata` and `data` containing missing values. Returns filled data
+`data_out`.
 """
 function fillnodata_upstream(g, toposort, data, nodata)
   data_out = copy(data)
-  for v in reverse(toposort)  # down- to upstream
-    idx_ds = outneighbors(g, v)
-    if !isempty(idx_ds)
-      if data_out[v] == nodata && data_out[only(idx_ds)] != nodata
-        data_out[v] = data_out[only(idx_ds)]
+  for id_from in reverse(toposort)  # down- to upstream
+    ids_to = outneighbors(g, id_from) # 
+    if !isempty(ids_to)
+      if data_out[id_from] == nodata && data_out[only(ids_to)] != nodata
+        data_out[id_from] = data_out[only(ids_to)]
       end
     end
   end
@@ -27,6 +28,7 @@ fillnodata_upriver(g::RiverGraph, data, nodata, streamorder; min_sto::Int=4) =
   fillnodata_upriver(g.graph, g.toposort, data, nodata, streamorder; min_sto)
 
 # only for links
+# 与`fillnodata_upstream`类似，只是返回的信息更加详细
 function fillnodata_upriver(g::AbstractGraph, toposort,
   links, nodata, streamorder; min_sto::Int=4)
 

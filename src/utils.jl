@@ -24,10 +24,9 @@ These map from the 1D internal domain to the 2D external domain.
 the 1D internal domain, providing an Int which can be used as a linear index. Values of 0
 represent inactive cells.
 """
-function active_indices(subcatch_2d::AbstractMatrix, nodata)
-  A = subcatch_2d
+function active_indices(A::AbstractMatrix, nodata)
   all_inds = CartesianIndices(size(A))
-  indices = filter(i -> !isequal(A[i], nodata), all_inds)
+  indices = filter(i -> !isequal(A[i], nodata), all_inds) # 不为NA的全部收纳
 
   reverse_indices = zeros(Int, size(A))
   for (i, I) in enumerate(indices)

@@ -14,6 +14,13 @@ using RiverGraphs, Test
   river, info_node = fillnodata_upriver(g, links, 0, strord; min_sto)
   flow_path(g, info_node, strord; min_sto)
 
+  # index is the index of `topo_subbas`
+  subbas_order, indices_subbas, topo_subbas =
+    kinwave_set_subdomains(g.graph, g.toposort, [1823], strord, 4)
+
+  inds = indices_subbas[1]
+  @test g.toposort[inds] == topo_subbas[1]
+  
   @test map(length, info_node.index) == [19, 10, 10, 19, 21,
     8, 25, 25, 8, 14, 4]
   @test size(info_node, 1) == 11

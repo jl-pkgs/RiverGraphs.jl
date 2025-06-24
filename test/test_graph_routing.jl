@@ -13,6 +13,13 @@ using Ipaper, Ipaper.sf, ArchGDAL, DataFrames, RiverGraphs, Test
   river, info_node = fillnodata_upriver(g, links, 0, strord; min_sto)
   flow_path(g, info_node, strord; min_sto)
 
+  # index is the index of `topo_subbas`
+  subbas_order, indices_subbas, topo_subbas =
+    kinwave_set_subdomains(g.graph, g.toposort, [1823], strord, 4)
+
+  inds = indices_subbas[1]
+  @test g.toposort[inds] == topo_subbas[1]
+
   net = stream_network(info_node) # 河网结构
   nbasin = nv(net)
 

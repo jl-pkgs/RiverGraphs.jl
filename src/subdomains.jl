@@ -2,6 +2,63 @@ using Base.Threads: nthreads
 export kinwave_set_subdomains
 
 """
+    subbasins_order(g, outlet, max_dist)
+
+Group subbasins (down- to upstream), starting at the `outlet` of the basin, per distance (1
+to maximum distance `max_dist`) from the `outlet`, based on the directed acyclic graph `g`
+of subbasins. Returns grouped subbasins `order`, ordered from `max_dist` (including
+subbasins without upstream neighbor and distance < `max_dist`) to distance 0 (`outlet`).
+"""
+function subbasins_order(g, outlet, max_dist::Int)
+  order = Vector{Vector{Int}}(undef, max_dist + 1)
+  order[1] = [outlet]
+  for i in 1:max_dist
+    v = Vector{Int}()
+    for n in order[i]
+      ups_nodes = inneighbors(g, n)
+      if !isempty(ups_nodes)
+        append!(v, ups_nodes)
+      end
+    end
+    order[i+1] = v
+  end
+
+  # move subbasins without upstream neighbor (headwater) to index [max_dist+1]
+  for i in 1:max_dist
+    for s in order[i]
+      if isempty(inneighbors(g, s))
+        append!(order[max_dist+1], s)
+        filter!(e -> e ≠ s, order[i])
+      end
+    end
+  end
+  return reverse(order)
+end
+
+"""
+    graph_from_nodes(graph, subbas, subbas_fill)
+
+Extract directed acyclic graph `g` representing the flow network at subbasin level from
+`subbas` containing nodes with a unique id representing subbasin outlets, `subbas_fill` with
+subbasin ids for the complete domain, and directed acyclic graph `graph` representing the
+flow network for each subbasin cell.
+"""
+function graph_from_nodes(graph, subbas, subbas_fill)
+  n = maximum(subbas)
+  g = DiGraph(n)
+  for i in 1:n
+    idx = findall(x -> x == i, subbas)
+    ds_idx = outneighbors(graph, only(idx))
+    to_node = subbas_fill[ds_idx]
+    if !isempty(to_node)
+      add_edge!(g, i, only(to_node))
+    end
+  end
+  return g
+end
+
+
+"""
     function kinwave_set_subdomains(graph, toposort, index_pit, streamorder, min_sto)
 
 Setup subdomains for parallel execution (threading) of the kinematic wave calculation.
@@ -33,7 +90,7 @@ function kinwave_set_subdomains(graph, toposort, index_pit, streamorder, min_sto
     # pre-allocate the Vector with indices matching the topological order of the
     # complete domain (upstream neighbors are stored at these indices)
     index_toposort = fill(0, length(toposort))
-    for (i, j) in enumerate(toposort)
+    for (i, j) in enumerate(toposort) # (i, val)
       index_toposort[j] = i
     end
 
@@ -47,19 +104,18 @@ function kinwave_set_subdomains(graph, toposort, index_pit, streamorder, min_sto
       # extract subbasins per basin, make a graph at the subbasin level, calculate the
       # maximum distance of this graph, and group and order the subbasin ids from
       # upstream to downstream
-      basin = findall(x -> x == i, basin_fill)
-      g, vmap = induced_subgraph(graph, basin)
+      index_basin = findall(x -> x == i, basin_fill) # this is index
+      g, vmap = induced_subgraph(graph, index_basin)
       toposort_b = topological_sort_by_dfs(g)
       streamorder_subbas = streamorder[vmap]
 
-      subbas = stream_link(g, toposort_b, streamorder_subbas, min_sto)
-      subbas_fill = fillnodata_upstream(g, toposort_b, subbas, 0)
+      links = stream_link(g, toposort_b, streamorder_subbas, min_sto)
+      links_fill = fillnodata_upstream(g, toposort_b, links, 0)
 
-      n_subbas = max(length(subbas[subbas.>0]), 1)
-      @show "k1", n_subbas
+      n_subbas = max(length(links[links.>0]), 1)
 
       if n_subbas > 1
-        graph_subbas = graph_from_nodes(g, subbas, subbas_fill)
+        graph_subbas = graph_from_nodes(g, links, links_fill)
         toposort_subbas = topological_sort_by_dfs(graph_subbas)
         dist = Graphs.Experimental.Traversals.distances(
           Graph(graph_subbas),
@@ -72,7 +128,7 @@ function kinwave_set_subdomains(graph, toposort, index_pit, streamorder, min_sto
       end
       # subbasins need a unique id (in case of multiple basins/outlets in the
       # kinematic wave domain)
-      for n in 1:length(v_subbas)
+      for n in eachindex(v_subbas)
         v_subbas[n] .= v_subbas[n] .+ total_subbas
       end
       total_subbas += n_subbas
@@ -83,15 +139,17 @@ function kinwave_set_subdomains(graph, toposort, index_pit, streamorder, min_sto
       # subbasin topological order
       if n_subbas > 1
         for s in 1:n_subbas
-          subbas_s = findall(x -> x == s, subbas_fill)
+          subbas_s = findall(x -> x == s, links_fill)
           sg, _ = induced_subgraph(g, subbas_s)
           toposort_sg = topological_sort_by_dfs(sg)
-          push!(topo_subbas, basin[subbas_s[toposort_sg]])
-          push!(indices_subbas, index_toposort[basin[subbas_s[toposort_sg]]])
+          inds = index_basin[subbas_s[toposort_sg]]
+          push!(topo_subbas, inds)
+          push!(indices_subbas, index_toposort[inds])
         end
       else
-        push!(topo_subbas, basin[toposort_b])
-        push!(indices_subbas, index_toposort[basin[toposort_b]])
+        inds = index_basin[toposort_b]
+        push!(topo_subbas, inds)
+        push!(indices_subbas, index_toposort[inds])
       end
     end
     # reduce the order of subbasin ids by merging groups of subbasins that have the same
