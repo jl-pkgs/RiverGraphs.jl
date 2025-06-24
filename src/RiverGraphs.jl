@@ -3,11 +3,11 @@ module RiverGraphs
 
 using Graphs, Parameters, DataFrames
 using Ipaper: table
-import Ipaper: read_flowdir
 import Ipaper.sf: st_dims
 
 import RTableTools: cbind
 
+include("IO.jl")
 include("RiverGraph.jl")
 include("fillnodata_upstream.jl")
 

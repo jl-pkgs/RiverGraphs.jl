@@ -1,5 +1,6 @@
 include("main_vis.jl")
 using Ipaper, Ipaper.sf, ArchGDAL, DataFrames, RiverGraphs, Test
+using Shapefile, DataFrames
 
 # flowdir, image(A) should looks normal
 begin
@@ -22,22 +23,50 @@ end
 
 d_pour = find_outlet(g.graph, g.toposort, strord; min_sto=2)
 
-pour = Shapefile.Table("Z:/GitHub/cug-hydro/Distributed_Hydrology_Forcing/Pour_十堰_sp8.shp")
+pour = Shapefile.Table("data/shp/Pour_十堰_sp8.shp") |> DataFrame
+sites = pour.name
 points = map(x -> (x.x, x.y), pour.geometry) #|> x -> cat(x..., dims=1)
-locs = st_location_exact(g.lon, g.lat, points) # 查找位置
-index_pit = map(p -> g.index_rev[p[1], p[2]], locs) # 流域出水口的位置
 
-## 还可以向下流一个网格
-for i in index_pit
-  o = outneighbors(g.graph, i)
-  println("in = $i, out = $o")
+locs = st_location_exact(g.lon, g.lat, points) # 查找位置
+indexs_pit = map(p -> g.index_rev[p[1], p[2]], locs) # 流域出水口的位置
+_pours = find_outlet(g.graph, g.toposort, strord; min_sto=2)
+
+## subset_graph
+## 子流域存在嵌套关系的如何识别？
+
+function extract_basin(g, index_pit)
+  n_pits = length(index_pit)
+  basin = fill(0, length(g.toposort))
+  
+  basin[index_pit] = [1:n_pits;]
+  basin_fill = fillnodata_upstream(g.graph, g.toposort, basin, 0)
+
+  basinId_2d = Matrix(g, basin_fill)
+  mask = basinId_2d .!== 0
+  
+  ix, iy = st_shrink(mask, g.lon, g.lat; cellsize_target=0.1)
+  _lon, _lat = g.lon[ix], g.lat[iy]
+  _data = basinId_2d[ix, iy]
+  ## 这是流域形状
+  # 重新生成1个graph
 end
 
+## 提取流域数据
+index_rev = g.index_rev[ix, iy]
+index = 
+
+
+
+
+index_pit = [index_pit[1]]
+imagesc(_lon, _lat, _data)
+
+
+## 对于每个流域，提取子流域，并提取河网
 # f_flowdir = "data/Hubei_500m_flowdir.tif"
 # g = RiverGraph(f_flowdir)
 # strord = stream_order(g)
 # lon, lat = st_dims(f_flowdir)
-
 ## find_root
 
 # n_pits = length(index_pit)

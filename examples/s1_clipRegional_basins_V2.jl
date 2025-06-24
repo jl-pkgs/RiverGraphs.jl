@@ -2,7 +2,6 @@ using Shapefile, DataFrames
 using RiverGraphs
 using Ipaper.sf, ArchGDAL
 using GLMakie, MakieLayers
-using Ipaper: read_flowdir
 
 
 pour = Shapefile.Table("Z:/GitHub/cug-hydro/Distributed_Hydrology_Forcing/Pour_十堰_sp8.shp")

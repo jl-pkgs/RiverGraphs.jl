@@ -11,7 +11,7 @@ using RiverGraphs, Test
   @time strord, links, basinId = subbasins(g; level)
   strord_2d, links_2d, basinId_2d =
     Matrix(g, strord, -1), Matrix(g, links), Matrix(g, basinId)
-  river, info_node = fillnodata_upriver(g, links, 0, strord; level)
+  river, info_node = fillnodata_upriver(g, links, strord; level, nodata=0)
   flow_path(g, info_node, strord; level)
 
   # index is the index of `topo_subbas`
@@ -30,7 +30,7 @@ using RiverGraphs, Test
   @time strord, links, basinId = subbasins(g; level)
   strord_2d, links_2d, basinId_2d =
     Matrix(g, strord, -1), Matrix(g, links), Matrix(g, basinId)
-  river, info_node = fillnodata_upriver(g, links, 0, strord; level)
+  river, info_node = fillnodata_upriver(g, links, strord; level, nodata=0)
 
   flow_path(g, info_node, strord; level)
   @test map(length, info_node.index) == [19, 19]

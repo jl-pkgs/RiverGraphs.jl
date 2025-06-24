@@ -34,7 +34,7 @@ directed acyclic graph `g` and topological order `toposort`.
 """
 function stream_link(g, toposort, streamorder; level::Int=2)
   min_sto = max(maximum(streamorder) - level, 1)
-  
+
   n = length(toposort)
   links = fill(0, n)
 
@@ -80,7 +80,7 @@ min_sto = 4
 @time strord, links, basinId = subbasins(g; min_sto)
 strord_2d, links_2d, basinId_2d =
   Matrix(g, strord, -1), Matrix(g, links), Matrix(g, basinId)
-river, info_node = fillnodata_upriver(g, links, 0, strord; min_sto)
+river, info_node = fillnodata_upriver(g, links, strord; min_sto, nodata=0)
 
 flow_path(g, info_node, strord; min_sto)
 ```

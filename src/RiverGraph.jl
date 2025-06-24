@@ -1,7 +1,6 @@
 
 using Graphs, Parameters
 import Ipaper.sf: st_dims
-import Ipaper: read_flowdir
 
 export find_outlet, graph_children
 
@@ -27,15 +26,20 @@ function Base.show(io::IO, net::SimpleDiGraph)
   println(graph_children(net, v))
 end
 
+
+# 往上追溯一个网格，由于index_pit的流向未设置为0
 function find_outlet(net::SimpleDiGraph, toposort, strord; min_sto=2)
   roots = Vector{Int}()
   orders = Vector{Int}()
-  
+
   for from in toposort
     to = outneighbors(net, from)
     if isempty(to) && strord[from] > min_sto
-      push!(roots, from)
-      push!(orders, strord[from])
+      node = inneighbors(net, from) |> only
+      push!(roots, node)
+      push!(orders, strord[node])
+      # push!(roots, from)
+      # push!(orders, strord[from])
     end
   end
   DataFrame(; node=roots, stream_order=orders)
@@ -102,5 +106,3 @@ function graph_flow(ldd::AbstractVector, inds::AbstractVector, pcr_dir::Abstract
   end
   return graph
 end
-
-
