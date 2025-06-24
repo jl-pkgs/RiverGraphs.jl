@@ -1,6 +1,5 @@
 import Ipaper
-import Ipaper: gdal_nodata
-import Ipaper.sf: read_gdal
+import Ipaper.sf: gdal_nodata, read_gdal
 
 ## Note: 
 # 1. The dimemsion of `dem`: [lon, lat], which is different from ArcGIS. Hence, DIR

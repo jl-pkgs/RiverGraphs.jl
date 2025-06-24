@@ -17,6 +17,10 @@ Ipaper = "0.2.5"
 Parameters = "0.12.3"
 RTableTools = "0.1.4"
 
+[sources]
+Ipaper = {url = "https://github.com/jl-pkgs/Ipaper.jl"}
+
+
 [weakdeps]
 ArchGDAL = "c9ce4bd3-c3d5-55b8-8973-c0e20141b8c3"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"

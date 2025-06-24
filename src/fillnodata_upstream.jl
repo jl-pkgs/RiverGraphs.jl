@@ -24,7 +24,7 @@ fillnodata_upstream(g::RiverGraph, data, nodata) =
 
 
 function get_MinSto(streamorder; level::Int=2, min_sto=nothing)
-  !isnothing(min_sto) && (min_sto = max(maximum(streamorder) - level, 1))
+  isnothing(min_sto) && (min_sto = max(maximum(streamorder) - level, 1))
   return min_sto
 end
 
@@ -36,6 +36,7 @@ fillnodata_upriver(g::RiverGraph, links, streamorder; level::Int=2, nodata::Int=
 # 与`fillnodata_upstream`类似，只是返回的信息更加详细
 function fillnodata_upriver(g::AbstractGraph, toposort, links, streamorder;
   level::Int=2, min_sto=nothing, nodata::Int=0)
+
   min_sto = get_MinSto(streamorder; level, min_sto)
 
   ids = filter(x -> x > 0, links)

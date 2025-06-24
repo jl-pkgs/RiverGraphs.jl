@@ -1,4 +1,5 @@
 using RiverGraphs, Test
+import Ipaper, ArchGDAL
 
 
 include("test-graph.jl")
