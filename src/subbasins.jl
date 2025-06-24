@@ -16,9 +16,9 @@ g = RiverGraph(A)
 strord, links, basinId = subbasins(g; min_sto=4)
 ```
 """
-function subbasins(g::RiverGraph; min_sto::Int=4)
+function subbasins(g::RiverGraph; level::Int=1)
   strord = stream_order(g)
-  links = stream_link(g, strord, min_sto)
+  links = stream_link(g, strord; level)
   basinId = fillnodata_upstream(g, links, 0)
   strord, links, basinId
 end

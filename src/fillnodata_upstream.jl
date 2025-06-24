@@ -24,14 +24,15 @@ fillnodata_upstream(g::RiverGraph, data, nodata) =
 
 
 # 只填充河道的部分
-fillnodata_upriver(g::RiverGraph, data, nodata, streamorder; min_sto::Int=4) =
-  fillnodata_upriver(g.graph, g.toposort, data, nodata, streamorder; min_sto)
+fillnodata_upriver(g::RiverGraph, data, nodata, streamorder; level::Int=2) =
+  fillnodata_upriver(g.graph, g.toposort, data, nodata, streamorder; level)
 
 # only for links
 # 与`fillnodata_upstream`类似，只是返回的信息更加详细
 function fillnodata_upriver(g::AbstractGraph, toposort,
-  links, nodata, streamorder; min_sto::Int=4)
-
+  links, nodata, streamorder; level::Int=2)
+  min_sto = max(maximum(streamorder) - level, 1)
+  
   ids = filter(x -> x > 0, links)
   nodes = findall(x -> x > 0, links)
   find_node(id) = nodes[findfirst(ids .== id)]

@@ -5,7 +5,9 @@ function river_length(river_nodes; lon, lat)
 end
 
 # 找到两点之间的路径
-function flow_path(g::RiverGraph, from::Int, to::Int, streamorder; min_sto::Int=4)
+function flow_path(g::RiverGraph, from::Int, to::Int, streamorder; level::Int=2)
+  min_sto = max(maximum(streamorder) - level, 1)
+  
   nodes = [from]
   id_from = from
 
@@ -29,11 +31,11 @@ function flow_path(g::RiverGraph, from::Int, to::Int, streamorder; min_sto::Int=
   nodes
 end
 
-function flow_path(g::RiverGraph, info_node::DataFrame, streamorder; min_sto::Int=4)
+function flow_path(g::RiverGraph, info_node::DataFrame, streamorder; level::Int=2)  
   index_g = []
   for i in 1:nrow(info_node)
     from, to = info_node[i, [:from, :to]]
-    inds = flow_path(g, from, to, streamorder; min_sto)
+    inds = flow_path(g, from, to, streamorder; level)
     push!(index_g, inds)
   end
   n_node = length.(index_g)

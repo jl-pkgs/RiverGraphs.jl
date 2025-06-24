@@ -6,26 +6,24 @@ begin
   f = path_flowdir_GuanShan
   g = RiverGraph(f)
 
-  level = 2
+  level = 1
   strord = stream_order(g)
-  min_sto = maximum(strord) - level
-  links = stream_link(g, strord, min_sto)
+  # min_sto = maximum(strord) - level
+  links = stream_link(g, strord; level)
   basinId = fillnodata_upstream(g, links, 0)
 
   # @time strord, links, basinId = subbasins(g; min_sto)
   strord_2d, links_2d, basinId_2d =
     Matrix(g, strord, -1), Matrix(g, links), Matrix(g, basinId)
-  river, info_node = fillnodata_upriver(g, links, 0, strord; min_sto)
+  river, info_node = fillnodata_upriver(g, links, 0, strord; level)
   net = stream_network(info_node) # 河网结构
-  flow_path(g, info_node, strord; min_sto)
+  flow_path(g, info_node, strord; level)
 end
-
 
 fig = Figure(; size=(800, 600))
 imagesc!(fig, g.lon, g.lat, Matrix(g, g.toposort))
 # imagesc!(fig, g.lon, g.lat, basinId_2d)
 fig
-
 
 # @test maximum(info_node.length) ≈ 11.61633647162445
 
@@ -91,7 +89,7 @@ begin
 end
 
 
-save("Figure1_孤山-河网结构_L5.png", fig; px_per_unit=2)
+save("Figure1_孤山-河网结构_L$level.png", fig; px_per_unit=2)
 
 River = Matrix(g, river)
 imagesc(River)

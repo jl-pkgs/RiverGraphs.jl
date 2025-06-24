@@ -1,5 +1,5 @@
 stream_order(g::RiverGraph) = stream_order(g.graph, g.toposort)
-stream_link(g::RiverGraph, strord, min_sto) = stream_link(g.graph, g.toposort, strord, min_sto)
+stream_link(g::RiverGraph, strord; level) = stream_link(g.graph, g.toposort, strord; level)
 
 """
     stream_order(g, toposort)
@@ -30,7 +30,9 @@ end
 Return stream_link with a unique id starting at 1, based on a minimum streamorder `min_sto`,
 directed acyclic graph `g` and topological order `toposort`.
 """
-function stream_link(g, toposort, streamorder, min_sto)
+function stream_link(g, toposort, streamorder; level::Int=2)
+  min_sto = max(maximum(streamorder) - level, 1)
+  
   n = length(toposort)
   links = fill(0, n)
 

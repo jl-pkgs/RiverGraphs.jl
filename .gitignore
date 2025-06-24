@@ -4,6 +4,6 @@ data/shp
 
 Manifest.toml
 *.ipynb
-# *.png
+*.png
 
 *.tif
