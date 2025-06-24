@@ -3,11 +3,10 @@ using Ipaper, Ipaper.sf, ArchGDAL, DataFrames, RiverGraphs, Test
 
 # flowdir, image(A) should looks normal
 begin
-  f = path_flowdir_GuanShan
-  g = RiverGraph(f)
-
-  level = 1
+  g = RiverGraph("./data/十堰_500m_flowdir.tif")
+  level = 2
   strord = stream_order(g)
+
   # min_sto = maximum(strord) - level
   links = stream_link(g, strord; level)
   basinId = fillnodata_upstream(g, links, 0)
@@ -15,41 +14,36 @@ begin
   # @time strord, links, basinId = subbasins(g; min_sto)
   strord_2d, links_2d, basinId_2d =
     Matrix(g, strord, -1), Matrix(g, links), Matrix(g, basinId)
+
   river, info_node = fillnodata_upriver(g, links, 0, strord; level)
   net = stream_network(info_node) # 河网结构
   flow_path(g, info_node, strord; level)
 end
 
-fig = Figure(; size=(800, 600))
-imagesc!(fig, g.lon, g.lat, Matrix(g, g.toposort))
-# imagesc!(fig, g.lon, g.lat, basinId_2d)
-fig
-# @test maximum(info_node.length) ≈ 11.61633647162445
+d_pour = find_outlet(g.graph, g.toposort, strord; min_sto=2)
 
-function check_river_length()
-  LON, LAT = MarrMot.meshgrid(g.lon, g.lat)
-  _inds = info_node.index[1]
-  inds = g.index[_inds]
-  st_length(LON[inds], LAT[inds])
+pour = Shapefile.Table("Z:/GitHub/cug-hydro/Distributed_Hydrology_Forcing/Pour_十堰_sp8.shp")
+points = map(x -> (x.x, x.y), pour.geometry) #|> x -> cat(x..., dims=1)
+locs = st_location_exact(g.lon, g.lat, points) # 查找位置
+index_pit = map(p -> g.index_rev[p[1], p[2]], locs) # 流域出水口的位置
 
-  fig = Figure(; size=(800, 600))
-  ax, plt = imagesc!(fig, g.lon, g.lat, basinId_2d)
-  scatter!(ax, LON[inds], LAT[inds])
-  fig
+## 还可以向下流一个网格
+for i in index_pit
+  o = outneighbors(g.graph, i)
+  println("in = $i, out = $o")
 end
-# check_river_length()
 
-# begin
-#   inds = g.index[info_node.index[2]]
-#   z = deepcopy(links_2d) .* 0
-#   z[inds] .= 1
-#   fig = Figure(; size=(600, 400) .* 1)
-#   _imagesc!(fig[1, 1], links_2d)
-#   imagesc!(fig[1, 2], z)
-#   fig
-# end
+# f_flowdir = "data/Hubei_500m_flowdir.tif"
+# g = RiverGraph(f_flowdir)
+# strord = stream_order(g)
+# lon, lat = st_dims(f_flowdir)
 
-# 需要记录每个点的坐标，方便进行查询
+## find_root
+
+# n_pits = length(index_pit)
+# basin = fill(0, length(g.toposort))
+# basin[index_pit] = [1:n_pits;]
+# basin_fill = fillnodata_upstream(g.graph, g.toposort, basin, 0)
 info_link = getInfo_links(g, links_2d)
 
 begin
@@ -58,13 +52,13 @@ begin
   # vals = filter(x -> x != 0, links_2d)
   _links = fillnodata_upstream(g, links, 0)
   # _links, info_next = link_flow2next(g, links) # 这里是走到了下一个点
-  
-  fig = Figure(; size=(1200, 400).*1)
+
+  fig = Figure(; size=(1200, 400) .* 1)
   _imagesc!(fig[1, 1], basinId_2d, titles=["BasinId"], fun_axis=rm_ticks!)
 
-  axs, plts, cbar = _imagesc!(fig[1, 2], strord_2d; nodata=-1, 
+  axs, plts, cbar = _imagesc!(fig[1, 2], strord_2d; nodata=-1,
     titles=["Stream Order"], gap=0, fun_axis=rm_ticks!)
-  
+
   # links, 关键节点
   scatter!(axs[1], info_link.x, info_link.y; color=:black) # colormap not work
   text!(axs[1], info_link.x, info_link.y, text=string.(info_link.link))
@@ -76,14 +70,3 @@ begin
   colgap!(fig.layout, 10)
   fig
 end
-
-
-save("Figure1_孤山-河网结构_L$level.png", fig; px_per_unit=2)
-
-River = Matrix(g, river)
-imagesc(River)
-
-b = st_bbox(path_flowdir_GuanShan)
-ra = rast(basinId_2d[:, end:-1:1], b)
-# write_gdal(ra, "Guanshan_subbasins.tif")
-# gdal_polygonize("Guanshan_subbasins.tif", "data/shp/Guanshan_subbasins.shp")

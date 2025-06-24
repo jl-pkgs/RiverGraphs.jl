@@ -100,5 +100,43 @@ end
 #   st_length(LON[inds], LAT[inds])
 # end
 
+## sf functions
+using Ipaper.sf: st_cellsize, bbox, st_bbox, bbox_overlap
 
+
+istrue(x::Bool) = x
+find_range(x::BitVector) = findfirst(istrue, x):findlast(istrue, x)
+function find_range(mask::BitMatrix)
+  inds_x = find_range(sum(mask, dims=2)[:] .!== 0)
+  inds_y = find_range(sum(mask, dims=1)[:] .!== 0)
+  inds_x, inds_y
+end
+
+function st_shrink(mask::BitMatrix, lon::AbstractVector, lat::AbstractVector; cellsize_target=0.1)
+  inds_x, inds_y = find_range(mask)
+  reverse_lat = issorted(lat, rev=true)
+
+  box = st_bbox(lon, lat)
+  cellsize = st_cellsize(lon, lat)
+
+  _b = st_bbox(lon[inds_x], lat[inds_y])
+  b = st_range(_b, cellsize_target)
+  bbox_overlap(b, box; cellsize, reverse_lat) # ix, iy
+  # _lon = lon[ix]
+  # _lat = lat[iy]
+  # _lon, _lat, @view data[ix, iy]
+end
+
+
+## 范围取整
+function st_range(b, cellsize=0.5)
+  xmin = floor(b.xmin / cellsize) * cellsize
+  xmax = ceil(b.xmax / cellsize) * cellsize
+  ymin = floor(b.ymin / cellsize) * cellsize
+  ymax = ceil(b.ymax / cellsize) * cellsize
+  bbox(; xmin, xmax, ymin, ymax)
+end
+
+
+export st_shrink
 export get_coord, reverse_index, earth_dist, st_length

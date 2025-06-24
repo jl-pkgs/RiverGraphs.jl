@@ -1,3 +1,5 @@
+export getInfo_links
+
 stream_order(g::RiverGraph) = stream_order(g.graph, g.toposort)
 stream_link(g::RiverGraph, strord; level) = stream_link(g.graph, g.toposort, strord; level)
 
@@ -55,6 +57,16 @@ function stream_link(g, toposort, streamorder; level::Int=2)
   return links
 end
 
+
+function getInfo_links(g::RiverGraph, links_2d)
+  con = links_2d .!= 0
+  xs, ys = get_coord(con)
+  vals = filter(x -> x != 0, links_2d)
+  inds = g.index_rev[con][:]
+  DataFrame(; x=xs, y=ys,
+    lon=g.lon[xs], lat=g.lat[ys],
+    link=vals, index=inds)
+end
 
 """
     stream_network(info_node::DataFrame)

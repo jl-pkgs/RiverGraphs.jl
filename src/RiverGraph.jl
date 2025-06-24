@@ -20,12 +20,26 @@ function graph_children(net::SimpleDiGraph, v::Int)
   nodes => v
 end
 
+_find_outlet(net::SimpleDiGraph) = topological_sort_by_dfs(net)[end] ## 多个节点的时候，该方法会出错
+
 function Base.show(io::IO, net::SimpleDiGraph)
-  v = find_outlet(net)
+  v = _find_outlet(net)
   println(graph_children(net, v))
 end
 
-find_outlet(net::SimpleDiGraph) = topological_sort_by_dfs(net)[end]
+function find_outlet(net::SimpleDiGraph, toposort, strord; min_sto=2)
+  roots = Vector{Int}()
+  orders = Vector{Int}()
+  
+  for from in toposort
+    to = outneighbors(net, from)
+    if isempty(to) && strord[from] > min_sto
+      push!(roots, from)
+      push!(orders, strord[from])
+    end
+  end
+  DataFrame(; node=roots, stream_order=orders)
+end
 
 # 其他函数调用时，需要知道数据类型，因此此处保留了{FT}
 @with_kw mutable struct RiverGraph{FT}
