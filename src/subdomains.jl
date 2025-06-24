@@ -80,9 +80,8 @@ streamorder, toposort, min_sto)`). Subbasins are extracted for each basin outlet
 - `topo_subbas` topological order per subbasin id stored as `Vector{Vector{Int}}`
 """
 function kinwave_set_subdomains(graph, toposort, index_pit, streamorder;
-  level::Int=2, parallel::Bool=nthreads() > 1)
-  # min_sto = maximum(streamorder) - level
-  # level = maximum(streamorder) - min_sto
+  level::Int=2, min_sto=nothing, parallel::Bool=nthreads() > 1)
+  min_sto = get_MinSto(streamorder; level, min_sto)
 
   if parallel
     # extract basins (per outlet/pit), assign unique basin id

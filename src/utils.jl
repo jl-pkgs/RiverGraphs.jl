@@ -1,3 +1,42 @@
+export find_pits, add_links!
+export unlist
+
+import Ipaper: unlist
+
+unlist(x::Real) = x
+function unlist(p::Pair)
+  [map(unlist, p.first) |> x -> vcat(x...); p.second] |> sort
+end
+
+# min_sto = get_MinSto(streamorder; level, min_sto)
+function get_MinSto(streamorder; level::Int=2, min_sto=nothing)
+  isnothing(min_sto) && (min_sto = max(maximum(streamorder) - level, 1))
+  return min_sto
+end
+
+
+# 根据经纬度，找到pits
+function find_pits(g::RiverGraph, points)
+  locs = st_location_exact(g.lon, g.lat, points) # 查找位置
+  vs = map(p -> g.index_rev[p[1], p[2]], locs) # index_pit, 流域出水口的位置
+  map(v -> outneighbors(g.graph, v) |> only, vs)
+end
+
+
+# 有些水文站不在河流的交汇处，需要手动加上
+function add_links!(links, index_pit)
+  nodes_hit = findall(!isequal(0), links)
+  nodes_miss = setdiff(index_pit, nodes_hit)
+  n = maximum(links)
+  if !isempty(nodes_miss)
+    for (i, v) = enumerate(nodes_miss)
+      links[v] = n + i
+    end
+  end
+end
+
+
+
 "Map from PCRaster LDD value to a CartesianIndex"
 const pcr_dir = [
   CartesianIndex(-1, -1),  # 1

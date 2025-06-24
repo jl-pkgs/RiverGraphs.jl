@@ -5,9 +5,10 @@ function river_length(river_nodes; lon, lat)
 end
 
 # 找到两点之间的路径
-function flow_path(g::RiverGraph, from::Int, to::Int, streamorder; level::Int=2)
-  min_sto = max(maximum(streamorder) - level, 1)
-  
+function flow_path(g::RiverGraph, from::Int, to::Int, streamorder; 
+  level::Int=2, min_sto=nothing)
+  min_sto = get_MinSto(streamorder; level, min_sto)
+
   nodes = [from]
   id_from = from
 

@@ -23,14 +23,9 @@ fillnodata_upstream(g::RiverGraph, data, nodata) =
   fillnodata_upstream(g.graph, g.toposort, data, nodata)
 
 
-function get_MinSto(streamorder; level::Int=2, min_sto=nothing)
-  isnothing(min_sto) && (min_sto = max(maximum(streamorder) - level, 1))
-  return min_sto
-end
-
 # 只填充河道的部分
-fillnodata_upriver(g::RiverGraph, links, streamorder; level::Int=2, nodata::Int=0) =
-  fillnodata_upriver(g.graph, g.toposort, links, streamorder; level, nodata)
+fillnodata_upriver(g::RiverGraph, links, streamorder; min_sto=nothing, level::Int=2, nodata::Int=0) =
+  fillnodata_upriver(g.graph, g.toposort, links, streamorder; min_sto, level, nodata)
 
 # only for links
 # 与`fillnodata_upstream`类似，只是返回的信息更加详细

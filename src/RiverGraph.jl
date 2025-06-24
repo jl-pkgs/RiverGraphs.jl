@@ -26,7 +26,6 @@ function Base.show(io::IO, net::SimpleDiGraph)
   println(graph_children(net, v))
 end
 
-
 # 往上追溯一个网格，由于index_pit的流向未设置为0
 function find_outlet(net::SimpleDiGraph, toposort, strord; min_sto=2)
   roots = Vector{Int}()
@@ -64,10 +63,14 @@ function RiverGraph(data::AbstractArray{FT}, g::RiverGraph) where {FT}
 end
 
 
-"init a RiverGraph from flowdir matrix"
-function RiverGraph(A_fdir::AbstractMatrix{FT}; nodata=FT(0), kw...) where {FT}
-  index, index_rev = active_indices(A_fdir, nodata)
-  ldd = A_fdir[index]
+"""
+init a RiverGraph from flowdir matrix
+
+- `A`: flowdir
+"""
+function RiverGraph(A::AbstractMatrix{FT}; nodata=FT(0), kw...) where {FT}
+  index, index_rev = active_indices(A, nodata)
+  ldd = A[index]
 
   graph = graph_flow(ldd, index, pcr_dir)
   toposort = topological_sort_by_dfs(graph)
@@ -81,7 +84,7 @@ function RiverGraph(f::String)
   RiverGraph(A; lon, lat)
 end
 
-
+# 重要的教训，流域边界需设置为pit
 "Convert a gridded drainage direction to a directed graph"
 function graph_flow(ldd::AbstractVector, inds::AbstractVector, pcr_dir::AbstractVector)
   # prepare a directed graph to be filled
@@ -92,12 +95,17 @@ function graph_flow(ldd::AbstractVector, inds::AbstractVector, pcr_dir::Abstract
   for (from_node, from_index) in enumerate(inds)
     ldd_val = ldd[from_node]
     # skip pits to prevent cycles
-    ldd_val == 5 && continue
+    (ldd_val == 5 || ldd_val == 0) && continue
     to_index = from_index + pcr_dir[ldd_val]
     # find the node id of the downstream cell
     to_node = searchsortedfirst(inds, to_index)
-    add_edge!(graph, from_node, to_node)
+
+    # to_node需要在可行的范围内
+    if from_node != to_node 
+      add_edge!(graph, from_node, to_node)
+    end
   end
+
   if is_cyclic(graph)
     error("""One or more cycles detected in flow graph.
         The provided local drainage direction map may be unsound.
@@ -106,3 +114,5 @@ function graph_flow(ldd::AbstractVector, inds::AbstractVector, pcr_dir::Abstract
   end
   return graph
 end
+
+# isvalid_flowdir()

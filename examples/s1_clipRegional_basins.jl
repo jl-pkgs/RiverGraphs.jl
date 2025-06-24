@@ -1,11 +1,12 @@
 using Shapefile, DataFrames
 using RiverGraphs
 using Ipaper.sf, ArchGDAL
+using Ipaper.sf: write_gdal
 using GLMakie, MakieLayers
 using Ipaper: read_flowdir
 
 
-pour = Shapefile.Table("Z:/GitHub/cug-hydro/Distributed_Hydrology_Forcing/Pour_十堰_sp8.shp")
+pour = Shapefile.Table("data/shp/Pour_十堰_sp8.shp")
 points = map(x -> (x.x, x.y), pour.geometry) #|> x -> cat(x..., dims=1)
 
 f_flowdir = "data/Hubei_500m_flowdir.tif"
@@ -33,16 +34,13 @@ imagesc(_lon, _lat, _data)
 ## 提取流域范围
 begin
   A = read_gdal(f_flowdir, 1)[:, end:-1:1] # lat was sorted
-  A[.!mask] .= UInt8(0) # updateMask
+  nodata = UInt8(255)
+  A[.!mask] .= nodata # updateMask
 
   flowdir = A[ix, iy][:, end:-1:1]
   b = st_bbox(_lon, _lat)
   ra = rast(flowdir, b)
-  write_gdal(ra, "data/十堰_500m_flowdir.tif")
+  fout = "data/十堰_500m_flowdir.tif"
+  write_gdal(ra, fout; nodata)
 end
-
-## 2. 截取目标区域
-# lon, lat = st_dims(f)
-# lat = reverse(lat)
-# gdal_nodata(f_flowdir)
-g = RiverGraph("data/十堰_500m_flowdir.tif") # 有失败的
+g = RiverGraph(fout) #

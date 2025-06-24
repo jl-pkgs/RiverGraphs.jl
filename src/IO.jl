@@ -40,17 +40,6 @@ const DIR_INV = [16, 32, 64, 128, 1, 2, 4, 8]
 # const DX = [0, 1, 1, 1, 0, -1, -1, -1]
 # const DY = [1, 1, 0, -1, -1, -1, 0, 1]
 
-# 0~9
-function gis2wflow(A::AbstractArray)
-  R = copy(A)
-  for i in 1:8
-    replace!(R, DIR_GIS[i] => DIR_WFLOW[i])
-  end
-  # missing value to 5
-  replace!(R, UInt8(0) => UInt8(5))
-  R
-end
-
 function gis2tau(A::AbstractArray)
   R = copy(A)
   for i in 1:8
@@ -68,12 +57,24 @@ function tau2gis(A::AbstractArray)
 end
 
 
+# 0~9
+function gis2wflow(A::AbstractArray; nodata::UInt8)
+  R = copy(A)
+  for i in 1:8
+    replace!(R, DIR_GIS[i] => DIR_WFLOW[i])
+  end
+  replace!(R, UInt8(nodata) => UInt8(5))
+  R
+end
+
+"""
+- `pit`: flowdir is `0`
+"""
 function read_flowdir(f::String)
   A_gis = read_gdal(f)[:, end:-1:1] # 修正颠倒的lat
-  A = gis2wflow(A_gis)
   nodata = gdal_nodata(f)[1]
-  # replace!(A, missing => 0)
-  replace!(A, nodata => 0) # replace missing value with 0
+  A = gis2wflow(A_gis; nodata) # nodata as pit
+  # replace!(A, nodata => 0) # replace missing value with 0
   A
 end
 
