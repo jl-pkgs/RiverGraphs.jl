@@ -1,8 +1,9 @@
 
 using Graphs, Parameters
-import SpatRasters: st_dims
+import SpatRasters: SpatRaster, st_dims
 
 export find_outlet, graph_children
+export read_flowdir
 
 """
     graph_children(net, v)
@@ -77,9 +78,21 @@ function RiverGraph(A::AbstractMatrix{FT}; nodata=FT(0), kw...) where {FT}
   RiverGraph(; graph, toposort, data=ldd, nodata, index, index_rev, kw...)
 end
 
+
+"""
+- `pit`: flowdir is `0`
+"""
+function read_flowdir(f::String)
+  A_gis = read_gdal(f, 1)#[:, end:-1:1] # 修正颠倒的lat
+  nodata = gdal_nodata(f)[1]
+  A = gis2wflow(A_gis)
+  replace!(A, nodata => 5) # nodata as pit
+  A
+end
+
 function RiverGraph(f::String)
   lon, lat = st_dims(f)
-  lat = reverse(lat)
+  # lat = reverse(lat)
   A = read_flowdir(f)
   RiverGraph(A; lon, lat)
 end
@@ -101,7 +114,7 @@ function graph_flow(ldd::AbstractVector, inds::AbstractVector, pcr_dir::Abstract
     to_node = searchsortedfirst(inds, to_index)
 
     # to_node需要在可行的范围内
-    if from_node != to_node 
+    if from_node != to_node
       add_edge!(graph, from_node, to_node)
     end
   end
@@ -116,3 +129,10 @@ function graph_flow(ldd::AbstractVector, inds::AbstractVector, pcr_dir::Abstract
 end
 
 # isvalid_flowdir()
+
+function SpatRaster(rg::RiverGraph, x::AbstractVector; kw...)
+  @assert length(rg.index) == length(x)
+  b = st_bbox(rg.lon, rg.lat)
+  A = Matrix(rg, x)
+  rast(A, b; kw...)
+end

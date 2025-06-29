@@ -59,31 +59,33 @@ end
 
 
 ## 范围取整
-function st_range(b, cellsize=0.5)
-  xmin = floor(b.xmin / cellsize) * cellsize
-  xmax = ceil(b.xmax / cellsize) * cellsize
-  ymin = floor(b.ymin / cellsize) * cellsize
-  ymax = ceil(b.ymax / cellsize) * cellsize
+function st_range(b::bbox, cellsize)
+  cellx, celly = cellsize
+  xmin = floor(b.xmin / cellx) * cellx
+  xmax = ceil(b.xmax / cellx) * cellx
+  ymin = floor(b.ymin / celly) * celly
+  ymax = ceil(b.ymax / cellx) * celly
   bbox(; xmin, xmax, ymin, ymax)
 end
 
 
-function st_shrink(ra::SpatRaster{T, N}; nodata=0.0, cellsize_target=nothing) where {T<:Real, N}
-  mask = isnan(nodata) ? isnan.(ra.A) : ra.A .== nodata
+function st_shrink(ra::SpatRaster{T,N}; nodata=0.0, cellsize_target=nothing) where {T<:Real,N}
+  mask = isnan(nodata) ? .!isnan.(ra.A) : ra.A .!== nodata
   lon, lat = st_dims(ra)
   inds, b = st_shrink(mask, lon, lat; cellsize_target)
   ra[inds...]
 end
 
 
-function st_shrink(ra_mask::SpatRaster{Bool}; cellsize_target=nothing) 
+function st_shrink(ra_mask::SpatRaster{Bool}; cellsize_target=nothing)
   lon, lat = st_dims(ra_mask)
   st_shrink(ra_mask.A, lon, lat; cellsize_target)
 end
 
-function st_shrink(mask::BitMatrix, lon::AbstractVector, lat::AbstractVector; 
+function st_shrink(mask::BitMatrix, lon::AbstractVector, lat::AbstractVector;
   cellsize_target=nothing)
   isnothing(cellsize_target) && (cellsize_target = st_cellsize(lon, lat))
+  length(cellsize_target) == 1 && (cellsize_target = (1, 1) .* cellsize_target)
 
   inds_x, inds_y = find_range(mask)
   reverse_lat = issorted(lat, rev=true)
@@ -93,10 +95,11 @@ function st_shrink(mask::BitMatrix, lon::AbstractVector, lat::AbstractVector;
 
   _b = st_bbox(lon[inds_x], lat[inds_y])
   b = st_range(_b, cellsize_target)
+
   ix, iy = bbox_overlap(b, box; cellsize, reverse_lat) # ix, iy
   _lon = lon[ix]
   _lat = lat[iy]
-  (ix, iy), st_bbox(_lon, _lat)  
+  (ix, iy), st_bbox(_lon, _lat)
 end
 # _lon, _lat, @view data[ix, iy]
 

@@ -6,7 +6,7 @@ cell, based on directed acyclic graph `g`, topological order `toposort`, nodata
 value `nodata` and `data` containing missing values. Returns filled data
 `data_out`.
 """
-function fillnodata_upstream(g, toposort, data, nodata)
+function fillnodata_upstream(g::AbstractGraph, toposort, data; nodata=0)
   data_out = copy(data)
   for id_from in reverse(toposort)  # down- to upstream
     ids_to = outneighbors(g, id_from) # 
@@ -19,8 +19,10 @@ function fillnodata_upstream(g, toposort, data, nodata)
   return data_out
 end
 
-fillnodata_upstream(g::RiverGraph, data, nodata) =
-  fillnodata_upstream(g.graph, g.toposort, data, nodata)
+function fillnodata_upstream(rg::RiverGraph, data; nodata=0, kw...)
+  vec_fill = fillnodata_upstream(rg.graph, rg.toposort, data; nodata)
+  SpatRaster(rg, vec_fill; kw...)
+end
 
 
 # 只填充河道的部分

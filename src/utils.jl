@@ -35,21 +35,6 @@ function add_links!(links, index_pit)
 end
 
 
-
-"Map from PCRaster LDD value to a CartesianIndex"
-const pcr_dir = [
-  CartesianIndex(-1, -1),  # 1
-  CartesianIndex(0, -1),  # 2
-  CartesianIndex(1, -1),  # 3
-  CartesianIndex(-1, 0),  # 4
-  CartesianIndex(0, 0),  # 5
-  CartesianIndex(1, 0),  # 6
-  CartesianIndex(-1, 1),  # 7
-  CartesianIndex(0, 1),  # 8
-  CartesianIndex(1, 1),  # 9
-]
-
-
 """
     active_indices(subcatch_2d, nodata)
 

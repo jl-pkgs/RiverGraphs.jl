@@ -10,7 +10,7 @@ include("RiverGraph.jl")
 include("fillnodata_upstream.jl")
 
 include("flow_path.jl")
-include("subbasins.jl")
+include("st_watershed.jl")
 include("stream.jl")
 include("subdomains.jl")
 
