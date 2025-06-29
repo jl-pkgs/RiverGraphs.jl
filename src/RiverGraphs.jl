@@ -2,9 +2,8 @@ module RiverGraphs
 
 
 using Graphs, Parameters, DataFrames
-using Ipaper: table
-import Ipaper.sf: st_dims
-
+# using Ipaper: table
+import SpatRasters: st_dims
 import RTableTools: cbind
 
 include("IO.jl")
@@ -14,8 +13,10 @@ include("fillnodata_upstream.jl")
 include("flow_path.jl")
 include("subbasins.jl")
 include("stream.jl")
-include("utils.jl")
 include("subdomains.jl")
+
+include("utils.jl")
+include("sf.jl")
 
 
 export RiverGraph

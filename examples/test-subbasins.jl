@@ -1,5 +1,5 @@
 include("main_vis.jl")
-using Ipaper, Ipaper.sf, ArchGDAL, DataFrames, RiverGraphs, Test
+using SpatRasters, ArchGDAL, DataFrames, RiverGraphs, Test
 
 # flowdir, image(A) should looks normal
 begin

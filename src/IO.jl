@@ -1,5 +1,5 @@
 import Ipaper
-import Ipaper.sf: gdal_nodata, read_gdal
+import SpatRasters: gdal_nodata, read_gdal
 
 ## Note: 
 # 1. The dimemsion of `dem`: [lon, lat], which is different from ArcGIS. Hence, DIR
@@ -21,11 +21,11 @@ const DIR_WFLOW = UInt8.([6, 3, 2, 1, 4, 7, 8, 9])
 #     CartesianIndex(1, 1),    # 9, 128
 # ]
 
-const NODATA = 0x00
-const DY = [0, 1, 1, 1, 0, -1, -1, -1]
-const DX = [1, 1, 0, -1, -1, -1, 0, 1]
-const DIR = [1, 2, 4, 8, 16, 32, 64, 128]
-const DIR_INV = [16, 32, 64, 128, 1, 2, 4, 8]
+# const NODATA = 0x00
+# const DY = [0, 1, 1, 1, 0, -1, -1, -1]
+# const DX = [1, 1, 0, -1, -1, -1, 0, 1]
+# const DIR = [1, 2, 4, 8, 16, 32, 64, 128]
+# const DIR_INV = [16, 32, 64, 128, 1, 2, 4, 8]
 
 # DIV = [
 #   32 64 128

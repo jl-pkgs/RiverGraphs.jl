@@ -1,6 +1,6 @@
 
 using Graphs, Parameters
-import Ipaper.sf: st_dims
+import SpatRasters: st_dims
 
 export find_outlet, graph_children
 

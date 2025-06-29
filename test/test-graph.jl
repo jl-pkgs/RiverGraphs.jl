@@ -1,4 +1,4 @@
-using Ipaper, Ipaper.sf, ArchGDAL
+using SpatRasters, ArchGDAL
 using RiverGraphs, Test
 
 # flowdir, image(A) should looks normal

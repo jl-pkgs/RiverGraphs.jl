@@ -1,9 +1,8 @@
 using Shapefile, DataFrames
 using RiverGraphs
-using Ipaper.sf, ArchGDAL
-using Ipaper.sf: write_gdal
+using SpatRasters, ArchGDAL
+using SpatRasters: write_gdal
 using GLMakie, MakieLayers
-using Ipaper: read_flowdir
 
 
 pour = Shapefile.Table("data/shp/Pour_十堰_sp8.shp")
@@ -23,9 +22,10 @@ basin = fill(0, length(g.toposort))
 basin[index_pit] = [1:n_pits;]
 basin_fill = fillnodata_upstream(g.graph, g.toposort, basin, 0)
 
+## 
 basinId_2d = Matrix(g, basin_fill)
 mask = basinId_2d .!== 0
-ix, iy = st_shrink(mask, g.lon, g.lat; cellsize_target=0.1)
+ix, iy, b = st_shrink(mask, g.lon, g.lat; cellsize_target=0.1)
 _lon, _lat = g.lon[ix], g.lat[iy]
 _data = basinId_2d[ix, iy]
 imagesc(_lon, _lat, _data)
