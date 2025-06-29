@@ -1,5 +1,5 @@
 using RiverGraphs, Test
-import Ipaper, ArchGDAL
+import SpatRasters, ArchGDAL
 
 
 include("test-graph.jl")

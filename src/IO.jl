@@ -1,4 +1,3 @@
-import Ipaper
 import SpatRasters: gdal_nodata, read_gdal
 
 ## Note: 

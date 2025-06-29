@@ -2,7 +2,6 @@ module RiverGraphs
 
 
 using Graphs, Parameters, DataFrames
-# using Ipaper: table
 import SpatRasters: st_dims
 import RTableTools: cbind
 
