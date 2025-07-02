@@ -3,12 +3,7 @@ using RiverGraphs
 using SpatRasters, ArchGDAL
 using GLMakie, MakieLayers
 
-import MakieLayers: imagesc
-
-function imagesc(ra::SpatRaster)
-  lon, lat = st_dims(ra)
-  imagesc(lon, lat, ra.A)
-end
+include("main_vis.jl")
 
 pour = Shapefile.Table("data/shp/Pour_十堰_sp8.shp")
 points = map(x -> (x.x, x.y), pour.geometry) #|> x -> cat(x..., dims=1)

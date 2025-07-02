@@ -88,7 +88,7 @@ function kinwave_set_subdomains(graph, toposort, index_pit, streamorder;
     n_pits = length(index_pit)
     basin = fill(0, length(toposort))
     basin[index_pit] = [1:n_pits;]
-    basin_fill = fillnodata_upstream(graph, toposort, basin, 0)
+    basin_fill = fillnodata_upstream(graph, toposort, basin; nodata=0)
 
     # pre-allocate the Vector with indices matching the topological order of the
     # complete domain (upstream neighbors are stored at these indices)
@@ -113,7 +113,7 @@ function kinwave_set_subdomains(graph, toposort, index_pit, streamorder;
       streamorder_subbas = streamorder[vmap]
 
       links = stream_link(g, toposort_b, streamorder_subbas; level)
-      links_fill = fillnodata_upstream(g, toposort_b, links, 0)
+      links_fill = fillnodata_upstream(g, toposort_b, links; nodata=0)
 
       n_subbas = max(length(links[links.>0]), 1)
 

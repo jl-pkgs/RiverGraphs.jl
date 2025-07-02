@@ -1,8 +1,4 @@
-export getInfo_links
-
 stream_order(g::RiverGraph) = stream_order(g.graph, g.toposort)
-stream_link(g::RiverGraph, strord; level::Int=2, min_sto=nothing) = 
-  stream_link(g.graph, g.toposort, strord; level, min_sto)
 
 """
     stream_order(g, toposort)
@@ -27,46 +23,6 @@ function stream_order(g, toposort)
   return strord
 end
 
-"""
-    stream_link(g, streamorder, toposort, min_sto)
-
-Return stream_link with a unique id starting at 1, based on a minimum streamorder `min_sto`,
-directed acyclic graph `g` and topological order `toposort`.
-"""
-function stream_link(g, toposort, streamorder; level::Int=2, min_sto=nothing)
-  min_sto = get_MinSto(streamorder; level, min_sto)
-  n = length(toposort)
-  links = fill(0, n)
-
-  i = 1
-  for v in toposort
-    streamorder[v] < min_sto && continue
-
-    ds_nodes = outneighbors(g, v)
-    if !isempty(ds_nodes)
-      if streamorder[v] != streamorder[only(ds_nodes)]
-        links[v] = i
-        i += 1
-      end
-    else
-      # also set pits (without a downstream node)
-      links[v] = i
-      i += 1
-    end
-  end
-  return links
-end
-
-
-function getInfo_links(g::RiverGraph, links_2d)
-  con = links_2d .!= 0
-  xs, ys = get_coord(con)
-  vals = filter(x -> x != 0, links_2d)
-  inds = g.index_rev[con][:]
-  DataFrame(; x=xs, y=ys,
-    lon=g.lon[xs], lat=g.lat[ys],
-    link=vals, index=inds)
-end
 
 """
     stream_network(info_node::DataFrame)

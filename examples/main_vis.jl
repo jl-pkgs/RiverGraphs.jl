@@ -1,5 +1,9 @@
 using MakieLayers, GLMakie, Graphs, GraphMakie
 using Test
+import MakieLayers: imagesc
+using NaNStatistics
+using SpatRasters
+
 
 function _imagesc!(fig, A; nodata=0, kw...)
   ncol = maximum(A)
@@ -41,3 +45,42 @@ function plot_graph(g)
 end
 
 # plot_graph(net)
+
+function imagesc(ra::SpatRaster)
+  lon, lat = st_dims(ra)
+  imagesc(lon, lat, ra.A)
+end
+
+function imagesc(ax, ra::SpatRaster)
+  lon, lat = st_dims(ra)
+  imagesc!(ax, lon, lat, ra.A)
+end
+
+
+
+function build_colorbar(A)
+  ncols = nanmaximum(A) |> Int # colors
+  _colors = resample_colors(amwg256, ncols)
+  colors = cgrad(_colors, ncols, categorical=true)
+
+  _ticks = 1:ncols
+  ticks = _ticks, string.(_ticks)
+  colorrange = (1, ncols) .+ (-0.5, 0.5)
+  colorrange, colors, ticks
+end
+
+function plot_basin!(ax, ra::SpatRaster; nodata=0, kw...)
+  lon, lat = st_dims(ra)
+  A = replace(ra.A, nodata => NaN)
+  colorrange, colors, ticks = build_colorbar(A)
+
+  imagesc!(ax, lon, lat, A; colors, colorbar=(;ticks), colorrange, force_show_legend=true)
+end
+
+function plot_basin(ra::SpatRaster; nodata=0, kw...)
+  lon, lat = st_dims(ra)
+  A = replace(ra.A, nodata => NaN)
+  colorrange, colors, ticks = build_colorbar(A)
+
+  imagesc(lon, lat, A; colors, colorbar, kw...)
+end
