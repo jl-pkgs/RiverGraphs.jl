@@ -64,8 +64,7 @@ unlist(r)
 
 
 begin
-  strord_2d, links_2d =
-    Matrix(rg, strord, -1), Matrix(rg, links)
+  strord_2d, links_2d = Matrix(rg, strord, -1), Matrix(rg, links)
   info_link = getInfo_links(rg, links_2d)
 
   ## [i,j] how to inds
@@ -74,7 +73,6 @@ begin
 
   fig = Figure(; size=(1200, 400) .* 1)
   plot_basin!(fig[1, 1], ra_basin; titles=["BasinId"], fun_axis=rm_ticks!)
-  fig
 
   axs, plts, cbar = _imagesc!(fig[1, 2], strord_2d; nodata=-1,
     titles=["Stream Order"], gap=0, fun_axis=rm_ticks!)
