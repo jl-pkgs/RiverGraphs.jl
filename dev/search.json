@@ -20,21 +20,11 @@
     ]
   },
   {
-    "objectID": "api/1-SpatRaster.html#construction",
-    "href": "api/1-SpatRaster.html#construction",
+    "objectID": "api/1-SpatRaster.html#test-plot",
+    "href": "api/1-SpatRaster.html#test-plot",
     "title": "1. SpatRaster",
-    "section": "Construction",
-    "text": "Construction\nusing SpatRasters\nusing Dates\n\ndates = Date(2010, 1, 1):Day(1):Date(2010, 1, 10)\nntime = length(dates)\n\nra = rast(rand(180, 90, ntime); time=dates)\nra\n\nSpatRaster{Float64}: Raster\n  A        : Array{Float64, 3} | (180, 90, 10) | 1.24 Mb\n  b        : bbox(-180.0, -90.0, 180.0, 90.0)\n  cellsize : (2.0, 2.0)\n  lon, lat : -179.0:2.0:179.0, 89.0:-2.0:-89.0\n  time     : 2010-01-01 ~ 2010-01-10, ntime=10\n  bands    : nothing\n  nodata   : nothing\n\nA = rand(70, 40)\nb = bbox(70, 15, 140, 55) # China\nrast(A, b)\n\nSpatRaster{Float64}: Raster\n  A        : Matrix{Float64} | (70, 40) | 0.02 Mb\n  b        : bbox(70.0, 15.0, 140.0, 55.0)\n  cellsize : (1.0, 1.0)\n  lon, lat : 70.5:1.0:139.5, 54.5:-1.0:15.5\n  time     : nothing\n  bands    : nothing\n  nodata   : nothing",
-    "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>1. SpatRaster</span>"
-    ]
-  },
-  {
-    "objectID": "api/1-SpatRaster.html#subset",
-    "href": "api/1-SpatRaster.html#subset",
-    "title": "1. SpatRaster",
-    "section": "Subset",
-    "text": "Subset\n\nra[i, j] will automatically alter lon, lat and bbox. If both of i and j are integer, value of ra.A[i, j] will be retrieved.\nra[i, j, k] will additionally alter bands, and time\n\nra[1, 1]\nra[1:10, 1:10]\n\nSpatRaster{Float64}: Raster\n  A        : Array{Float64, 3} | (10, 10, 10) | 0.01 Mb\n  b        : bbox(-180.0, 70.0, -160.0, 90.0)\n  cellsize : (2.0, 2.0)\n  lon, lat : -179.0:2.0:-161.0, 89.0:-2.0:71.0\n  time     : 2010-01-01 ~ 2010-01-10, ntime=10\n  bands    : nothing\n  nodata   : nothing\n\nra[1:10, 1:10, 1:2]\n\nSpatRaster{Float64}: Raster\n  A        : Array{Float64, 3} | (10, 10, 2) | 0.0 Mb\n  b        : bbox(-180.0, 70.0, -160.0, 90.0)\n  cellsize : (2.0, 2.0)\n  lon, lat : -179.0:2.0:-161.0, 89.0:-2.0:71.0\n  time     : 2010-01-01 ~ 2010-01-02, ntime=2\n  bands    : nothing\n  nodata   : nothing\n\nra[1:10, 1:10, 1:1]\n\nSpatRaster{Float64}: Raster\n  A        : Array{Float64, 3} | (10, 10, 1) | 0.0 Mb\n  b        : bbox(-180.0, 70.0, -160.0, 90.0)\n  cellsize : (2.0, 2.0)\n  lon, lat : -179.0:2.0:-161.0, 89.0:-2.0:71.0\n  time     : 2010-01-01 ~ 2010-01-01, ntime=1\n  bands    : nothing\n  nodata   : nothing\n\nra[1:10, 1:10, 1]\n\nSpatRaster{Float64}: Raster\n  A        : Matrix{Float64} | (10, 10) | 0.0 Mb\n  b        : bbox(-180.0, 70.0, -160.0, 90.0)\n  cellsize : (2.0, 2.0)\n  lon, lat : -179.0:2.0:-161.0, 89.0:-2.0:71.0\n  time     : 2010-01-01 ~ 2010-01-01, ntime=1\n  bands    : nothing\n  nodata   : nothing",
+    "section": "TEST plot",
+    "text": "TEST plot\nusing CairoMakie, MakieLayers\nA = rand(10, 10)\nimagesc(A)\n\n┌ Warning: Found `resolution` in the theme when creating a `Scene`. The `resolution` keyword for `Scene`s and `Figure`s has been deprecated. Use `Figure(; size = ...` or `Scene(; size = ...)` instead, which better reflects that this is a unitless size and not a pixel resolution. The key could also come from `set_theme!` calls or related theming functions.\n\n└ @ Makie ~/.julia/packages/Makie/FUAHr/src/scenes.jl:238\n\n\n\nusing Ipaper\ndir(\"../\")\n9-element Vector{String}:\n \"../.quarto\"\n \"../_static\"\n \"../api\"\n \"../site_libs\"\n \"../.gitignore\"\n \"../_quarto.yml\"\n \"../index.html\"\n \"../index.md\"\n \"../references.bib\"\ndir(\"../..\")\n8-element Vector{String}:\n \"../../build\"\n \"../../image\"\n \"../../src\"\n \"../../.gitignore\"\n \"../../Manifest.toml\"\n \"../../Project.toml\"\n \"../../build.ps1\"\n \"../../make.jl\"",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>1. SpatRaster</span>"
     ]

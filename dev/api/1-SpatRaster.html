@@ -208,10 +208,12 @@ window.onload = function () {
 <link rel="stylesheet" href="../_static/style.css">
 <meta property="og:title" content="1. SpatRaster – RiverGraphs">
 <meta property="og:description" content="">
+<meta property="og:image" content="1-SpatRaster_files/figure-html/cell-4-output-2.svg">
 <meta property="og:site_name" content="RiverGraphs">
 <meta name="twitter:title" content="1. SpatRaster – RiverGraphs">
 <meta name="twitter:description" content="">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="1-SpatRaster_files/figure-html/cell-4-output-2.svg">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 
 <body class="nav-sidebar floating nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
@@ -460,8 +462,7 @@ window.onload = function () {
   <ul>
   <li><a href="#spatraster" id="toc-spatraster" class="nav-link active" data-scroll-target="#spatraster">SpatRaster</a>
   <ul class="collapse">
-  <li><a href="#construction" id="toc-construction" class="nav-link" data-scroll-target="#construction">Construction</a></li>
-  <li><a href="#subset" id="toc-subset" class="nav-link" data-scroll-target="#subset">Subset</a></li>
+  <li><a href="#test-plot" id="toc-test-plot" class="nav-link" data-scroll-target="#test-plot">TEST plot</a></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/jl-pkgs/RiverGraphs.jl/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
@@ -495,114 +496,40 @@ window.onload = function () {
 <!-- ```{julia, echo=false}
 @doc(SpatRaster)
 ``` -->
-<div class="sourceCode" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">Base</span>.<span class="pp">@kwdef</span> <span class="kw">mutable struct</span> SpatRaster{T,N} <span class="op">&lt;:</span><span class="dt"> AbstractSpatRaster{T,N}</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  A<span class="op">::</span><span class="dt">AbstractArray{T,N}</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  b<span class="op">::</span><span class="dt">bbox </span><span class="op">=</span> <span class="fu">bbox</span>(<span class="op">-</span><span class="fl">180.0</span>, <span class="op">-</span><span class="fl">90.0</span>, <span class="fl">180.0</span>, <span class="fl">90.0</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  cellsize<span class="op">::</span><span class="dt">NTuple{2,Real}</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  lon<span class="op">::</span><span class="dt">AbstractVector{&lt;:Real}</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  lat<span class="op">::</span><span class="dt">AbstractVector{&lt;:Real}</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  time<span class="op">::</span><span class="dt">Union{AbstractVector,Nothing} </span><span class="op">=</span> <span class="cn">nothing</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  bands<span class="op">::</span><span class="dt">Union{AbstractVector{String},Nothing} </span><span class="op">=</span> <span class="cn">nothing</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  name<span class="op">::</span><span class="dt">String </span><span class="op">=</span> <span class="st">"Raster"</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  nodata<span class="op">::</span><span class="dt">Union{AbstractVector{T},Nothing} </span><span class="op">=</span> <span class="cn">nothing</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<ul>
-<li><code>A</code> : The raster data array where T is the element type and N is the number of dimensions</li>
-<li><code>b</code> : Bounding box defining the spatial extent, defaults to global extent <code>bbox(-180.0, -90.0, 180.0, 90.0)</code></li>
-<li><code>cellsize</code> : Cell size in degrees as (longitude_size, latitude_size)<br>
-</li>
-<li><code>lon</code> : Longitude coordinates for each column</li>
-<li><code>lat</code> : Latitude coordinates for each row</li>
-<li><code>time</code> : Time dimension values (optional)</li>
-<li><code>bands</code> : Band names for multi-band rasters (optional)</li>
-<li><code>name</code> : Name identifier for the raster, defaults to “Raster”</li>
-<li><code>nodata</code> : No-data values for each band (optional)</li>
-</ul>
-<section id="construction" class="level2">
-<h2 class="anchored" data-anchor-id="construction">Construction</h2>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SpatRasters</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Dates</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>dates <span class="op">=</span> <span class="fu">Date</span>(<span class="fl">2010</span>, <span class="fl">1</span>, <span class="fl">1</span>)<span class="op">:</span><span class="fu">Day</span>(<span class="fl">1</span>)<span class="op">:</span><span class="fu">Date</span>(<span class="fl">2010</span>, <span class="fl">1</span>, <span class="fl">10</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>ntime <span class="op">=</span> <span class="fu">length</span>(dates)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>ra <span class="op">=</span> <span class="fu">rast</span>(<span class="fu">rand</span>(<span class="fl">180</span>, <span class="fl">90</span>, ntime); time<span class="op">=</span>dates)</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>ra</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="test-plot" class="level2">
+<h2 class="anchored" data-anchor-id="test-plot">TEST plot</h2>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CairoMakie</span>, <span class="bu">MakieLayers</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> <span class="fu">rand</span>(<span class="fl">10</span>, <span class="fl">10</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">imagesc</span>(A)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="ansi-escaped-output">
-<pre><span class="ansi-blue-fg">SpatRaster{Float64}: </span><span style="text-decoration:underline" class="ansi-green-fg">Raster</span>
-  A        : Array{Float64, 3} | (180, 90, 10) | <span style="font-weight:bold;text-decoration:underline" class="ansi-blue-fg">1.24 Mb</span>
-  b        : bbox(-180.0, -90.0, 180.0, 90.0)
-  cellsize : (2.0, 2.0)
-  lon, lat : -179.0:2.0:179.0, 89.0:-2.0:-89.0
-  time     : 2010-01-01 ~ 2010-01-10, ntime=10
-  bands    : nothing
-  nodata   : nothing</pre>
+<pre><span class="ansi-yellow-fg ansi-bold">┌ </span><span class="ansi-yellow-fg ansi-bold">Warning: </span>Found `resolution` in the theme when creating a `Scene`. The `resolution` keyword for `Scene`s and `Figure`s has been deprecated. Use `Figure(; size = ...` or `Scene(; size = ...)` instead, which better reflects that this is a unitless size and not a pixel resolution. The key could also come from `set_theme!` calls or related theming functions.
+
+<span class="ansi-yellow-fg ansi-bold">└ </span><span class="ansi-bright-black-fg">@ Makie ~/.julia/packages/Makie/FUAHr/src/scenes.jl:238</span>
+</pre>
 </div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> <span class="fu">rand</span>(<span class="fl">70</span>, <span class="fl">40</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> <span class="fu">bbox</span>(<span class="fl">70</span>, <span class="fl">15</span>, <span class="fl">140</span>, <span class="fl">55</span>) <span class="co"># China</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">rast</span>(A, b)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="ansi-escaped-output">
-<pre><span class="ansi-blue-fg">SpatRaster{Float64}: </span><span style="text-decoration:underline" class="ansi-green-fg">Raster</span>
-  A        : Matrix{Float64} | (70, 40) | <span style="font-weight:bold;text-decoration:underline" class="ansi-blue-fg">0.02 Mb</span>
-  b        : bbox(70.0, 15.0, 140.0, 55.0)
-  cellsize : (1.0, 1.0)
-  lon, lat : 70.5:1.0:139.5, 54.5:-1.0:15.5
-  time     : nothing
-  bands    : nothing
-  nodata   : nothing</pre>
-</div>
-</section>
-<section id="subset" class="level2">
-<h2 class="anchored" data-anchor-id="subset">Subset</h2>
-<ul>
-<li><p><code>ra[i, j]</code> will automatically alter <code>lon</code>, <code>lat</code> and <code>bbox</code>. If both of <code>i</code> and <code>j</code> are integer, value of ra.A[i, j] will be retrieved.</p></li>
-<li><p><code>ra[i, j, k]</code> will additionally alter <code>bands</code>, and <code>time</code></p></li>
-</ul>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ra[<span class="fl">1</span>, <span class="fl">1</span>]</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>ra[<span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="ansi-escaped-output">
-<pre><span class="ansi-blue-fg">SpatRaster{Float64}: </span><span style="text-decoration:underline" class="ansi-green-fg">Raster</span>
-  A        : Array{Float64, 3} | (10, 10, 10) | <span style="font-weight:bold;text-decoration:underline" class="ansi-blue-fg">0.01 Mb</span>
-  b        : bbox(-180.0, 70.0, -160.0, 90.0)
-  cellsize : (2.0, 2.0)
-  lon, lat : -179.0:2.0:-161.0, 89.0:-2.0:71.0
-  time     : 2010-01-01 ~ 2010-01-10, ntime=10
-  bands    : nothing
-  nodata   : nothing</pre>
-</div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>ra[<span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="ansi-escaped-output">
-<pre><span class="ansi-blue-fg">SpatRaster{Float64}: </span><span style="text-decoration:underline" class="ansi-green-fg">Raster</span>
-  A        : Array{Float64, 3} | (10, 10, 2) | <span style="font-weight:bold;text-decoration:underline" class="ansi-blue-fg">0.0 Mb</span>
-  b        : bbox(-180.0, 70.0, -160.0, 90.0)
-  cellsize : (2.0, 2.0)
-  lon, lat : -179.0:2.0:-161.0, 89.0:-2.0:71.0
-  time     : 2010-01-01 ~ 2010-01-02, ntime=2
-  bands    : nothing
-  nodata   : nothing</pre>
-</div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ra[<span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="ansi-escaped-output">
-<pre><span class="ansi-blue-fg">SpatRaster{Float64}: </span><span style="text-decoration:underline" class="ansi-green-fg">Raster</span>
-  A        : Array{Float64, 3} | (10, 10, 1) | <span style="font-weight:bold;text-decoration:underline" class="ansi-blue-fg">0.0 Mb</span>
-  b        : bbox(-180.0, 70.0, -160.0, 90.0)
-  cellsize : (2.0, 2.0)
-  lon, lat : -179.0:2.0:-161.0, 89.0:-2.0:71.0
-  time     : 2010-01-01 ~ 2010-01-01, ntime=1
-  bands    : nothing
-  nodata   : nothing</pre>
-</div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ra[<span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="ansi-escaped-output">
-<pre><span class="ansi-blue-fg">SpatRaster{Float64}: </span><span style="text-decoration:underline" class="ansi-green-fg">Raster</span>
-  A        : Matrix{Float64} | (10, 10) | <span style="font-weight:bold;text-decoration:underline" class="ansi-blue-fg">0.0 Mb</span>
-  b        : bbox(-180.0, 70.0, -160.0, 90.0)
-  cellsize : (2.0, 2.0)
-  lon, lat : -179.0:2.0:-161.0, 89.0:-2.0:71.0
-  time     : 2010-01-01 ~ 2010-01-01, ntime=1
-  bands    : nothing
-  nodata   : nothing</pre>
-</div>
+<p><img src="1-SpatRaster_files/figure-html/cell-4-output-2.svg" class="img-fluid"></p>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Ipaper</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dir</span>(<span class="st">"../"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>9-element Vector{String}:
+ "../.quarto"
+ "../_static"
+ "../api"
+ "../site_libs"
+ "../.gitignore"
+ "../_quarto.yml"
+ "../index.html"
+ "../index.md"
+ "../references.bib"</code></pre>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dir</span>(<span class="st">"../.."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>8-element Vector{String}:
+ "../../build"
+ "../../image"
+ "../../src"
+ "../../.gitignore"
+ "../../Manifest.toml"
+ "../../Project.toml"
+ "../../build.ps1"
+ "../../make.jl"</code></pre>
 
 
 </section>
