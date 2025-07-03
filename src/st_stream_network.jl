@@ -74,7 +74,7 @@ function st_stream_network!(rg::RiverGraph, pours; min_sto=5)
 
   net_node = stream_network(info_node)           # 河网结构
   show_NetNode(net_node, info_node, info_pour)
-  (; ra_basin, net_node, info_node)
+  (; ra_basin, info_node, net_node)
 end
 
 export st_stream_network!, stream_network

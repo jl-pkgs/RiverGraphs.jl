@@ -1,8 +1,6 @@
-using Shapefile, DataFrames
-using RiverGraphs
-using SpatRasters, ArchGDAL
+using RiverGraphs, SpatRasters, ArchGDAL, Shapefile
 using GLMakie, MakieLayers
-
+using SpatRasters: write_gdal
 include("main_vis.jl")
 
 pour = Shapefile.Table("data/shp/Pour_十堰_sp8.shp")

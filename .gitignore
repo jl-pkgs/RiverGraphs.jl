@@ -8,3 +8,5 @@ Manifest.toml
 
 *.tif
 *debug*
+
+Project_*

@@ -111,52 +111,9 @@ function get_coord(inds::Vector{CartesianIndex{2}})
 end
 get_coord(lgl::BitArray) = get_coord(findall(lgl))
 
-function getInfo_links(ra_link::SpatRaster)
-  A = ra_link.A
-  lon, lat = st_dims(ra_link)
-
-  ilon, ilat = get_coord(A .!= 0)
-  vals = filter(x -> x != 0, A)
-  DataFrame(; lon=lon[ilon], lat=lat[ilat], link=vals)
-  # inds = g.index_rev[con][:]
-  # DataFrame(; lon=g.lon[xs], lat=g.lat[ys], link=vals, index=inds)
-end
-
 
 export find_pits, move2next, add_links!
-export stream_link, getInfo_links
+export stream_link
 export point2index,
   index2link, index2point,
   link2index, link2point
-
-
-# function findnear(x::Real, vals::AbstractVector; cell::Real=NaN, tol=1e-2)
-#   diff = abs.(vals .- x)
-#   i = argmin(diff)
-#   isnan(cell) && return i
-#   diff[i] <= (0.5 + tol) * abs(cell) ? i : -1 # 在1个网格内, 0.51 cell
-# end
-
-# # cellsize需要是准确的
-# function findnear((x, y)::Tuple{Real,Real}, lon::AbstractVector, lat::AbstractVector;
-#   cellx::Real=NaN, celly::Real=NaN, tol=1e-2)
-
-#   i = findnear(x, lon; cell=cellx, tol)
-#   j = findnear(y, lat; cell=celly, tol)
-#   (i == -1 || j == -1) && (return nothing) # 查找失败
-#   return i, j
-# end
-
-# findnear(x::Real, y::Real, lon::AbstractVector, lat::AbstractVector; cellx::Real=NaN, celly::Real=NaN, tol=1e-2) =
-#   findnear((x, y), lon, lat; cellx, celly, tol)
-
-# function st_location_exact2(lon::AbstractVector, lat::AbstractVector, points::Vector{Tuple{T,T}};
-#   rm_empty::Bool=false, cellsize=nothing, tol=1e-2) where {T<:Real}
-#   isnothing(cellsize) && (cellsize = st_cellsize(lon, lat))
-#   cellx, celly = cellsize
-
-#   locs = map(p -> findnear(p, lon, lat; cellx, celly, tol), points)
-#   return rm_empty ? _rm_empty(locs) : locs
-# end
-
-# export st_location_exact2

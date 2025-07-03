@@ -20,30 +20,6 @@ function graph_children(net::SimpleDiGraph, v::Int)
   nodes => v
 end
 
-_find_outlet(net::SimpleDiGraph) = topological_sort_by_dfs(net)[end] ## 多个节点的时候，该方法会出错
-
-function Base.show(io::IO, net::SimpleDiGraph)
-  v = _find_outlet(net)
-  println(graph_children(net, v))
-end
-
-# 往上追溯一个网格，由于index_pit的流向未设置为0
-function find_outlet(net::SimpleDiGraph, toposort, strord; min_sto=2)
-  roots = Vector{Int}()
-  orders = Vector{Int}()
-
-  for from in toposort
-    to = outneighbors(net, from)
-    if isempty(to) && strord[from] > min_sto
-      node = inneighbors(net, from) |> only
-      push!(roots, node)
-      push!(orders, strord[node])
-      # push!(roots, from)
-      # push!(orders, strord[from])
-    end
-  end
-  DataFrame(; node=roots, stream_order=orders)
-end
 
 # 其他函数调用时，需要知道数据类型，因此此处保留了{FT}
 @with_kw mutable struct RiverGraph{FT}
@@ -162,3 +138,38 @@ end
 isscalar(x) = !isa(x, AbstractArray)
 isscalar(::Nothing) = false
 # export isscalar
+
+
+## find outlet
+_find_outlet(net::SimpleDiGraph) = topological_sort_by_dfs(net)[end] ## 多个节点的时候，该方法会出错
+
+function Base.show(io::IO, net::SimpleDiGraph)
+  v = _find_outlet(net)
+  println(graph_children(net, v))
+end
+
+# 往上追溯一个网格，由于index_pit的流向未设置为0
+function find_outlet(net::SimpleDiGraph, toposort, strord; min_sto=2)
+  nodes = Vector{Int}()
+  orders = Vector{Int}()
+
+  for node in toposort
+    node_to = outneighbors(net, node)
+    if isempty(node_to) && strord[node] > min_sto
+      # node_in = inneighbors(net, node) |> only
+      # _node = node_in
+      _node = node
+      push!(nodes, _node)
+      push!(orders, strord[_node])
+    end
+  end
+  nodes, orders
+  # DataFrame(; node=nodes, stream_order=)
+end
+
+function find_outlet(rg::RiverGraph; min_sto=2)
+  (; graph, toposort, strord, links) = rg
+  nodes, orders = find_outlet(graph, toposort, strord; min_sto)
+  # index = indexin(nodes, toposort)
+  DataFrame(; index=nodes, strord=orders, link=links[nodes])
+end

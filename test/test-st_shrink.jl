@@ -1,4 +1,4 @@
-using SpatRasters, ArchGDAL, DataFrames, RiverGraphs, Test
+using SpatRasters, ArchGDAL, RiverGraphs, Test
 using Shapefile
 
 @testset "st_shrink" begin

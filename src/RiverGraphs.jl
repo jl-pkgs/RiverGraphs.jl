@@ -2,6 +2,7 @@ module RiverGraphs
 
 
 using Graphs, Parameters, DataFrames
+using Printf
 import SpatRasters: st_dims
 import RTableTools: cbind
 
@@ -33,6 +34,7 @@ const path_flowdir_GuanShan = abspath("$(@__DIR__)/../data/GuanShan_flwdir.tif")
 
 export path_flowdir_GuanShan
 export nv # from Graphs
+export DataFrame, nrow
 
 
 end # module RiverGraphs
