@@ -462,6 +462,7 @@ window.onload = function () {
   <li><a href="#dataframe" id="toc-dataframe" class="nav-link active" data-scroll-target="#dataframe"><code>DataFrame</code></a></li>
   <li><a href="#rivergraph" id="toc-rivergraph" class="nav-link" data-scroll-target="#rivergraph"><code>RiverGraph</code></a></li>
   <li><a href="#rivergraphs" id="toc-rivergraphs" class="nav-link" data-scroll-target="#rivergraphs"><code>RiverGraphs</code></a></li>
+  <li><a href="#simpledigraph" id="toc-simpledigraph" class="nav-link" data-scroll-target="#simpledigraph"><code>SimpleDiGraph</code></a></li>
   <li><a href="#active_indices" id="toc-active_indices" class="nav-link" data-scroll-target="#active_indices"><code>active_indices</code></a></li>
   <li><a href="#add_links" id="toc-add_links" class="nav-link" data-scroll-target="#add_links"><code>add_links!</code></a></li>
   <li><a href="#earth_dist" id="toc-earth_dist" class="nav-link" data-scroll-target="#earth_dist"><code>earth_dist</code></a></li>
@@ -679,7 +680,7 @@ julia&gt; DataFrame([1 0; 2 0], :auto) # matrix constructor
 <p>No docstring found for public module <code>RiverGraphs</code>.</p>
 <section id="public-names" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="public-names">Public names</h3>
-<p><code>DataFrame</code>, <code>RiverGraph</code>, <code>active_indices</code>, <code>add_links!</code>, <code>earth_dist</code>, <code>fillnodata_upbasin</code>, <code>fillnodata_upriver</code>, <code>find_outlet</code>, <code>find_pits</code>, <code>flow_path</code>, <code>get_coord</code>, <code>graph_children</code>, <code>graph_flow</code>, <code>index2link</code>, <code>index2point</code>, <code>kinwave_set_subdomains</code>, <code>link2index</code>, <code>link2point</code>, <code>link_flow2next</code>, <code>move2next</code>, <code>nrow</code>, <code>nv</code>, <code>path_flowdir_GuanShan</code>, <code>pcr_dir</code>, <code>percentage</code>, <code>point2index</code>, <code>read_flowdir</code>, <code>reverse_index</code>, <code>show_NetNode</code>, <code>st_length</code>, <code>st_shrink</code>, <code>st_stream_network!</code>, <code>st_subbasins</code>, <code>st_watershed</code>, <code>stream_link</code>, <code>stream_network</code>, <code>stream_order</code>, <code>topological_sort_by_dfs</code>, <code>unlist</code>, <code>write_subbasins</code></p>
+<p><code>DataFrame</code>, <code>RiverGraph</code>, <code>SimpleDiGraph</code>, <code>active_indices</code>, <code>add_links!</code>, <code>earth_dist</code>, <code>fillnodata_upbasin</code>, <code>fillnodata_upriver</code>, <code>find_outlet</code>, <code>find_pits</code>, <code>flow_path</code>, <code>get_coord</code>, <code>graph_children</code>, <code>graph_flow</code>, <code>index2link</code>, <code>index2point</code>, <code>kinwave_set_subdomains</code>, <code>link2index</code>, <code>link2point</code>, <code>link_flow2next</code>, <code>move2next</code>, <code>nrow</code>, <code>nv</code>, <code>path_flowdir_GuanShan</code>, <code>pcr_dir</code>, <code>percentage</code>, <code>point2index</code>, <code>read_flowdir</code>, <code>reverse_index</code>, <code>show_NetNode</code>, <code>st_length</code>, <code>st_shrink</code>, <code>st_stream_network!</code>, <code>st_subbasins</code>, <code>st_watershed</code>, <code>stream_link</code>, <code>stream_network</code>, <code>stream_order</code>, <code>topological_sort_by_dfs</code>, <code>unlist</code>, <code>write_subbasins</code></p>
 </section>
 <section id="displaying-contents-of-readme-found-at-homerunnerworkrivergraphs.jlrivergraphs.jlreadme.md" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="displaying-contents-of-readme-found-at-homerunnerworkrivergraphs.jlrivergraphs.jlreadme.md">Displaying contents of readme found at <code>/home/runner/work/RiverGraphs.jl/RiverGraphs.jl/README.md</code></h3>
@@ -725,6 +726,125 @@ julia&gt; DataFrame([1 0; 2 0], :auto) # matrix constructor
 <span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>  <span class="fl">10</span> │    <span class="fl">48</span>     <span class="fl">38</span>  <span class="fl">110.898</span>  <span class="fl">32.4062</span>      <span class="fl">2</span>   <span class="fl">1444</span></span>
 <span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>  <span class="fl">11</span> │    <span class="fl">55</span>     <span class="fl">47</span>  <span class="fl">110.927</span>  <span class="fl">32.4437</span>      <span class="fl">1</span>   <span class="fl">1776</span></span>
 <span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>  <span class="fl">12</span> │    <span class="fl">55</span>     <span class="fl">50</span>  <span class="fl">110.927</span>  <span class="fl">32.4562</span>     <span class="fl">12</span>   <span class="fl">1823</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="simpledigraph" class="level2">
+<h2 class="anchored" data-anchor-id="simpledigraph"><code>SimpleDiGraph</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<pre><code>SimpleDiGraph{T}</code></pre>
+<p>A type representing a directed graph.</p>
+<pre><code>SimpleDiGraph{T}(n=0)</code></pre>
+<p>Construct a <code>SimpleDiGraph{T}</code> with <code>n</code> vertices and 0 edges. If not specified, the element type <code>T</code> is the type of <code>n</code>.</p>
+<section id="examples-1" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="examples-1">Examples</h4>
+<pre class="jldoctest"><code>julia&gt; using Graphs
+
+julia&gt; SimpleDiGraph(UInt8(10))
+{10, 0} directed simple UInt8 graph</code></pre>
+<pre><code>SimpleDiGraph(::Type{T})</code></pre>
+<p>Construct an empty <code>SimpleDiGraph{T}</code> with 0 vertices and 0 edges.</p>
+</section>
+<section id="examples-2" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="examples-2">Examples</h4>
+<pre class="jldoctest"><code>julia&gt; using Graphs
+
+julia&gt; SimpleDiGraph(UInt8)
+{0, 0} directed simple UInt8 graph</code></pre>
+<pre><code>SimpleDiGraph{T}(adjm::AbstractMatrix)</code></pre>
+<p>Construct a <code>SimpleDiGraph{T}</code> from the adjacency matrix <code>adjm</code>. If <code>adjm[i][j] != 0</code>, an edge <code>(i, j)</code> is inserted. <code>adjm</code> must be a square matrix. The element type <code>T</code> can be omitted.</p>
+</section>
+<section id="examples-3" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="examples-3">Examples</h4>
+<pre class="jldoctest"><code>julia&gt; using Graphs
+
+julia&gt; A1 = [false true; false false]
+2×2 Matrix{Bool}:
+ 0  1
+ 0  0
+
+julia&gt; SimpleDiGraph(A1)
+{2, 1} directed simple Int64 graph
+
+julia&gt; A2 = [2 7; 5 0]
+2×2 Matrix{Int64}:
+ 2  7
+ 5  0
+
+julia&gt; SimpleDiGraph{Int16}(A2)
+{2, 3} directed simple Int16 graph</code></pre>
+<pre><code>SimpleDiGraph{T}(g::SimpleDiGraph)</code></pre>
+<p>Construct a copy of g. If the element type <code>T</code> is specified, the vertices of <code>g</code> are converted to this type. Otherwise the element type is the same as for <code>g</code>.</p>
+</section>
+<section id="examples-4" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="examples-4">Examples</h4>
+<pre class="jldoctest"><code>julia&gt; using Graphs
+
+julia&gt; g = complete_digraph(5)
+{5, 20} directed simple Int64 graph
+
+julia&gt; SimpleDiGraph{UInt8}(g)
+{5, 20} directed simple UInt8 graph</code></pre>
+<pre><code>SimpleDiGraph(g::AbstractSimpleGraph)</code></pre>
+<p>Construct an directed <code>SimpleDiGraph</code> from a graph <code>g</code>. The element type is the same as for <code>g</code>.</p>
+</section>
+<section id="examples-5" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="examples-5">Examples</h4>
+<pre class="jldoctest"><code>julia&gt; using Graphs
+
+julia&gt; g = path_graph(Int8(5))
+{5, 4} undirected simple Int8 graph
+
+julia&gt; SimpleDiGraph(g)
+{5, 8} directed simple Int8 graph</code></pre>
+<pre><code>SimpleDiGraph(edge_list::Vector)</code></pre>
+<p>Construct a <code>SimpleDiGraph</code> from a vector of edges. The element type is taken from the edges in <code>edge_list</code>. The number of vertices is the highest that is used in an edge in <code>edge_list</code>.</p>
+<section id="implementation-notes" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="implementation-notes">Implementation Notes</h5>
+<p>This constructor works the fastest when <code>edge_list</code> is sorted by the lexical ordering and does not contain any duplicates.</p>
+</section>
+<section id="see-also" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="see-also">See also</h5>
+<p><a href="#SimpleDiGraphFromIterator"><code>SimpleDiGraphFromIterator</code></a></p>
+</section>
+</section>
+<section id="examples-6" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="examples-6">Examples</h4>
+<pre class="jldoctest"><code>julia&gt; using Graphs
+
+julia&gt; el = Edge.([ (1, 3), (1, 5), (3, 1) ])
+3-element Vector{Graphs.SimpleGraphs.SimpleEdge{Int64}}:
+ Edge 1 =&gt; 3
+ Edge 1 =&gt; 5
+ Edge 3 =&gt; 1
+ 
+julia&gt; SimpleDiGraph(el)
+{5, 3} directed simple Int64 graph</code></pre>
+<pre><code>SimpleDiGraph{T}(g::AbstractGraph)
+SimpleDiGraph(g::AbstractGraph)</code></pre>
+<p>Construct a <code>SimpleDiGraph</code> from any <code>AbstractGraph</code> by enumerating edges.</p>
+<p>If <code>g</code> is undirected, both directed edges <code>(u, v)</code> and <code>(v, u)</code> are added if undirected edge <code>{u, v}</code> exists.</p>
+<pre><code>SimpleDiGraph{T}(nv, ne; rng=nothing, seed=nothing)</code></pre>
+<p>Construct a random <code>SimpleDiGraph{T}</code> with <code>nv</code> vertices and <code>ne</code> edges. The graph is sampled uniformly from all such graphs. If <code>seed &gt;= 0</code>, a random generator is seeded with this value. If not specified, the element type <code>T</code> is the type of <code>nv</code>.</p>
+<section id="see-also-1" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="see-also-1">See also</h5>
+<p><a href="#erdos_renyi"><code>erdos_renyi</code></a></p>
+</section>
+</section>
+<section id="examples-7" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="examples-7">Examples</h4>
+<pre class="jldoctest"><code>julia&gt; using Graphs
+
+julia&gt; SimpleDiGraph(5, 7)
+{5, 7} directed simple Int64 graph</code></pre>
 </section>
 </div>
 </div>
@@ -830,7 +950,7 @@ julia&gt; DataFrame([1 0; 2 0], :auto) # matrix constructor
 <pre><code># 2 methods for generic function "find_outlet" from RiverGraphs:
  [1] find_outlet(rg::RiverGraph; min_sto)
      @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/RiverGraph.jl:193
- [2] find_outlet(net::Graphs.SimpleGraphs.SimpleDiGraph, toposort, strord; min_sto)
+ [2] find_outlet(net::SimpleDiGraph, toposort, strord; min_sto)
      @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/RiverGraph.jl:175</code></pre>
 </div>
 </div>
@@ -904,8 +1024,8 @@ julia&gt; DataFrame([1 0; 2 0], :auto) # matrix constructor
 </div>
 <div class="callout-body-container">
 <pre><code>graph_children(net, v)</code></pre>
-<div class="sourceCode" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">graph_children</span>(net, <span class="fl">12</span>)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="dt">Any</span>[<span class="fl">1</span>, <span class="fl">2</span>, [<span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">7</span>] <span class="op">=&gt;</span> <span class="fl">8</span>, [<span class="fl">6</span>, <span class="fl">9</span>, <span class="fl">10</span>] <span class="op">=&gt;</span> <span class="fl">11</span>] <span class="op">=&gt;</span> <span class="fl">12</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">graph_children</span>(net, <span class="fl">12</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="dt">Any</span>[<span class="fl">1</span>, <span class="fl">2</span>, [<span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">7</span>] <span class="op">=&gt;</span> <span class="fl">8</span>, [<span class="fl">6</span>, <span class="fl">9</span>, <span class="fl">10</span>] <span class="op">=&gt;</span> <span class="fl">11</span>] <span class="op">=&gt;</span> <span class="fl">12</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </div>
@@ -1085,8 +1205,8 @@ julia&gt; DataFrame([1 0; 2 0], :auto) # matrix constructor
 <pre><code>nrow(df::AbstractDataFrame)</code></pre>
 <p>Return the number of rows in an <code>AbstractDataFrame</code> <code>df</code>.</p>
 <p>See also: <a href="#ncol"><code>ncol</code></a>, <a href="#size"><code>size</code></a>.</p>
-<section id="examples-1" class="level3 unnumbered">
-<h3 class="unnumbered anchored" data-anchor-id="examples-1">Examples</h3>
+<section id="examples-8" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="examples-8">Examples</h3>
 <pre class="jldoctest"><code>julia&gt; df = DataFrame(i=1:10, x=rand(10), y=rand(["a", "b", "c"], 10));
 
 julia&gt; nrow(df)
@@ -1107,8 +1227,8 @@ julia&gt; nrow(df)
 <div class="callout-body-container">
 <pre><code>nv(g)</code></pre>
 <p>Return the number of vertices in <code>g</code>.</p>
-<section id="examples-2" class="level3 unnumbered">
-<h3 class="unnumbered anchored" data-anchor-id="examples-2">Examples</h3>
+<section id="examples-9" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="examples-9">Examples</h3>
 <pre class="jldoctest"><code>julia&gt; using Graphs
 
 julia&gt; nv(SimpleGraph(3))
@@ -1345,9 +1465,9 @@ julia&gt; nv(SimpleGraph(3))
 </section>
 <section id="example" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="example">Example</h3>
-<div class="sourceCode" id="cb38"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> <span class="fu">read_flowdir</span>(f) <span class="co"># flowdir, image(A) should looks normal</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>rg <span class="op">=</span> <span class="fu">RiverGraph</span>(A)</span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>ra_basin <span class="op">=</span> <span class="fu">st_watershed</span>(rg; min_sto<span class="op">=</span><span class="fl">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> <span class="fu">read_flowdir</span>(f) <span class="co"># flowdir, image(A) should looks normal</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>rg <span class="op">=</span> <span class="fu">RiverGraph</span>(A)</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>ra_basin <span class="op">=</span> <span class="fu">st_watershed</span>(rg; min_sto<span class="op">=</span><span class="fl">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 </div>
 </div>
@@ -1380,14 +1500,14 @@ julia&gt; nv(SimpleGraph(3))
 <pre><code>stream_network(info_node::DataFrame)</code></pre>
 <section id="example-1" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="example-1">Example</h3>
-<div class="sourceCode" id="cb41"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>rg <span class="op">=</span> <span class="fu">RiverGraph</span>(f)</span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>min_sto <span class="op">=</span> <span class="fl">4</span></span>
-<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>strord <span class="op">=</span> <span class="fu">stream_order</span>(rg)</span>
-<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>links <span class="op">=</span> <span class="fu">stream_link</span>(rg, strord; min_sto)</span>
-<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>river, info_node <span class="op">=</span> <span class="fu">fillnodata_upriver</span>(rg, links, strord; min_sto, nodata<span class="op">=</span><span class="fl">0</span>)</span>
-<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="fu">stream_network</span>(info_node)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb57"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>rg <span class="op">=</span> <span class="fu">RiverGraph</span>(f)</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>min_sto <span class="op">=</span> <span class="fl">4</span></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>strord <span class="op">=</span> <span class="fu">stream_order</span>(rg)</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>links <span class="op">=</span> <span class="fu">stream_link</span>(rg, strord; min_sto)</span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>river, info_node <span class="op">=</span> <span class="fu">fillnodata_upriver</span>(rg, links, strord; min_sto, nodata<span class="op">=</span><span class="fl">0</span>)</span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a><span class="fu">stream_network</span>(info_node)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 </div>
 </div>
