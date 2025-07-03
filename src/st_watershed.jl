@@ -60,6 +60,7 @@ end
 """
 function write_subbasins(rg::RiverGraph, info_node::DataFrame, pours::DataFrame;
   outdir="./OUTPUT")
+  !isdir(outdir) && mkpath(outdir)
 
   sites = pours.name
   points = st_points(pours)
