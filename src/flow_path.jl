@@ -5,7 +5,7 @@ function river_length(river_nodes; lon, lat)
 end
 
 # 找到两点之间的路径
-function flow_path(g::RiverGraph, from::Int, to::Int, streamorder;
+function flow_path(rg::RiverGraph, from::Int, to::Int, streamorder;
   level::Int=2, min_sto=nothing)
   min_sto = get_MinSto(streamorder; level, min_sto)
 
@@ -14,7 +14,7 @@ function flow_path(g::RiverGraph, from::Int, to::Int, streamorder;
 
   iter = 0
   while true
-    id_to = outneighbors(g.graph, id_from)
+    id_to = outneighbors(rg.graph, id_from)
     iter += 1
     if !isempty(id_to)
       id_to = only(id_to)
@@ -32,21 +32,20 @@ function flow_path(g::RiverGraph, from::Int, to::Int, streamorder;
   nodes
 end
 
-
-function flow_path(g::RiverGraph, info_node::DataFrame, streamorder;
+function flow_path(rg::RiverGraph, info_node::DataFrame, streamorder;
   level::Int=2, min_sto=nothing)
   min_sto = get_MinSto(streamorder; level, min_sto)
 
   index_g = []
   for i in 1:nrow(info_node)
     from, to = info_node[i, [:from, :to]]
-    inds = flow_path(g, from, to, streamorder; level, min_sto)
+    inds = flow_path(rg, from, to, streamorder; level, min_sto)
     push!(index_g, inds)
   end
   n_node = length.(index_g)
   # 河道上的点, 根据subbasins可以获取流域的点
-  index = map(I -> g.index[I], index_g)
-  len = river_length(index; lon=g.lon, lat=g.lat)
+  index = map(I -> rg.index[I], index_g)
+  len = river_length(index; lon=rg.lon, lat=rg.lat)
   cbind(info_node; length=len, n_node, index=index_g) # add `length`, `n_node`, `index`
 end
 

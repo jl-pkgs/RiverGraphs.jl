@@ -16,7 +16,7 @@ rg = RiverGraph("$INDIR//data/十堰_500m_flowdir.tif")
 end
 
 @testset "st_stream_network" begin
-  r = st_stream_network(rg, pours; min_sto=5)
+  r = st_stream_network!(rg, pours; min_sto=5)
   display(r)
   @test nrow(r.info_node) == 23
 end

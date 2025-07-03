@@ -52,7 +52,7 @@ function show_NetNode(net, info_node::DataFrame, info_pour::DataFrame)
 end
 
 
-function st_stream_network(rg::RiverGraph, pours; min_sto=5)
+function st_stream_network!(rg::RiverGraph, pours; min_sto=5)
   sites = pours.name
   points = st_points(pours)
 
@@ -61,18 +61,21 @@ function st_stream_network(rg::RiverGraph, pours; min_sto=5)
 
   strord = stream_order(rg)
   links = stream_link(rg, strord; min_sto)
-  points_link = link2point(rg, links)
-  
+  # points_link = link2point(rg, links)
+
   add_links!(links, index_pit)
   ra_basin = fillnodata_upbasin(rg, links; nodata=0)
 
   river, info_node = fillnodata_upriver(rg, links, strord; min_sto, nodata=0)
-  flow_path(rg, info_node, strord; min_sto) # add a depth argument to `info_node`
+
+  rg.strord .= strord
+  rg.links .= links
+  rg.river .= river
 
   net_node = stream_network(info_node)           # 河网结构
   show_NetNode(net_node, info_node, info_pour)
-  (; ra_basin, links, strord, river, net_node, info_node)
+  (; ra_basin, net_node, info_node)
 end
 
-export st_stream_network, stream_network
+export st_stream_network!, stream_network
 export show_NetNode

@@ -6,7 +6,7 @@ import SpatRasters: st_location_exact
 Return stream_link with a unique id starting at 1, based on a minimum streamorder `min_sto`,
 directed acyclic graph `g` and topological order `toposort`.
 """
-function stream_link(g, toposort, streamorder; level::Int=2, min_sto=nothing)
+function stream_link(g::SimpleDiGraph, toposort, streamorder; level::Int=2, min_sto=nothing)
   min_sto = get_MinSto(streamorder; level, min_sto)
   n = length(toposort)
   links = fill(0, n)
@@ -30,15 +30,18 @@ function stream_link(g, toposort, streamorder; level::Int=2, min_sto=nothing)
   return links
 end
 
-stream_link(g::RiverGraph, strord; level::Int=2, min_sto=nothing) =
-  stream_link(g.graph, g.toposort, strord; level, min_sto)
+function stream_link(rg::RiverGraph, strord; level::Int=2, min_sto=nothing)
+  rg.links .= stream_link(rg.graph, rg.toposort, strord; level, min_sto)
+  rg.links
+end
 
 
 link2index(links::AbstractVector) = findall(links .!== 0)
 
-function link2point(rg::RiverGraph, links::AbstractVector)
+function link2point(rg::RiverGraph, links::AbstractVector=rg.links)
   inds = link2index(links)
-  index2point(rg, inds)
+  points = index2point(rg, inds)
+  DataFrame(; link=links[inds], geometry=points)
 end
 
 function index2link(rg::RiverGraph, index::AbstractVector)
@@ -108,17 +111,16 @@ function get_coord(inds::Vector{CartesianIndex{2}})
 end
 get_coord(lgl::BitArray) = get_coord(findall(lgl))
 
-function getInfo_links(g::RiverGraph, links_2d)
-  con = links_2d .!= 0
-  xs, ys = get_coord(con)
-  vals = filter(x -> x != 0, links_2d)
+function getInfo_links(ra_link::SpatRaster)
+  A = ra_link.A
+  lon, lat = st_dims(ra_link)
 
-  inds = g.index_rev[con][:]
-  DataFrame(; x=xs, y=ys,
-    lon=g.lon[xs], lat=g.lat[ys],
-    link=vals, index=inds)
+  ilon, ilat = get_coord(A .!= 0)
+  vals = filter(x -> x != 0, A)
+  DataFrame(; lon=lon[ilon], lat=lat[ilat], link=vals)
+  # inds = g.index_rev[con][:]
+  # DataFrame(; lon=g.lon[xs], lat=g.lat[ys], link=vals, index=inds)
 end
-
 
 
 export find_pits, move2next, add_links!

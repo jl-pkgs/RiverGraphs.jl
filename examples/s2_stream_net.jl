@@ -7,19 +7,8 @@ sites = pours.name
 points = st_points(pours)
 
 rg = RiverGraph("./data/十堰_500m_flowdir.tif")
-(; lon, lat) = rg
-points_next = move2next(rg, points)
-
-# point2index -> index2point -> 
-@testset "point2index" begin
-  points_bak = index2point(rg, point2index(rg, points_next))
-  @test point2index(rg, points_next) == point2index(rg, points_bak)
-  @test find_pits(rg, points) == point2index(rg, points_next)
-end
-
-r = st_stream_network(rg, pours; min_sto=5)
+r = st_stream_network!(rg, pours; min_sto=5)
 plot(r.net_node)
-# plot(r.net)
 
 ## TODO: 为links和points添加编号ID
 # 孤山     : [9, 10] => 12
@@ -33,15 +22,15 @@ unlist(r)
 
 # "松柏（二）", "八亩地": 河道结构较为简单, `min_sto = 5`时无法检测到
 # _pours = find_outlet(g.graph, g.toposort, strord; min_sto=2) # dead points
-include("main_vis.jl")
 
+## Visualization ===============================================================
 begin
-  ra_order = SpatRaster(rg, r.strord)
-  ra_link = SpatRaster(rg, r.links)
-  info_link = getInfo_links(rg, ra_link.A)
+  ra_order = SpatRaster(rg, rg.strord)
+  ra_link = SpatRaster(rg, rg.links)
+  info_link = link2point(rg)
 
   fig = Figure(; size=(1600, 600) .* 1)
-  plot_discrete!(fig[1, 1], ra_basin; title="BasinId", fun_axis=rm_ticks!)
+  plot_discrete!(fig[1, 1], r.ra_basin; title="BasinId", fun_axis=rm_ticks!)
 
   ax, plt = plot_discrete!(fig[1, 2], ra_order; title="Stream Order", fun_axis=rm_ticks!, nodata=1)
   plot_links!(ax, info_link)

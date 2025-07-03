@@ -14,7 +14,6 @@ using RiverGraphs, Test
   ra_basin = fillnodata_upbasin(rg, links; nodata=0)
   
   river, info_node = fillnodata_upriver(rg, links, strord; level, nodata=0)
-  flow_path(rg, info_node, strord; level)
 
   # index is the index of `topo_subbas`
   subbas_order, indices_subbas, topo_subbas =

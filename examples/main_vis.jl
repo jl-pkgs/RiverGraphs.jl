@@ -73,6 +73,8 @@ end
 
 
 function plot_links!(ax, info_link)
-  scatter!(ax, info_link.lon, info_link.lat; color=:black) # colormap not work
-  text!(ax, info_link.lon, info_link.lat, text=string.(info_link.link))
+  points = info_link.geometry
+  link = info_link.link
+  scatter!(ax, points; color=:black) # colormap not work
+  text!(ax, points, text=string.(link))
 end

@@ -47,9 +47,16 @@ end
 
 # 其他函数调用时，需要知道数据类型，因此此处保留了{FT}
 @with_kw mutable struct RiverGraph{FT}
-  data::AbstractArray{FT} # 也可以是数组
+  ngrid::Int
   graph::AbstractGraph
-  toposort::Vector{Int}
+
+  toposort::Vector{Int} = 1:ngrid
+  data::AbstractArray{FT} = zeros(FT, ngrid)# 也可以是数组
+  strord::Vector{Int} = zeros(Int, ngrid)
+  links::Vector{Int} = zeros(Int, ngrid)
+  river::Vector{Int} = zeros(Int, ngrid)
+  basins::Vector{Int} = zeros(Int, ngrid)
+
   names::Union{Vector{FT},Nothing} = nothing # 变量名
   index::Vector{CartesianIndex{2}}
   index_rev::Matrix{Int}
@@ -58,9 +65,10 @@ end
   nodata::FT = FT(0)
 end
 
-function RiverGraph(data::AbstractArray{FT}, g::RiverGraph) where {FT}
-  (; graph, toposort, names, index, index_rev, nodata, lon, lat) = g
-  RiverGraph{FT}(; graph, toposort, names, data, index, index_rev, nodata, lon, lat)
+function RiverGraph(data::AbstractArray{FT}, rg::RiverGraph) where {FT}
+  (; graph, toposort, names, index, index_rev, nodata, lon, lat) = rg
+  ngrid = length(toposort)
+  RiverGraph{FT}(; ngrid, graph, toposort, data, names, index, index_rev, nodata, lon, lat)
 end
 
 
@@ -75,7 +83,8 @@ function RiverGraph(A::AbstractMatrix{FT}; nodata=FT(0), kw...) where {FT}
 
   graph = graph_flow(ldd, index, pcr_dir)
   toposort = topological_sort_by_dfs(graph)
-  RiverGraph(; graph, toposort, data=ldd, nodata, index, index_rev, kw...)
+  ngrid = length(toposort)
+  RiverGraph(; ngrid, graph, toposort, data=ldd, nodata, index, index_rev, kw...)
 end
 
 
@@ -129,7 +138,6 @@ function graph_flow(ldd::AbstractVector, inds::AbstractVector, pcr_dir::Abstract
 end
 
 # isvalid_flowdir()
-
 
 function Base.Matrix(g::RiverGraph, v::AbstractVector{T}, nodata::T=T(0)) where {T}
   reverse_index(v, g.index, g.index_rev; nodata)
