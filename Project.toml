@@ -14,10 +14,6 @@ SpatRasters = "25a4c9b9-c310-4d6e-b9a7-fa79274760a1"
 ArchGDAL = "c9ce4bd3-c3d5-55b8-8973-c0e20141b8c3"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
-[extras]
-ArchGDAL = "c9ce4bd3-c3d5-55b8-8973-c0e20141b8c3"
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-
 [sources]
 SpatRasters = {url = "https://github.com/jl-pkgs/SpatRasters.jl"}
 
@@ -26,7 +22,13 @@ DataFrames = "1.7.0"
 Graphs = "1.13.0"
 Parameters = "0.12.3"
 RTableTools = "0.1.4"
+Shapefile = "0.13.2"
 SpatRasters = "0.1.0"
 
+[extras]
+ArchGDAL = "c9ce4bd3-c3d5-55b8-8973-c0e20141b8c3"
+Shapefile = "8e980c4a-a4fe-5da2-b3a7-4b4b0353a2f4"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
 [targets]
-test = ["Test", "ArchGDAL"]
+test = ["Test", "ArchGDAL", "Shapefile"]

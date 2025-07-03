@@ -12,8 +12,9 @@ include("fillnodata_upriver.jl")
 
 include("flow_path.jl")
 include("st_watershed.jl")
-include("stream.jl")
+include("stream_order.jl")
 include("stream_link.jl")
+include("st_stream_network.jl")
 include("subdomains.jl")
 
 include("utils.jl")

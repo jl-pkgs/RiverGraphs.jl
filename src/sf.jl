@@ -1,5 +1,6 @@
 using SpatRasters: st_cellsize, bbox, st_bbox, bbox_overlap
 using SpatRasters: SpatRaster, rast
+import SpatRasters: bbox2dims, _zip
 
 # check manually
 function meshgrid(x, y)
@@ -86,14 +87,31 @@ function st_shrink(mask::BitMatrix, lon::AbstractVector, lat::AbstractVector;
   cellsize = st_cellsize(lon, lat)
 
   _b = st_bbox(lon[inds_x], lat[inds_y])
-  b = st_range(_b, cellsize_target)
-
-  ix, iy = bbox_overlap(b, box; cellsize, reverse_lat) # ix, iy
+  b = st_range(_b, cellsize_target)      # 范围稍大一些，要包括所有`b`
+  ix, iy = bbox_overlap2(b, box; cellsize, reverse_lat) # ix, iy
   _lon = lon[ix]
   _lat = lat[iy]
   (ix, iy), st_bbox(_lon, _lat)
 end
 # _lon, _lat, @view data[ix, iy]
+
+
+
+function bbox_overlap2(b::bbox, box::bbox; size=nothing, cellsize=nothing, reverse_lat=true, zip=true)
+  Lon, Lat = bbox2dims(box; size, cellsize, reverse_lat)
+
+  ilon = findall(b.xmin .< Lon .< b.xmax) |> _zip
+  ilat = findall(b.ymin .< Lat .< b.ymax) |> _zip
+
+  if zip
+    ilon = _zip(ilon)
+    ilat = _zip(ilat)
+  end
+  # lon, lat = bbox2dims(b; size, cellsize, reverse_lat)
+  # @assert length(lon) == length(ilon)
+  # @assert length(lat) == length(ilat)
+  ilon, ilat
+end
 
 
 export st_shrink

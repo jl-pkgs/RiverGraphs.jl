@@ -1,10 +1,6 @@
 includet("main_vis.jl")
 using SpatRasters, ArchGDAL, DataFrames, RiverGraphs, Test
 using Shapefile, DataFrames
-import SpatRasters: st_points
-
-st_points(geoms::Vector{Union{Missing,Shapefile.Point}}) = map(p -> (p.x, p.y), geoms)
-st_points(shp::DataFrame) = st_points(shp.geometry)
 
 pours = Shapefile.Table("data/shp/Pour_十堰_sp8.shp") |> DataFrame
 sites = pours.name
@@ -21,55 +17,11 @@ points_next = move2next(rg, points)
   @test find_pits(rg, points) == point2index(rg, points_next)
 end
 
-
-"""
- - `info_node`: returned by `fillnodata_upriver` and `flow_path`
- - `info_pour`: with the columns of `site` and `idnex_pit`.
-    + `index_pit`: returned by `find_pits`
-"""
-function show_net(net, info_node::DataFrame, info_pour::DataFrame)
-  (; index_pit) = info_pour
-  sites = info_pour.site
-
-  for (i, pit) in enumerate(index_pit)
-    node = info_node |> d -> d.value_next[d.to.==pit] |> unique
-    if !isempty(node)
-      r = graph_children(net, only(node))
-      println(sites[i], "\t : ", r)
-    end
-  end
-end
-
-
-function st_stream_network(rg::RiverGraph, pours; min_sto=5)
-  sites = pours.name
-  points = st_points(pours)
-
-  index_pit = find_pits(rg, points) # 这里是往下移动了一个网格
-  info_pour = DataFrame(; site=sites, index_pit)
-
-  strord = stream_order(rg)
-  links = stream_link(rg, strord; min_sto)
-  points_link = link2point(rg, links)
-
-  add_links!(links, index_pit)
-  ra_basin = fillnodata_upbasin(rg, links; nodata=0)
-
-  river, info_node = fillnodata_upriver(rg, links, strord; min_sto, nodata=0)
-  flow_path(rg, info_node, strord; min_sto) # add a depth argument to `info_node`
-  
-  net_node = stream_network(info_node)           # 河网结构
-  show_net(net_node, info_node, info_pour)
-  (; ra_basin, links, strord, river, net_node, info_node)
-end
-
 r = st_stream_network(rg, pours; min_sto=5)
 plot(r.net_node)
 # plot(r.net)
 
 ## TODO: 为links和points添加编号ID
-
-
 # 孤山     : [9, 10] => 12
 # 竹溪     : [8, 13] => 30
 # 延坝     : Any[11, [8, 13] => 30] => 14
@@ -81,12 +33,11 @@ unlist(r)
 
 # "松柏（二）", "八亩地": 河道结构较为简单, `min_sto = 5`时无法检测到
 # _pours = find_outlet(g.graph, g.toposort, strord; min_sto=2) # dead points
-ra_order = SpatRaster(rg, strord)
-ra_link = SpatRaster(rg, links)
-
 include("main_vis.jl")
 
 begin
+  ra_order = SpatRaster(rg, r.strord)
+  ra_link = SpatRaster(rg, r.links)
   info_link = getInfo_links(rg, ra_link.A)
 
   fig = Figure(; size=(1600, 600) .* 1)
