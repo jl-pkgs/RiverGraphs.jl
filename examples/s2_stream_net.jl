@@ -11,6 +11,7 @@ rg = RiverGraph("./data/十堰_500m_flowdir.tif")
 ra_basin, info_node, net_node = st_stream_network!(rg, pours; min_sto=5);
 
 plot(net_node)
+plot(ra_basin)
 plot(rg, ra_basin, net_node)
 
 outdir = "./Project_ShiYan/data/basins/"
@@ -25,8 +26,6 @@ write_subbasins(rg, info_node, pours; outdir)
 
 # write_gdal(ra, "Guanshan_subbasins.tif")
 # gdal_polygonize("Guanshan_subbasins.tif", "data/shp/Guanshan_subbasins.shp")
-plot(net)
-plot(_basin)
 
 ## subset basins
 ## TODO: 为links和points添加编号ID

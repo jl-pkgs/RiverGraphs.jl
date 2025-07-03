@@ -7,7 +7,7 @@
 
 > Dongdong Kong
 
-![](./docs/Figure1_孤山-河网结构_L3.png)
+![](./docs/image/Figure1_孤山-河网结构_L3.png)
 
 ```julia
 julia> info_node
