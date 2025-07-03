@@ -33,7 +33,7 @@ const path_flowdir_GuanShan = abspath("$(@__DIR__)/../data/GuanShan_flwdir.tif")
 
 
 export path_flowdir_GuanShan
-export nv # from Graphs
+export SimpleDiGraph, nv # from Graphs
 export DataFrame, nrow
 
 

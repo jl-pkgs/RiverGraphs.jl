@@ -1,7 +1,7 @@
 name = "RiverGraphs"
 uuid = "aa7e97f5-0372-4209-959a-d9291069df36"
 authors = ["Dongdong Kong <kongdd@users.noreply.github.com>"]
-version = "0.1.0"
+version = "0.1.1"
 
 [deps]
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"

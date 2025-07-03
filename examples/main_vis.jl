@@ -1,9 +1,8 @@
-using MakieLayers, GLMakie, Graphs, GraphMakie
-using Test
-using NaNStatistics
+using NaNStatistics, Test
 using SpatRasters, RiverGraphs
 import MakieLayers: imagesc, imagesc!
 import GraphMakie: plot, plot!
+using MakieLayers, GLMakie, GraphMakie
 
 # plot RiverGraph
 function plot(rg::RiverGraph, ra_basin, net_node; size=(1600, 600))
