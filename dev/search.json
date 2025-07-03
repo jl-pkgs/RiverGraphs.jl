@@ -1,0 +1,462 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "RiverGraphs",
+    "section": "",
+    "text": "RiverGraphs\n\n  \n\nDongdong Kong\n\n\njulia&gt; info_node\n11×7 DataFrame\n Row │ from   to     value  value_next  length    n_node  index                             \n     │ Int64  Int64  Int64  Int64       Float64   Int64   Array…\n─────┼──────────────────────────────────────────────────────────────────────────────────────\n   1 │  1034   1823     11          12  10.0556       19  [1034, 1098, 1166, 1237, 1310, 1…\n   2 │   577   1034     10          11   4.74237      10  [577, 622, 668, 715, 762, 810, 8…\n   3 │   576   1034      9          11   4.88558      10  [576, 622, 668, 715, 762, 810, 8…\n   4 │  1032   1823      8          12  10.0556       19  [1032, 1098, 1166, 1237, 1310, 1…\n   5 │   513   1032      7           8   9.40539      21  [513, 557, 558, 559, 560, 606, 6…\n   6 │   716   1034      6          11   3.74381       8  [716, 715, 762, 810, 860, 912, 9…\n   7 │   691   1032      5           8  11.4012       25  [691, 692, 645, 600, 556, 557, 5…\n   8 │   741   1032      4           8  11.6163       25  [741, 692, 645, 600, 556, 557, 5…\n   9 │  1026   1032      3           8   3.02616       8  [1026, 963, 964, 965, 966, 967, …\n  10 │  1444   1823      2          12   7.09458      14  [1444, 1443, 1500, 1551, 1597, 1…\n  11 │  1776   1823      1          12   1.67579       4  [1776, 1795, 1811, 1823]\n\njulia&gt; info_link\n12×6 DataFrame\n Row │ x      y      lon      lat      link   index \n     │ Int64  Int64  Float64  Float64  Int64  Int64 \n─────┼──────────────────────────────────────────────\n   1 │    27     22  110.81   32.3396      7    513\n   2 │    46     23  110.89   32.3437      9    576\n   3 │    47     23  110.894  32.3437     10    577\n   4 │    23     26  110.794  32.3562      5    691\n   5 │    48     26  110.898  32.3562      6    716\n   6 │    25     27  110.802  32.3604      4    741\n   7 │    37     32  110.852  32.3812      3   1026\n   8 │    43     32  110.877  32.3812      8   1032\n   9 │    45     32  110.885  32.3812     11   1034\n  10 │    48     38  110.898  32.4062      2   1444\n  11 │    55     47  110.927  32.4437      1   1776\n  12 │    55     50  110.927  32.4562     12   1823",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Overview</span>"
+    ]
+  },
+  {
+    "objectID": "api/1-SpatRaster.html",
+    "href": "api/1-SpatRaster.html",
+    "title": "1. SpatRaster",
+    "section": "",
+    "text": "SpatRaster\nSpatRaster is a simple spatial raster with WGS84 projection, abbreviated as rast.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>1. SpatRaster</span>"
+    ]
+  },
+  {
+    "objectID": "api/1-SpatRaster.html#construction",
+    "href": "api/1-SpatRaster.html#construction",
+    "title": "1. SpatRaster",
+    "section": "Construction",
+    "text": "Construction\nusing SpatRasters\nusing Dates\n\ndates = Date(2010, 1, 1):Day(1):Date(2010, 1, 10)\nntime = length(dates)\n\nra = rast(rand(180, 90, ntime); time=dates)\nra\n\nSpatRaster{Float64}: Raster\n  A        : Array{Float64, 3} | (180, 90, 10) | 1.24 Mb\n  b        : bbox(-180.0, -90.0, 180.0, 90.0)\n  cellsize : (2.0, 2.0)\n  lon, lat : -179.0:2.0:179.0, 89.0:-2.0:-89.0\n  time     : 2010-01-01 ~ 2010-01-10, ntime=10\n  bands    : nothing\n  nodata   : nothing\n\nA = rand(70, 40)\nb = bbox(70, 15, 140, 55) # China\nrast(A, b)\n\nSpatRaster{Float64}: Raster\n  A        : Matrix{Float64} | (70, 40) | 0.02 Mb\n  b        : bbox(70.0, 15.0, 140.0, 55.0)\n  cellsize : (1.0, 1.0)\n  lon, lat : 70.5:1.0:139.5, 54.5:-1.0:15.5\n  time     : nothing\n  bands    : nothing\n  nodata   : nothing",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>1. SpatRaster</span>"
+    ]
+  },
+  {
+    "objectID": "api/1-SpatRaster.html#subset",
+    "href": "api/1-SpatRaster.html#subset",
+    "title": "1. SpatRaster",
+    "section": "Subset",
+    "text": "Subset\n\nra[i, j] will automatically alter lon, lat and bbox. If both of i and j are integer, value of ra.A[i, j] will be retrieved.\nra[i, j, k] will additionally alter bands, and time\n\nra[1, 1]\nra[1:10, 1:10]\n\nSpatRaster{Float64}: Raster\n  A        : Array{Float64, 3} | (10, 10, 10) | 0.01 Mb\n  b        : bbox(-180.0, 70.0, -160.0, 90.0)\n  cellsize : (2.0, 2.0)\n  lon, lat : -179.0:2.0:-161.0, 89.0:-2.0:71.0\n  time     : 2010-01-01 ~ 2010-01-10, ntime=10\n  bands    : nothing\n  nodata   : nothing\n\nra[1:10, 1:10, 1:2]\n\nSpatRaster{Float64}: Raster\n  A        : Array{Float64, 3} | (10, 10, 2) | 0.0 Mb\n  b        : bbox(-180.0, 70.0, -160.0, 90.0)\n  cellsize : (2.0, 2.0)\n  lon, lat : -179.0:2.0:-161.0, 89.0:-2.0:71.0\n  time     : 2010-01-01 ~ 2010-01-02, ntime=2\n  bands    : nothing\n  nodata   : nothing\n\nra[1:10, 1:10, 1:1]\n\nSpatRaster{Float64}: Raster\n  A        : Array{Float64, 3} | (10, 10, 1) | 0.0 Mb\n  b        : bbox(-180.0, 70.0, -160.0, 90.0)\n  cellsize : (2.0, 2.0)\n  lon, lat : -179.0:2.0:-161.0, 89.0:-2.0:71.0\n  time     : 2010-01-01 ~ 2010-01-01, ntime=1\n  bands    : nothing\n  nodata   : nothing\n\nra[1:10, 1:10, 1]\n\nSpatRaster{Float64}: Raster\n  A        : Matrix{Float64} | (10, 10) | 0.0 Mb\n  b        : bbox(-180.0, 70.0, -160.0, 90.0)\n  cellsize : (2.0, 2.0)\n  lon, lat : -179.0:2.0:-161.0, 89.0:-2.0:71.0\n  time     : 2010-01-01 ~ 2010-01-01, ntime=1\n  bands    : nothing\n  nodata   : nothing",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>1. SpatRaster</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html",
+    "href": "api/z-index.html",
+    "title": "Reference",
+    "section": "",
+    "text": "DataFrame\nDocstrings for RiverGraphs.",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#dataframe",
+    "href": "api/z-index.html#dataframe",
+    "title": "Reference",
+    "section": "",
+    "text": "DataFrame &lt;: AbstractDataFrame\nAn AbstractDataFrame that stores a set of named columns.\nThe columns are normally AbstractVectors stored in memory, particularly a Vector, PooledVector or CategoricalVector.\n\nConstructors\nDataFrame(pairs::Pair...; makeunique::Bool=false, copycols::Bool=true)\nDataFrame(pairs::AbstractVector{&lt;:Pair}; makeunique::Bool=false, copycols::Bool=true)\nDataFrame(ds::AbstractDict; copycols::Bool=true)\nDataFrame(; kwargs..., copycols::Bool=true)\n\nDataFrame(table; copycols::Union{Bool, Nothing}=nothing)\nDataFrame(table, names::AbstractVector;\n          makeunique::Bool=false, copycols::Union{Bool, Nothing}=nothing)\nDataFrame(columns::AbstractVecOrMat, names::AbstractVector;\n          makeunique::Bool=false, copycols::Bool=true)\n\nDataFrame(::DataFrameRow; copycols::Bool=true)\nDataFrame(::GroupedDataFrame; copycols::Bool=true, keepkeys::Bool=true)\n\n\nKeyword arguments\n\ncopycols : whether vectors passed as columns should be copied; by default set to true and the vectors are copied; if set to false then the constructor will still copy the passed columns if it is not possible to construct a DataFrame without materializing new columns. Note the copycols=nothing default in the Tables.jl compatible constructor; it is provided as certain input table types may have already made a copy of columns or the columns may otherwise be immutable, in which case columns are not copied by default. To force a copy in such cases, or to get mutable columns from an immutable input table (like Arrow.Table), pass copycols=true explicitly.\nmakeunique : if false (the default), an error will be raised\n\n(note that not all constructors support these keyword arguments)\n\n\nDetails on behavior of different constructors\nIt is allowed to pass a vector of Pairs, a list of Pairs as positional arguments, or a list of keyword arguments. In this case each pair is considered to represent a column name to column value mapping and column name must be a Symbol or string. Alternatively a dictionary can be passed to the constructor in which case its entries are considered to define the column name and column value pairs. If the dictionary is a Dict then column names will be sorted in the returned DataFrame.\nIn all the constructors described above column value can be a vector which is consumed as is or an object of any other type (except AbstractArray). In the latter case the passed value is automatically repeated to fill a new vector of the appropriate length. As a particular rule values stored in a Ref or a 0-dimensional AbstractArray are unwrapped and treated in the same way.\nIt is also allowed to pass a vector of vectors or a matrix as as the first argument. In this case the second argument must be a vector of Symbols or strings specifying column names, or the symbol :auto to generate column names x1, x2, … automatically. Note that in this case if the first argument is a matrix and copycols=false the columns of the created DataFrame will be views of columns the source matrix.\nIf a single positional argument is passed to a DataFrame constructor then it is assumed to be of type that implements the Tables.jl interface using which the returned DataFrame is materialized.\nIf two positional arguments are passed, where the second argument is an AbstractVector, then the first argument is taken to be a table as described in the previous paragraph, and columns names of the resulting data frame are taken from the vector passed as the second positional argument.\nFinally it is allowed to construct a DataFrame from a DataFrameRow or a GroupedDataFrame. In the latter case the keepkeys keyword argument specifies whether the resulting DataFrame should contain the grouping columns of the passed GroupedDataFrame and the order of rows in the result follows the order of groups in the GroupedDataFrame passed.\n\n\nNotes\nThe DataFrame constructor by default copies all columns vectors passed to it. Pass the copycols=false keyword argument (where supported) to reuse vectors without copying them.\nBy default an error will be raised if duplicates in column names are found. Pass makeunique=true keyword argument (where supported) to accept duplicate names, in which case they will be suffixed with _i (i starting at 1 for the first duplicate).\nIf an AbstractRange is passed to a DataFrame constructor as a column it is always collected to a Vector (even if copycols=false). As a general rule AbstractRange values are always materialized to a Vector by all functions in DataFrames.jl before being stored in a DataFrame.\nDataFrame can store only columns that use 1-based indexing. Attempting to store a vector using non-standard indexing raises an error.\nThe DataFrame type is designed to allow column types to vary and to be dynamically changed also after it is constructed. Therefore DataFrames are not type stable. For performance-critical code that requires type-stability either use the functionality provided by select/transform/combine functions, use Tables.columntable and Tables.namedtupleiterator functions, use barrier functions, or provide type assertions to the variables that hold columns extracted from a DataFrame.\nMetadata: this function preserves all table and column-level metadata. As a special case if a GroupedDataFrame is passed then only :note-style metadata from parent of the GroupedDataFrame is preserved.\n\n\nExamples\njulia&gt; DataFrame((a=[1, 2], b=[3, 4])) # Tables.jl table constructor\n2×2 DataFrame\n Row │ a      b\n     │ Int64  Int64\n─────┼──────────────\n   1 │     1      3\n   2 │     2      4\n\njulia&gt; DataFrame([(a=1, b=0), (a=2, b=0)]) # Tables.jl table constructor\n2×2 DataFrame\n Row │ a      b\n     │ Int64  Int64\n─────┼──────────────\n   1 │     1      0\n   2 │     2      0\n\njulia&gt; DataFrame(\"a\" =&gt; 1:2, \"b\" =&gt; 0) # Pair constructor\n2×2 DataFrame\n Row │ a      b\n     │ Int64  Int64\n─────┼──────────────\n   1 │     1      0\n   2 │     2      0\n\njulia&gt; DataFrame([:a =&gt; 1:2, :b =&gt; 0]) # vector of Pairs constructor\n2×2 DataFrame\n Row │ a      b\n     │ Int64  Int64\n─────┼──────────────\n   1 │     1      0\n   2 │     2      0\n\njulia&gt; DataFrame(Dict(:a =&gt; 1:2, :b =&gt; 0)) # dictionary constructor\n2×2 DataFrame\n Row │ a      b\n     │ Int64  Int64\n─────┼──────────────\n   1 │     1      0\n   2 │     2      0\n\njulia&gt; DataFrame(a=1:2, b=0) # keyword argument constructor\n2×2 DataFrame\n Row │ a      b\n     │ Int64  Int64\n─────┼──────────────\n   1 │     1      0\n   2 │     2      0\n\njulia&gt; DataFrame([[1, 2], [0, 0]], [:a, :b]) # vector of vectors constructor\n2×2 DataFrame\n Row │ a      b\n     │ Int64  Int64\n─────┼──────────────\n   1 │     1      0\n   2 │     2      0\n\njulia&gt; DataFrame([1 0; 2 0], :auto) # matrix constructor\n2×2 DataFrame\n Row │ x1     x2\n     │ Int64  Int64\n─────┼──────────────\n   1 │     1      0\n   2 │     2      0",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#rivergraph",
+    "href": "api/z-index.html#rivergraph",
+    "title": "Reference",
+    "section": "RiverGraph",
+    "text": "RiverGraph\n\n\n\n\n\n\ninit a RiverGraph from flowdir matrix\n\nA: flowdir",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#rivergraphs",
+    "href": "api/z-index.html#rivergraphs",
+    "title": "Reference",
+    "section": "RiverGraphs",
+    "text": "RiverGraphs\n\n\n\n\n\n\nNo docstring found for public module RiverGraphs.\n\nPublic names\nDataFrame, RiverGraph, active_indices, add_links!, earth_dist, fillnodata_upbasin, fillnodata_upriver, find_outlet, find_pits, flow_path, get_coord, graph_children, graph_flow, index2link, index2point, kinwave_set_subdomains, link2index, link2point, link_flow2next, move2next, nrow, nv, path_flowdir_GuanShan, pcr_dir, percentage, point2index, read_flowdir, reverse_index, show_NetNode, st_length, st_shrink, st_stream_network!, st_subbasins, st_watershed, stream_link, stream_network, stream_order, topological_sort_by_dfs, unlist, write_subbasins\n\n\nDisplaying contents of readme found at /home/runner/work/RiverGraphs.jl/RiverGraphs.jl/README.md\n\n\nRiverGraphs\n&lt;!–  –&gt;   \n\nDongdong Kong\n\n\njulia&gt; info_node\n11×7 DataFrame\n Row │ from   to     value  value_next  length    n_node  index                             \n     │ Int64  Int64  Int64  Int64       Float64   Int64   Array…\n─────┼──────────────────────────────────────────────────────────────────────────────────────\n   1 │  1034   1823     11          12  10.0556       19  [1034, 1098, 1166, 1237, 1310, 1…\n   2 │   577   1034     10          11   4.74237      10  [577, 622, 668, 715, 762, 810, 8…\n   3 │   576   1034      9          11   4.88558      10  [576, 622, 668, 715, 762, 810, 8…\n   4 │  1032   1823      8          12  10.0556       19  [1032, 1098, 1166, 1237, 1310, 1…\n   5 │   513   1032      7           8   9.40539      21  [513, 557, 558, 559, 560, 606, 6…\n   6 │   716   1034      6          11   3.74381       8  [716, 715, 762, 810, 860, 912, 9…\n   7 │   691   1032      5           8  11.4012       25  [691, 692, 645, 600, 556, 557, 5…\n   8 │   741   1032      4           8  11.6163       25  [741, 692, 645, 600, 556, 557, 5…\n   9 │  1026   1032      3           8   3.02616       8  [1026, 963, 964, 965, 966, 967, …\n  10 │  1444   1823      2          12   7.09458      14  [1444, 1443, 1500, 1551, 1597, 1…\n  11 │  1776   1823      1          12   1.67579       4  [1776, 1795, 1811, 1823]\n\njulia&gt; info_link\n12×6 DataFrame\n Row │ x      y      lon      lat      link   index \n     │ Int64  Int64  Float64  Float64  Int64  Int64 \n─────┼──────────────────────────────────────────────\n   1 │    27     22  110.81   32.3396      7    513\n   2 │    46     23  110.89   32.3437      9    576\n   3 │    47     23  110.894  32.3437     10    577\n   4 │    23     26  110.794  32.3562      5    691\n   5 │    48     26  110.898  32.3562      6    716\n   6 │    25     27  110.802  32.3604      4    741\n   7 │    37     32  110.852  32.3812      3   1026\n   8 │    43     32  110.877  32.3812      8   1032\n   9 │    45     32  110.885  32.3812     11   1034\n  10 │    48     38  110.898  32.4062      2   1444\n  11 │    55     47  110.927  32.4437      1   1776\n  12 │    55     50  110.927  32.4562     12   1823",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#active_indices",
+    "href": "api/z-index.html#active_indices",
+    "title": "Reference",
+    "section": "active_indices",
+    "text": "active_indices\n\n\n\n\n\n\nactive_indices(subcatch_2d, nodata)\nTakes a 2D array of the subcatchments. And derive forward and reverse indices.\n1: Get a list of `CartesianIndex{2}`` that are active, based on a nodata value. These map from the 1D internal domain to the 2D external domain.\n2: Make a reverse index, a `Matrix{Int}``, which maps from the 2D external domain to the 1D internal domain, providing an Int which can be used as a linear index. Values of 0 represent inactive cells.",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#add_links",
+    "href": "api/z-index.html#add_links",
+    "title": "Reference",
+    "section": "add_links!",
+    "text": "add_links!\n\n\n\n\n\n\nNo documentation found for public symbol.\nRiverGraphs.add_links! is a Function.\n# 1 method for generic function \"add_links!\" from RiverGraphs:\n [1] add_links!(links, index_pit)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:101",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#earth_dist",
+    "href": "api/z-index.html#earth_dist",
+    "title": "Reference",
+    "section": "earth_dist",
+    "text": "earth_dist\n\n\n\n\n\n\nNo documentation found for public symbol.\nRiverGraphs.earth_dist is a Function.\n# 2 methods for generic function \"earth_dist\" from RiverGraphs:\n [1] earth_dist(p1::Tuple{T, T}, p2::Tuple{T, T}; R) where T&lt;:Real\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/sf.jl:23\n [2] earth_dist(lon1::T, lat1::T, lon2::T, lat2::T; R) where T&lt;:Real\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/sf.jl:12",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#fillnodata_upbasin",
+    "href": "api/z-index.html#fillnodata_upbasin",
+    "title": "Reference",
+    "section": "fillnodata_upbasin",
+    "text": "fillnodata_upbasin\n\n\n\n\n\n\nfillnodata_upbasin(g, toposort, data, nodata)\nFill nodata upstream cells with the value from the first downstream valid cell, based on directed acyclic graph g, topological order toposort, nodata value nodata and data containing missing values. Returns filled data data_out.",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#fillnodata_upriver",
+    "href": "api/z-index.html#fillnodata_upriver",
+    "title": "Reference",
+    "section": "fillnodata_upriver",
+    "text": "fillnodata_upriver\n\n\n\n\n\n\nfillnodata_upriver(rg::RiverGraph, links, streamorder;\n    level::Int=2, min_sto=nothing, nodata::Int=0)\n与fillnodata_upbasin类似，但只填充河道的部分，返回的信息更加详细",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#find_outlet",
+    "href": "api/z-index.html#find_outlet",
+    "title": "Reference",
+    "section": "find_outlet",
+    "text": "find_outlet\n\n\n\n\n\n\nNo documentation found for public symbol.\nRiverGraphs.find_outlet is a Function.\n# 2 methods for generic function \"find_outlet\" from RiverGraphs:\n [1] find_outlet(rg::RiverGraph; min_sto)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/RiverGraph.jl:193\n [2] find_outlet(net::Graphs.SimpleGraphs.SimpleDiGraph, toposort, strord; min_sto)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/RiverGraph.jl:175",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#find_pits",
+    "href": "api/z-index.html#find_pits",
+    "title": "Reference",
+    "section": "find_pits",
+    "text": "find_pits\n\n\n\n\n\n\nNo documentation found for public symbol.\nRiverGraphs.find_pits is a Function.\n# 1 method for generic function \"find_pits\" from RiverGraphs:\n [1] find_pits(rg::RiverGraph, points)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:93",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#flow_path",
+    "href": "api/z-index.html#flow_path",
+    "title": "Reference",
+    "section": "flow_path",
+    "text": "flow_path\n\n\n\n\n\n\nNo documentation found for public symbol.\nRiverGraphs.flow_path is a Function.\n# 2 methods for generic function \"flow_path\" from RiverGraphs:\n [1] flow_path(rg::RiverGraph, info_node::DataFrame, streamorder; level, min_sto)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/flow_path.jl:35\n [2] flow_path(rg::RiverGraph, from::Int64, to::Int64, streamorder; level, min_sto)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/flow_path.jl:8",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#get_coord",
+    "href": "api/z-index.html#get_coord",
+    "title": "Reference",
+    "section": "get_coord",
+    "text": "get_coord\n\n\n\n\n\n\nNo documentation found for public symbol.\nRiverGraphs.get_coord is a Function.\n# 2 methods for generic function \"get_coord\" from RiverGraphs:\n [1] get_coord(inds::Vector{CartesianIndex{2}})\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:114\n [2] get_coord(lgl::BitArray)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:119",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#graph_children",
+    "href": "api/z-index.html#graph_children",
+    "title": "Reference",
+    "section": "graph_children",
+    "text": "graph_children\n\n\n\n\n\n\ngraph_children(net, v)\njulia&gt; graph_children(net, 12)\nAny[1, 2, [3, 4, 5, 7] =&gt; 8, [6, 9, 10] =&gt; 11] =&gt; 12",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#graph_flow",
+    "href": "api/z-index.html#graph_flow",
+    "title": "Reference",
+    "section": "graph_flow",
+    "text": "graph_flow\n\n\n\n\n\n\nConvert a gridded drainage direction to a directed graph",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#index2link",
+    "href": "api/z-index.html#index2link",
+    "title": "Reference",
+    "section": "index2link",
+    "text": "index2link\n\n\n\n\n\n\nNo documentation found for public symbol.\nRiverGraphs.index2link is a Function.\n# 1 method for generic function \"index2link\" from RiverGraphs:\n [1] index2link(rg::RiverGraph, index::AbstractVector)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:47",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#index2point",
+    "href": "api/z-index.html#index2point",
+    "title": "Reference",
+    "section": "index2point",
+    "text": "index2point\n\n\n\n\n\n\nNo documentation found for public symbol.\nRiverGraphs.index2point is a Function.\n# 1 method for generic function \"index2point\" from RiverGraphs:\n [1] index2point(rg::RiverGraph, inds::AbstractVector)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:56",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#kinwave_set_subdomains",
+    "href": "api/z-index.html#kinwave_set_subdomains",
+    "title": "Reference",
+    "section": "kinwave_set_subdomains",
+    "text": "kinwave_set_subdomains\n\n\n\n\n\n\nfunction kinwave_set_subdomains(graph, toposort, index_pit, streamorder, min_sto)\nSetup subdomains for parallel execution (threading) of the kinematic wave calculation. Subdomains are subbasins based on a minimum stream order min_sto (see also subbasins(g, streamorder, toposort, min_sto)). Subbasins are extracted for each basin outlet in Vector index_pit.\n\nArguments\n\ngraph directed acyclic graph of the kinematic wave domain\ntoposort topological order of graph\nindex_pit Vector with basin outlets (pits)\nstreamorder stream order of the kinematic wave domain\nmin_sto minimum streamorder value\n\n\n\nOutput\n\nsubbas_order grouped subbasin ids (Vector{Vector{Int}}) ordered upstream (first index) to downstream (last index)\nindices_subbas list of indices per subbasin id stored as Vector{Vector{Int}}\ntopo_subbas topological order per subbasin id stored as Vector{Vector{Int}}",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#link2index",
+    "href": "api/z-index.html#link2index",
+    "title": "Reference",
+    "section": "link2index",
+    "text": "link2index\n\n\n\n\n\n\nNo documentation found for public symbol.\nRiverGraphs.link2index is a Function.\n# 1 method for generic function \"link2index\" from RiverGraphs:\n [1] link2index(links::AbstractVector)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:39",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#link2point",
+    "href": "api/z-index.html#link2point",
+    "title": "Reference",
+    "section": "link2point",
+    "text": "link2point\n\n\n\n\n\n\nNo documentation found for public symbol.\nRiverGraphs.link2point is a Function.\n# 2 methods for generic function \"link2point\" from RiverGraphs:\n [1] link2point(rg::RiverGraph, links::AbstractVector)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:41\n [2] link2point(rg::RiverGraph)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:41",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#link_flow2next",
+    "href": "api/z-index.html#link_flow2next",
+    "title": "Reference",
+    "section": "link_flow2next",
+    "text": "link_flow2next\n\n\n\n\n\n\nlinks to main streams\n\nReturn\n\ninfo: 流动方向的记录",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#move2next",
+    "href": "api/z-index.html#move2next",
+    "title": "Reference",
+    "section": "move2next",
+    "text": "move2next\n\n\n\n\n\n\nNo documentation found for public symbol.\nRiverGraphs.move2next is a Function.\n# 2 methods for generic function \"move2next\" from RiverGraphs:\n [1] move2next(rg::RiverGraph, points::Vector{Tuple{Float64, Float64}})\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:86\n [2] move2next(rg::RiverGraph, vs::AbstractVector{Int64})\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:82",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#nrow",
+    "href": "api/z-index.html#nrow",
+    "title": "Reference",
+    "section": "nrow",
+    "text": "nrow\n\n\n\n\n\n\nnrow(t)\nReturn the number of rows of table t.\nnrow(df::AbstractDataFrame)\nReturn the number of rows in an AbstractDataFrame df.\nSee also: ncol, size.\n\nExamples\njulia&gt; df = DataFrame(i=1:10, x=rand(10), y=rand([\"a\", \"b\", \"c\"], 10));\n\njulia&gt; nrow(df)\n10",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#nv",
+    "href": "api/z-index.html#nv",
+    "title": "Reference",
+    "section": "nv",
+    "text": "nv\n\n\n\n\n\n\nnv(g)\nReturn the number of vertices in g.\n\nExamples\njulia&gt; using Graphs\n\njulia&gt; nv(SimpleGraph(3))\n3",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#path_flowdir_guanshan",
+    "href": "api/z-index.html#path_flowdir_guanshan",
+    "title": "Reference",
+    "section": "path_flowdir_GuanShan",
+    "text": "path_flowdir_GuanShan\n\n\n\n\n\n\nNo documentation found for public symbol.\nRiverGraphs.path_flowdir_GuanShan is of type String.\n\nSummary\nmutable struct String\n\n\nSupertype Hierarchy\nString &lt;: AbstractString &lt;: Any",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#pcr_dir",
+    "href": "api/z-index.html#pcr_dir",
+    "title": "Reference",
+    "section": "pcr_dir",
+    "text": "pcr_dir\n\n\n\n\n\n\nlat reversed pcr_dir",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#percentage",
+    "href": "api/z-index.html#percentage",
+    "title": "Reference",
+    "section": "percentage",
+    "text": "percentage\n\n\n\n\n\n\nNo documentation found for public symbol.\nRiverGraphs.percentage is a Function.\n# 1 method for generic function \"percentage\" from RiverGraphs:\n [1] percentage(rg::RiverGraph)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/RiverGraph.jl:45",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#point2index",
+    "href": "api/z-index.html#point2index",
+    "title": "Reference",
+    "section": "point2index",
+    "text": "point2index\n\n\n\n\n\n\nNo documentation found for public symbol.\nRiverGraphs.point2index is a Function.\n# 2 methods for generic function \"point2index\" from RiverGraphs:\n [1] point2index(ra::SpatRasters.SpatRaster, points)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:75\n [2] point2index(rg::RiverGraph, points)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:69",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#read_flowdir",
+    "href": "api/z-index.html#read_flowdir",
+    "title": "Reference",
+    "section": "read_flowdir",
+    "text": "read_flowdir\n\n\n\n\n\n\n\npit: flowdir is 0",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#reverse_index",
+    "href": "api/z-index.html#reverse_index",
+    "title": "Reference",
+    "section": "reverse_index",
+    "text": "reverse_index\n\n\n\n\n\n\nNo documentation found for public symbol.\nRiverGraphs.reverse_index is a Function.\n# 1 method for generic function \"reverse_index\" from RiverGraphs:\n [1] reverse_index(v::AbstractVector{T}, index, index_rev; nodata) where T\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/utils.jl:40",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#show_netnode",
+    "href": "api/z-index.html#show_netnode",
+    "title": "Reference",
+    "section": "show_NetNode",
+    "text": "show_NetNode\n\n\n\n\n\n\nshow_net(net, info_node::DataFrame, info_pour::DataFrame)\n\ninfo_node: returned by fillnodata_upriver and flow_path\ninfo_pour: with the columns of site and idnex_pit.\n\nindex_pit: returned by find_pits",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#st_length",
+    "href": "api/z-index.html#st_length",
+    "title": "Reference",
+    "section": "st_length",
+    "text": "st_length\n\n\n\n\n\n\nNo documentation found for public symbol.\nRiverGraphs.st_length is a Function.\n# 1 method for generic function \"st_length\" from RiverGraphs:\n [1] st_length(lon::AbstractVector, lat::AbstractVector)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/sf.jl:29",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#st_shrink",
+    "href": "api/z-index.html#st_shrink",
+    "title": "Reference",
+    "section": "st_shrink",
+    "text": "st_shrink\n\n\n\n\n\n\nNo documentation found for public symbol.\nRiverGraphs.st_shrink is a Function.\n# 3 methods for generic function \"st_shrink\" from RiverGraphs:\n [1] st_shrink(mask::BitMatrix, lon::AbstractVector, lat::AbstractVector; cellsize_target)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/sf.jl:79\n [2] st_shrink(ra_mask::SpatRasters.SpatRaster{Bool}; cellsize_target)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/sf.jl:74\n [3] st_shrink(ra::SpatRasters.SpatRaster{T, N}; nodata, cellsize_target) where {T&lt;:Real, N}\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/sf.jl:65",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#st_stream_network",
+    "href": "api/z-index.html#st_stream_network",
+    "title": "Reference",
+    "section": "st_stream_network!",
+    "text": "st_stream_network!\n\n\n\n\n\n\nNo documentation found for public symbol.\nRiverGraphs.st_stream_network! is a Function.\n# 1 method for generic function \"st_stream_network!\" from RiverGraphs:\n [1] st_stream_network!(rg::RiverGraph, pours; min_sto)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/st_stream_network.jl:55",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#st_subbasins",
+    "href": "api/z-index.html#st_subbasins",
+    "title": "Reference",
+    "section": "st_subbasins",
+    "text": "st_subbasins\n\n\n\n\n\n\nNo documentation found for public symbol.\nRiverGraphs.st_subbasins is a Function.\n# 1 method for generic function \"st_subbasins\" from RiverGraphs:\n [1] st_subbasins(ra_basin::SpatRasters.SpatRaster, info_node::DataFrame, ids::AbstractVector; cellsize_target)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/st_watershed.jl:38",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#st_watershed",
+    "href": "api/z-index.html#st_watershed",
+    "title": "Reference",
+    "section": "st_watershed",
+    "text": "st_watershed\n\n\n\n\n\n\nst_watershed(rg::RiverGraph; level::Int=1, kw...)\n\nArguments\n\nmin_sto: 过小的sto不认为是stream link\n\n\n\nReturn\n\n\nExample\nA = read_flowdir(f) # flowdir, image(A) should looks normal\nrg = RiverGraph(A)\nra_basin = st_watershed(rg; min_sto=4)",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#stream_link",
+    "href": "api/z-index.html#stream_link",
+    "title": "Reference",
+    "section": "stream_link",
+    "text": "stream_link\n\n\n\n\n\n\nstream_link(g, streamorder, toposort, min_sto)\nReturn stream*link with a unique id starting at 1, based on a minimum streamorder min*sto, directed acyclic graphgand topological ordertoposort.",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#stream_network",
+    "href": "api/z-index.html#stream_network",
+    "title": "Reference",
+    "section": "stream_network",
+    "text": "stream_network\n\n\n\n\n\n\nstream_network(info_node::DataFrame)\n\nExample\nrg = RiverGraph(f)\n\nmin_sto = 4\nstrord = stream_order(rg)\nlinks = stream_link(rg, strord; min_sto)\nriver, info_node = fillnodata_upriver(rg, links, strord; min_sto, nodata=0)\n\nstream_network(info_node)",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#stream_order",
+    "href": "api/z-index.html#stream_order",
+    "title": "Reference",
+    "section": "stream_order",
+    "text": "stream_order\n\n\n\n\n\n\nstream_order(g, toposort)\nReturn the Strahler streamorder based on directed acyclic graph g and topological order toposort.",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#topological_sort_by_dfs",
+    "href": "api/z-index.html#topological_sort_by_dfs",
+    "title": "Reference",
+    "section": "topological_sort_by_dfs",
+    "text": "topological_sort_by_dfs\n\n\n\n\n\n\ntopological_sort_by_dfs(g)\nReturn a topological sort of a directed graph g as a vector of vertices in topological order.",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#unlist",
+    "href": "api/z-index.html#unlist",
+    "title": "Reference",
+    "section": "unlist",
+    "text": "unlist\n\n\n\n\n\n\nNo documentation found for public symbol.\nRiverGraphs.unlist is a Function.\n# 2 methods for generic function \"unlist\" from RiverGraphs:\n [1] unlist(p::Pair)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/utils.jl:5\n [2] unlist(x::Real)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/utils.jl:4",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/z-index.html#write_subbasins",
+    "href": "api/z-index.html#write_subbasins",
+    "title": "Reference",
+    "section": "write_subbasins",
+    "text": "write_subbasins\n\n\n\n\n\n\nwrite_subbasins(rg::RiverGraph, info_node::DataFrame, pours::DataFrame)\n\npours: with columns of name and geometry",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  }
+]

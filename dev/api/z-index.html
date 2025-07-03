@@ -1,0 +1,1894 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Reference – RiverGraphs</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../api/1-SpatRaster.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-2fef5ea3f8957b3e4ecc936fc74692ca.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-e48d11066fe46049b8056d961f78ce1a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-8baa932c728ac0b72af33d3ff6ac96e9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-e48d11066fe46049b8056d961f78ce1a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script>
+// 
+// The code below was originally written by the authors of Wflow.jl. Their 
+// license is provided below. ChatGPT was used to iterately modify the code.
+// 
+
+// MIT License for Wflow.jl
+//
+// Copyright (c) 2020 Deltares and contributors
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+window.onload = function () {
+    const versionsUrl = 'https://raw.githubusercontent.com/jl-pkgs/RiverGraphs.jl/gh-pages/versions.js';
+
+    // Fetch the versions.js file
+    fetch(versionsUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Failed to fetch ${versionsUrl}: ${response.statusText}`);
+            }
+            return response.text();
+        })
+        .then(scriptContent => {
+            // Use a regular expression to find the DOC_VERSIONS array
+            const regex = /var DOC_VERSIONS = (\[.*?\]);/s;
+            const match = scriptContent.match(regex);
+
+            if (match && match[1]) {
+                // Remove trailing commas if they exist and fix the array syntax for JSON
+                let arrayString = match[1].trim();
+
+                // Remove any trailing comma before closing bracket
+                arrayString = arrayString.replace(/,\s*([\]}])/g, '$1');
+
+                // Parse the cleaned array string
+                try {
+                    const DOC_VERSIONS = JSON.parse(arrayString);
+
+                    console.log('DOC_VERSIONS loaded:', DOC_VERSIONS);
+
+                    // Process DOC_VERSIONS as usual
+                    const dropdown = document.querySelector('#nav-menu-version')?.nextElementSibling;
+                    if (!dropdown) {
+                        console.error('Dropdown element not found!');
+                        return;
+                    }
+
+                    dropdown.innerHTML = ''; // Clear existing items
+                    DOC_VERSIONS.forEach(version => {
+                        const li = document.createElement('li');
+                        const a = document.createElement('a');
+                        a.className = 'dropdown-item';
+                        a.href = `/RiverGraphs.jl/${version}/index.html`;
+
+                        // Wrap version text in a <code> element
+                        const code = document.createElement('code');
+                        code.textContent = version;
+
+                        // Add <code> to <a>
+                        a.appendChild(code);
+
+                        li.appendChild(a); // Add <a> to <li>
+                        dropdown.appendChild(li); // Add <li> to the dropdown
+                    });
+
+                    console.log('Dropdown populated:', dropdown);
+
+                } catch (error) {
+                    console.error('Error parsing DOC_VERSIONS:', error);
+                }
+            } else {
+                console.error('DOC_VERSIONS not found in script.');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching versions.js:', error);
+        });
+};
+</script>
+
+
+<link rel="stylesheet" href="../_static/style.css">
+<meta property="og:title" content="Reference – RiverGraphs">
+<meta property="og:description" content="">
+<meta property="og:image" content="./docs/image/Figure1_孤山-河网结构_L3.png">
+<meta property="og:site_name" content="RiverGraphs">
+<meta name="twitter:title" content="Reference – RiverGraphs">
+<meta name="twitter:description" content="">
+<meta name="twitter:image" content="./docs/image/Figure1_孤山-河网结构_L3.png">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">RiverGraphs</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-version" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Version</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-version">    
+        <li class="dropdown-header">dev</li>
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+    <a href="https://github.com/jl-pkgs/RiverGraphs.jl" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../api/z-index.html"><span class="chapter-title">Reference</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/1-SpatRaster.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">1. SpatRaster</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/z-index.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Reference</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of Contents</h2>
+   
+  <ul>
+  <li><a href="#dataframe" id="toc-dataframe" class="nav-link active" data-scroll-target="#dataframe"><code>DataFrame</code></a></li>
+  <li><a href="#rivergraph" id="toc-rivergraph" class="nav-link" data-scroll-target="#rivergraph"><code>RiverGraph</code></a></li>
+  <li><a href="#rivergraphs" id="toc-rivergraphs" class="nav-link" data-scroll-target="#rivergraphs"><code>RiverGraphs</code></a></li>
+  <li><a href="#active_indices" id="toc-active_indices" class="nav-link" data-scroll-target="#active_indices"><code>active_indices</code></a></li>
+  <li><a href="#add_links" id="toc-add_links" class="nav-link" data-scroll-target="#add_links"><code>add_links!</code></a></li>
+  <li><a href="#earth_dist" id="toc-earth_dist" class="nav-link" data-scroll-target="#earth_dist"><code>earth_dist</code></a></li>
+  <li><a href="#fillnodata_upbasin" id="toc-fillnodata_upbasin" class="nav-link" data-scroll-target="#fillnodata_upbasin"><code>fillnodata_upbasin</code></a></li>
+  <li><a href="#fillnodata_upriver" id="toc-fillnodata_upriver" class="nav-link" data-scroll-target="#fillnodata_upriver"><code>fillnodata_upriver</code></a></li>
+  <li><a href="#find_outlet" id="toc-find_outlet" class="nav-link" data-scroll-target="#find_outlet"><code>find_outlet</code></a></li>
+  <li><a href="#find_pits" id="toc-find_pits" class="nav-link" data-scroll-target="#find_pits"><code>find_pits</code></a></li>
+  <li><a href="#flow_path" id="toc-flow_path" class="nav-link" data-scroll-target="#flow_path"><code>flow_path</code></a></li>
+  <li><a href="#get_coord" id="toc-get_coord" class="nav-link" data-scroll-target="#get_coord"><code>get_coord</code></a></li>
+  <li><a href="#graph_children" id="toc-graph_children" class="nav-link" data-scroll-target="#graph_children"><code>graph_children</code></a></li>
+  <li><a href="#graph_flow" id="toc-graph_flow" class="nav-link" data-scroll-target="#graph_flow"><code>graph_flow</code></a></li>
+  <li><a href="#index2link" id="toc-index2link" class="nav-link" data-scroll-target="#index2link"><code>index2link</code></a></li>
+  <li><a href="#index2point" id="toc-index2point" class="nav-link" data-scroll-target="#index2point"><code>index2point</code></a></li>
+  <li><a href="#kinwave_set_subdomains" id="toc-kinwave_set_subdomains" class="nav-link" data-scroll-target="#kinwave_set_subdomains"><code>kinwave_set_subdomains</code></a></li>
+  <li><a href="#link2index" id="toc-link2index" class="nav-link" data-scroll-target="#link2index"><code>link2index</code></a></li>
+  <li><a href="#link2point" id="toc-link2point" class="nav-link" data-scroll-target="#link2point"><code>link2point</code></a></li>
+  <li><a href="#link_flow2next" id="toc-link_flow2next" class="nav-link" data-scroll-target="#link_flow2next"><code>link_flow2next</code></a></li>
+  <li><a href="#move2next" id="toc-move2next" class="nav-link" data-scroll-target="#move2next"><code>move2next</code></a></li>
+  <li><a href="#nrow" id="toc-nrow" class="nav-link" data-scroll-target="#nrow"><code>nrow</code></a></li>
+  <li><a href="#nv" id="toc-nv" class="nav-link" data-scroll-target="#nv"><code>nv</code></a></li>
+  <li><a href="#path_flowdir_guanshan" id="toc-path_flowdir_guanshan" class="nav-link" data-scroll-target="#path_flowdir_guanshan"><code>path_flowdir_GuanShan</code></a></li>
+  <li><a href="#pcr_dir" id="toc-pcr_dir" class="nav-link" data-scroll-target="#pcr_dir"><code>pcr_dir</code></a></li>
+  <li><a href="#percentage" id="toc-percentage" class="nav-link" data-scroll-target="#percentage"><code>percentage</code></a></li>
+  <li><a href="#point2index" id="toc-point2index" class="nav-link" data-scroll-target="#point2index"><code>point2index</code></a></li>
+  <li><a href="#read_flowdir" id="toc-read_flowdir" class="nav-link" data-scroll-target="#read_flowdir"><code>read_flowdir</code></a></li>
+  <li><a href="#reverse_index" id="toc-reverse_index" class="nav-link" data-scroll-target="#reverse_index"><code>reverse_index</code></a></li>
+  <li><a href="#show_netnode" id="toc-show_netnode" class="nav-link" data-scroll-target="#show_netnode"><code>show_NetNode</code></a></li>
+  <li><a href="#st_length" id="toc-st_length" class="nav-link" data-scroll-target="#st_length"><code>st_length</code></a></li>
+  <li><a href="#st_shrink" id="toc-st_shrink" class="nav-link" data-scroll-target="#st_shrink"><code>st_shrink</code></a></li>
+  <li><a href="#st_stream_network" id="toc-st_stream_network" class="nav-link" data-scroll-target="#st_stream_network"><code>st_stream_network!</code></a></li>
+  <li><a href="#st_subbasins" id="toc-st_subbasins" class="nav-link" data-scroll-target="#st_subbasins"><code>st_subbasins</code></a></li>
+  <li><a href="#st_watershed" id="toc-st_watershed" class="nav-link" data-scroll-target="#st_watershed"><code>st_watershed</code></a></li>
+  <li><a href="#stream_link" id="toc-stream_link" class="nav-link" data-scroll-target="#stream_link"><code>stream_link</code></a></li>
+  <li><a href="#stream_network" id="toc-stream_network" class="nav-link" data-scroll-target="#stream_network"><code>stream_network</code></a></li>
+  <li><a href="#stream_order" id="toc-stream_order" class="nav-link" data-scroll-target="#stream_order"><code>stream_order</code></a></li>
+  <li><a href="#topological_sort_by_dfs" id="toc-topological_sort_by_dfs" class="nav-link" data-scroll-target="#topological_sort_by_dfs"><code>topological_sort_by_dfs</code></a></li>
+  <li><a href="#unlist" id="toc-unlist" class="nav-link" data-scroll-target="#unlist"><code>unlist</code></a></li>
+  <li><a href="#write_subbasins" id="toc-write_subbasins" class="nav-link" data-scroll-target="#write_subbasins"><code>write_subbasins</code></a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/jl-pkgs/RiverGraphs.jl/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-title">Reference</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><em>Docstrings for RiverGraphs.</em></p>
+<section id="dataframe" class="level2">
+<h2 class="anchored" data-anchor-id="dataframe"><code>DataFrame</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<pre><code>DataFrame &lt;: AbstractDataFrame</code></pre>
+<p>An <code>AbstractDataFrame</code> that stores a set of named columns.</p>
+<p>The columns are normally <code>AbstractVector</code>s stored in memory, particularly a <code>Vector</code>, <code>PooledVector</code> or <code>CategoricalVector</code>.</p>
+<section id="constructors" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="constructors">Constructors</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">DataFrame</span>(pairs<span class="op">::</span><span class="dt">Pair...</span>; makeunique<span class="op">::</span><span class="dt">Bool</span>=<span class="cn">false</span>, copycols<span class="op">::</span><span class="dt">Bool</span>=<span class="cn">true</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">DataFrame</span>(pairs<span class="op">::</span><span class="dt">AbstractVector{&lt;:Pair}</span>; makeunique<span class="op">::</span><span class="dt">Bool</span>=<span class="cn">false</span>, copycols<span class="op">::</span><span class="dt">Bool</span>=<span class="cn">true</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">DataFrame</span>(ds<span class="op">::</span><span class="dt">AbstractDict</span>; copycols<span class="op">::</span><span class="dt">Bool</span>=<span class="cn">true</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">DataFrame</span>(; kwargs<span class="op">...</span>, copycols<span class="op">::</span><span class="dt">Bool</span>=<span class="cn">true</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">DataFrame</span>(table; copycols<span class="op">::</span><span class="dt">Union{Bool, Nothing}</span>=<span class="cn">nothing</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">DataFrame</span>(table, names<span class="op">::</span><span class="dt">AbstractVector</span>;</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>          makeunique<span class="op">::</span><span class="dt">Bool</span>=<span class="cn">false</span>, copycols<span class="op">::</span><span class="dt">Union{Bool, Nothing}</span>=<span class="cn">nothing</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">DataFrame</span>(columns<span class="op">::</span><span class="dt">AbstractVecOrMat</span>, names<span class="op">::</span><span class="dt">AbstractVector</span>;</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>          makeunique<span class="op">::</span><span class="dt">Bool</span>=<span class="cn">false</span>, copycols<span class="op">::</span><span class="dt">Bool</span>=<span class="cn">true</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">DataFrame</span>(<span class="op">::</span><span class="dt">DataFrameRow</span>; copycols<span class="op">::</span><span class="dt">Bool</span>=<span class="cn">true</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="fu">DataFrame</span>(<span class="op">::</span><span class="dt">GroupedDataFrame</span>; copycols<span class="op">::</span><span class="dt">Bool</span>=<span class="cn">true</span>, keepkeys<span class="op">::</span><span class="dt">Bool</span>=<span class="cn">true</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="keyword-arguments" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="keyword-arguments">Keyword arguments</h3>
+<ul>
+<li><code>copycols</code> : whether vectors passed as columns should be copied; by default set to <code>true</code> and the vectors are copied; if set to <code>false</code> then the constructor will still copy the passed columns if it is not possible to construct a <code>DataFrame</code> without materializing new columns. Note the <code>copycols=nothing</code> default in the Tables.jl compatible constructor; it is provided as certain input table types may have already made a copy of columns or the columns may otherwise be immutable, in which case columns are not copied by default. To force a copy in such cases, or to get mutable columns from an immutable input table (like <code>Arrow.Table</code>), pass <code>copycols=true</code> explicitly.</li>
+<li><code>makeunique</code> : if <code>false</code> (the default), an error will be raised</li>
+</ul>
+<p>(note that not all constructors support these keyword arguments)</p>
+</section>
+<section id="details-on-behavior-of-different-constructors" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="details-on-behavior-of-different-constructors">Details on behavior of different constructors</h3>
+<p>It is allowed to pass a vector of <code>Pair</code>s, a list of <code>Pair</code>s as positional arguments, or a list of keyword arguments. In this case each pair is considered to represent a column name to column value mapping and column name must be a <code>Symbol</code> or string. Alternatively a dictionary can be passed to the constructor in which case its entries are considered to define the column name and column value pairs. If the dictionary is a <code>Dict</code> then column names will be sorted in the returned <code>DataFrame</code>.</p>
+<p>In all the constructors described above column value can be a vector which is consumed as is or an object of any other type (except <code>AbstractArray</code>). In the latter case the passed value is automatically repeated to fill a new vector of the appropriate length. As a particular rule values stored in a <code>Ref</code> or a <code>0</code>-dimensional <code>AbstractArray</code> are unwrapped and treated in the same way.</p>
+<p>It is also allowed to pass a vector of vectors or a matrix as as the first argument. In this case the second argument must be a vector of <code>Symbol</code>s or strings specifying column names, or the symbol <code>:auto</code> to generate column names <code>x1</code>, <code>x2</code>, … automatically. Note that in this case if the first argument is a matrix and <code>copycols=false</code> the columns of the created <code>DataFrame</code> will be views of columns the source matrix.</p>
+<p>If a single positional argument is passed to a <code>DataFrame</code> constructor then it is assumed to be of type that implements the <a href="https://github.com/JuliaData/Tables.jl">Tables.jl</a> interface using which the returned <code>DataFrame</code> is materialized.</p>
+<p>If two positional arguments are passed, where the second argument is an <code>AbstractVector</code>, then the first argument is taken to be a table as described in the previous paragraph, and columns names of the resulting data frame are taken from the vector passed as the second positional argument.</p>
+<p>Finally it is allowed to construct a <code>DataFrame</code> from a <code>DataFrameRow</code> or a <code>GroupedDataFrame</code>. In the latter case the <code>keepkeys</code> keyword argument specifies whether the resulting <code>DataFrame</code> should contain the grouping columns of the passed <code>GroupedDataFrame</code> and the order of rows in the result follows the order of groups in the <code>GroupedDataFrame</code> passed.</p>
+</section>
+<section id="notes" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="notes">Notes</h3>
+<p>The <code>DataFrame</code> constructor by default copies all columns vectors passed to it. Pass the <code>copycols=false</code> keyword argument (where supported) to reuse vectors without copying them.</p>
+<p>By default an error will be raised if duplicates in column names are found. Pass <code>makeunique=true</code> keyword argument (where supported) to accept duplicate names, in which case they will be suffixed with <code>_i</code> (<code>i</code> starting at 1 for the first duplicate).</p>
+<p>If an <code>AbstractRange</code> is passed to a <code>DataFrame</code> constructor as a column it is always collected to a <code>Vector</code> (even if <code>copycols=false</code>). As a general rule <code>AbstractRange</code> values are always materialized to a <code>Vector</code> by all functions in DataFrames.jl before being stored in a <code>DataFrame</code>.</p>
+<p><code>DataFrame</code> can store only columns that use 1-based indexing. Attempting to store a vector using non-standard indexing raises an error.</p>
+<p>The <code>DataFrame</code> type is designed to allow column types to vary and to be dynamically changed also after it is constructed. Therefore <code>DataFrame</code>s are not type stable. For performance-critical code that requires type-stability either use the functionality provided by <code>select</code>/<code>transform</code>/<code>combine</code> functions, use <code>Tables.columntable</code> and <code>Tables.namedtupleiterator</code> functions, use barrier functions, or provide type assertions to the variables that hold columns extracted from a <code>DataFrame</code>.</p>
+<p>Metadata: this function preserves all table and column-level metadata. As a special case if a <code>GroupedDataFrame</code> is passed then only <code>:note</code>-style metadata from parent of the <code>GroupedDataFrame</code> is preserved.</p>
+</section>
+<section id="examples" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="examples">Examples</h3>
+<pre class="jldoctest"><code>julia&gt; DataFrame((a=[1, 2], b=[3, 4])) # Tables.jl table constructor
+2×2 DataFrame
+ Row │ a      b
+     │ Int64  Int64
+─────┼──────────────
+   1 │     1      3
+   2 │     2      4
+
+julia&gt; DataFrame([(a=1, b=0), (a=2, b=0)]) # Tables.jl table constructor
+2×2 DataFrame
+ Row │ a      b
+     │ Int64  Int64
+─────┼──────────────
+   1 │     1      0
+   2 │     2      0
+
+julia&gt; DataFrame("a" =&gt; 1:2, "b" =&gt; 0) # Pair constructor
+2×2 DataFrame
+ Row │ a      b
+     │ Int64  Int64
+─────┼──────────────
+   1 │     1      0
+   2 │     2      0
+
+julia&gt; DataFrame([:a =&gt; 1:2, :b =&gt; 0]) # vector of Pairs constructor
+2×2 DataFrame
+ Row │ a      b
+     │ Int64  Int64
+─────┼──────────────
+   1 │     1      0
+   2 │     2      0
+
+julia&gt; DataFrame(Dict(:a =&gt; 1:2, :b =&gt; 0)) # dictionary constructor
+2×2 DataFrame
+ Row │ a      b
+     │ Int64  Int64
+─────┼──────────────
+   1 │     1      0
+   2 │     2      0
+
+julia&gt; DataFrame(a=1:2, b=0) # keyword argument constructor
+2×2 DataFrame
+ Row │ a      b
+     │ Int64  Int64
+─────┼──────────────
+   1 │     1      0
+   2 │     2      0
+
+julia&gt; DataFrame([[1, 2], [0, 0]], [:a, :b]) # vector of vectors constructor
+2×2 DataFrame
+ Row │ a      b
+     │ Int64  Int64
+─────┼──────────────
+   1 │     1      0
+   2 │     2      0
+
+julia&gt; DataFrame([1 0; 2 0], :auto) # matrix constructor
+2×2 DataFrame
+ Row │ x1     x2
+     │ Int64  Int64
+─────┼──────────────
+   1 │     1      0
+   2 │     2      0</code></pre>
+</section>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="rivergraph" class="level2">
+<h2 class="anchored" data-anchor-id="rivergraph"><code>RiverGraph</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>init a RiverGraph from flowdir matrix</p>
+<ul>
+<li><code>A</code>: flowdir</li>
+</ul>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="rivergraphs" class="level2">
+<h2 class="anchored" data-anchor-id="rivergraphs"><code>RiverGraphs</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>No docstring found for public module <code>RiverGraphs</code>.</p>
+<section id="public-names" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="public-names">Public names</h3>
+<p><code>DataFrame</code>, <code>RiverGraph</code>, <code>active_indices</code>, <code>add_links!</code>, <code>earth_dist</code>, <code>fillnodata_upbasin</code>, <code>fillnodata_upriver</code>, <code>find_outlet</code>, <code>find_pits</code>, <code>flow_path</code>, <code>get_coord</code>, <code>graph_children</code>, <code>graph_flow</code>, <code>index2link</code>, <code>index2point</code>, <code>kinwave_set_subdomains</code>, <code>link2index</code>, <code>link2point</code>, <code>link_flow2next</code>, <code>move2next</code>, <code>nrow</code>, <code>nv</code>, <code>path_flowdir_GuanShan</code>, <code>pcr_dir</code>, <code>percentage</code>, <code>point2index</code>, <code>read_flowdir</code>, <code>reverse_index</code>, <code>show_NetNode</code>, <code>st_length</code>, <code>st_shrink</code>, <code>st_stream_network!</code>, <code>st_subbasins</code>, <code>st_watershed</code>, <code>stream_link</code>, <code>stream_network</code>, <code>stream_order</code>, <code>topological_sort_by_dfs</code>, <code>unlist</code>, <code>write_subbasins</code></p>
+</section>
+<section id="displaying-contents-of-readme-found-at-homerunnerworkrivergraphs.jlrivergraphs.jlreadme.md" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="displaying-contents-of-readme-found-at-homerunnerworkrivergraphs.jlrivergraphs.jlreadme.md">Displaying contents of readme found at <code>/home/runner/work/RiverGraphs.jl/RiverGraphs.jl/README.md</code></h3>
+</section>
+<section id="rivergraphs-1" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="rivergraphs-1">RiverGraphs</h3>
+<p>&lt;!– <a href="https://jl-pkgs.github.io/RiverGraphs.jl/stable"><img src="https://img.shields.io/badge/docs-stable-blue.svg" class="img-fluid" alt="Stable"></a> –&gt; <a href="https://jl-pkgs.github.io/RiverGraphs.jl/dev"><img src="https://img.shields.io/badge/docs-dev-blue.svg" class="img-fluid" alt="Dev"></a> <a href="https://github.com/jl-pkgs/RiverGraphs.jl/actions/workflows/CI.yml"><img src="https://github.com/jl-pkgs/RiverGraphs.jl/actions/workflows/CI.yml/badge.svg" class="img-fluid" alt="CI"></a> <a href="https://app.codecov.io/gh/jl-pkgs/RiverGraphs.jl/blob/main/src"><img src="https://codecov.io/gh/jl-pkgs/RiverGraphs.jl/branch/main/graph/badge.svg" class="img-fluid" alt="Codecov"></a></p>
+<blockquote class="blockquote">
+<p>Dongdong Kong</p>
+</blockquote>
+<p><img src="./docs/image/Figure1_孤山-河网结构_L3.png" class="img-fluid"></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> info_node</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fl">11</span><span class="op">×</span><span class="fl">7</span> DataFrame</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a> Row │ from   to     value  value_next  length    n_node  index                             </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>     │ <span class="dt">Int64</span>  <span class="dt">Int64</span>  <span class="dt">Int64</span>  <span class="dt">Int64</span>       <span class="dt">Float64</span>   <span class="dt">Int64</span>   Array<span class="op">…</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>─────┼──────────────────────────────────────────────────────────────────────────────────────</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>   <span class="fl">1</span> │  <span class="fl">1034</span>   <span class="fl">1823</span>     <span class="fl">11</span>          <span class="fl">12</span>  <span class="fl">10.0556</span>       <span class="fl">19</span>  [<span class="fl">1034</span>, <span class="fl">1098</span>, <span class="fl">1166</span>, <span class="fl">1237</span>, <span class="fl">1310</span>, <span class="fl">1</span><span class="op">…</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>   <span class="fl">2</span> │   <span class="fl">577</span>   <span class="fl">1034</span>     <span class="fl">10</span>          <span class="fl">11</span>   <span class="fl">4.74237</span>      <span class="fl">10</span>  [<span class="fl">577</span>, <span class="fl">622</span>, <span class="fl">668</span>, <span class="fl">715</span>, <span class="fl">762</span>, <span class="fl">810</span>, <span class="fl">8</span><span class="op">…</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>   <span class="fl">3</span> │   <span class="fl">576</span>   <span class="fl">1034</span>      <span class="fl">9</span>          <span class="fl">11</span>   <span class="fl">4.88558</span>      <span class="fl">10</span>  [<span class="fl">576</span>, <span class="fl">622</span>, <span class="fl">668</span>, <span class="fl">715</span>, <span class="fl">762</span>, <span class="fl">810</span>, <span class="fl">8</span><span class="op">…</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>   <span class="fl">4</span> │  <span class="fl">1032</span>   <span class="fl">1823</span>      <span class="fl">8</span>          <span class="fl">12</span>  <span class="fl">10.0556</span>       <span class="fl">19</span>  [<span class="fl">1032</span>, <span class="fl">1098</span>, <span class="fl">1166</span>, <span class="fl">1237</span>, <span class="fl">1310</span>, <span class="fl">1</span><span class="op">…</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>   <span class="fl">5</span> │   <span class="fl">513</span>   <span class="fl">1032</span>      <span class="fl">7</span>           <span class="fl">8</span>   <span class="fl">9.40539</span>      <span class="fl">21</span>  [<span class="fl">513</span>, <span class="fl">557</span>, <span class="fl">558</span>, <span class="fl">559</span>, <span class="fl">560</span>, <span class="fl">606</span>, <span class="fl">6</span><span class="op">…</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>   <span class="fl">6</span> │   <span class="fl">716</span>   <span class="fl">1034</span>      <span class="fl">6</span>          <span class="fl">11</span>   <span class="fl">3.74381</span>       <span class="fl">8</span>  [<span class="fl">716</span>, <span class="fl">715</span>, <span class="fl">762</span>, <span class="fl">810</span>, <span class="fl">860</span>, <span class="fl">912</span>, <span class="fl">9</span><span class="op">…</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>   <span class="fl">7</span> │   <span class="fl">691</span>   <span class="fl">1032</span>      <span class="fl">5</span>           <span class="fl">8</span>  <span class="fl">11.4012</span>       <span class="fl">25</span>  [<span class="fl">691</span>, <span class="fl">692</span>, <span class="fl">645</span>, <span class="fl">600</span>, <span class="fl">556</span>, <span class="fl">557</span>, <span class="fl">5</span><span class="op">…</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>   <span class="fl">8</span> │   <span class="fl">741</span>   <span class="fl">1032</span>      <span class="fl">4</span>           <span class="fl">8</span>  <span class="fl">11.6163</span>       <span class="fl">25</span>  [<span class="fl">741</span>, <span class="fl">692</span>, <span class="fl">645</span>, <span class="fl">600</span>, <span class="fl">556</span>, <span class="fl">557</span>, <span class="fl">5</span><span class="op">…</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>   <span class="fl">9</span> │  <span class="fl">1026</span>   <span class="fl">1032</span>      <span class="fl">3</span>           <span class="fl">8</span>   <span class="fl">3.02616</span>       <span class="fl">8</span>  [<span class="fl">1026</span>, <span class="fl">963</span>, <span class="fl">964</span>, <span class="fl">965</span>, <span class="fl">966</span>, <span class="fl">967</span>, <span class="op">…</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="fl">10</span> │  <span class="fl">1444</span>   <span class="fl">1823</span>      <span class="fl">2</span>          <span class="fl">12</span>   <span class="fl">7.09458</span>      <span class="fl">14</span>  [<span class="fl">1444</span>, <span class="fl">1443</span>, <span class="fl">1500</span>, <span class="fl">1551</span>, <span class="fl">1597</span>, <span class="fl">1</span><span class="op">…</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="fl">11</span> │  <span class="fl">1776</span>   <span class="fl">1823</span>      <span class="fl">1</span>          <span class="fl">12</span>   <span class="fl">1.67579</span>       <span class="fl">4</span>  [<span class="fl">1776</span>, <span class="fl">1795</span>, <span class="fl">1811</span>, <span class="fl">1823</span>]</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> info_link</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="fl">12</span><span class="op">×</span><span class="fl">6</span> DataFrame</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a> Row │ x      y      lon      lat      link   index </span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>     │ <span class="dt">Int64</span>  <span class="dt">Int64</span>  <span class="dt">Float64</span>  <span class="dt">Float64</span>  <span class="dt">Int64</span>  <span class="dt">Int64</span> </span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>─────┼──────────────────────────────────────────────</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>   <span class="fl">1</span> │    <span class="fl">27</span>     <span class="fl">22</span>  <span class="fl">110.81</span>   <span class="fl">32.3396</span>      <span class="fl">7</span>    <span class="fl">513</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>   <span class="fl">2</span> │    <span class="fl">46</span>     <span class="fl">23</span>  <span class="fl">110.89</span>   <span class="fl">32.3437</span>      <span class="fl">9</span>    <span class="fl">576</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>   <span class="fl">3</span> │    <span class="fl">47</span>     <span class="fl">23</span>  <span class="fl">110.894</span>  <span class="fl">32.3437</span>     <span class="fl">10</span>    <span class="fl">577</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>   <span class="fl">4</span> │    <span class="fl">23</span>     <span class="fl">26</span>  <span class="fl">110.794</span>  <span class="fl">32.3562</span>      <span class="fl">5</span>    <span class="fl">691</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>   <span class="fl">5</span> │    <span class="fl">48</span>     <span class="fl">26</span>  <span class="fl">110.898</span>  <span class="fl">32.3562</span>      <span class="fl">6</span>    <span class="fl">716</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>   <span class="fl">6</span> │    <span class="fl">25</span>     <span class="fl">27</span>  <span class="fl">110.802</span>  <span class="fl">32.3604</span>      <span class="fl">4</span>    <span class="fl">741</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>   <span class="fl">7</span> │    <span class="fl">37</span>     <span class="fl">32</span>  <span class="fl">110.852</span>  <span class="fl">32.3812</span>      <span class="fl">3</span>   <span class="fl">1026</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>   <span class="fl">8</span> │    <span class="fl">43</span>     <span class="fl">32</span>  <span class="fl">110.877</span>  <span class="fl">32.3812</span>      <span class="fl">8</span>   <span class="fl">1032</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>   <span class="fl">9</span> │    <span class="fl">45</span>     <span class="fl">32</span>  <span class="fl">110.885</span>  <span class="fl">32.3812</span>     <span class="fl">11</span>   <span class="fl">1034</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>  <span class="fl">10</span> │    <span class="fl">48</span>     <span class="fl">38</span>  <span class="fl">110.898</span>  <span class="fl">32.4062</span>      <span class="fl">2</span>   <span class="fl">1444</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>  <span class="fl">11</span> │    <span class="fl">55</span>     <span class="fl">47</span>  <span class="fl">110.927</span>  <span class="fl">32.4437</span>      <span class="fl">1</span>   <span class="fl">1776</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>  <span class="fl">12</span> │    <span class="fl">55</span>     <span class="fl">50</span>  <span class="fl">110.927</span>  <span class="fl">32.4562</span>     <span class="fl">12</span>   <span class="fl">1823</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="active_indices" class="level2">
+<h2 class="anchored" data-anchor-id="active_indices"><code>active_indices</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<pre><code>active_indices(subcatch_2d, nodata)</code></pre>
+<p>Takes a 2D array of the subcatchments. And derive forward and reverse indices.</p>
+<p>1: Get a list of `CartesianIndex{2}`` that are active, based on a nodata value. These map from the 1D internal domain to the 2D external domain.</p>
+<p>2: Make a reverse index, a `Matrix{Int}``, which maps from the 2D external domain to the 1D internal domain, providing an Int which can be used as a linear index. Values of 0 represent inactive cells.</p>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="add_links" class="level2">
+<h2 class="anchored" data-anchor-id="add_links"><code>add_links!</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>No documentation found for public symbol.</p>
+<p><code>RiverGraphs.add_links!</code> is a <code>Function</code>.</p>
+<pre><code># 1 method for generic function "add_links!" from RiverGraphs:
+ [1] add_links!(links, index_pit)
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:101</code></pre>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="earth_dist" class="level2">
+<h2 class="anchored" data-anchor-id="earth_dist"><code>earth_dist</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>No documentation found for public symbol.</p>
+<p><code>RiverGraphs.earth_dist</code> is a <code>Function</code>.</p>
+<pre><code># 2 methods for generic function "earth_dist" from RiverGraphs:
+ [1] earth_dist(p1::Tuple{T, T}, p2::Tuple{T, T}; R) where T&lt;:Real
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/sf.jl:23
+ [2] earth_dist(lon1::T, lat1::T, lon2::T, lat2::T; R) where T&lt;:Real
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/sf.jl:12</code></pre>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="fillnodata_upbasin" class="level2">
+<h2 class="anchored" data-anchor-id="fillnodata_upbasin"><code>fillnodata_upbasin</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<pre><code>fillnodata_upbasin(g, toposort, data, nodata)</code></pre>
+<p>Fill <code>nodata</code> upstream cells with the value from the first downstream valid cell, based on directed acyclic graph <code>g</code>, topological order <code>toposort</code>, nodata value <code>nodata</code> and <code>data</code> containing missing values. Returns filled data <code>data_out</code>.</p>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="fillnodata_upriver" class="level2">
+<h2 class="anchored" data-anchor-id="fillnodata_upriver"><code>fillnodata_upriver</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<pre><code>fillnodata_upriver(rg::RiverGraph, links, streamorder;
+    level::Int=2, min_sto=nothing, nodata::Int=0)</code></pre>
+<p>与<code>fillnodata_upbasin</code>类似，但只填充河道的部分，返回的信息更加详细</p>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="find_outlet" class="level2">
+<h2 class="anchored" data-anchor-id="find_outlet"><code>find_outlet</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>No documentation found for public symbol.</p>
+<p><code>RiverGraphs.find_outlet</code> is a <code>Function</code>.</p>
+<pre><code># 2 methods for generic function "find_outlet" from RiverGraphs:
+ [1] find_outlet(rg::RiverGraph; min_sto)
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/RiverGraph.jl:193
+ [2] find_outlet(net::Graphs.SimpleGraphs.SimpleDiGraph, toposort, strord; min_sto)
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/RiverGraph.jl:175</code></pre>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="find_pits" class="level2">
+<h2 class="anchored" data-anchor-id="find_pits"><code>find_pits</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>No documentation found for public symbol.</p>
+<p><code>RiverGraphs.find_pits</code> is a <code>Function</code>.</p>
+<pre><code># 1 method for generic function "find_pits" from RiverGraphs:
+ [1] find_pits(rg::RiverGraph, points)
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:93</code></pre>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="flow_path" class="level2">
+<h2 class="anchored" data-anchor-id="flow_path"><code>flow_path</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>No documentation found for public symbol.</p>
+<p><code>RiverGraphs.flow_path</code> is a <code>Function</code>.</p>
+<pre><code># 2 methods for generic function "flow_path" from RiverGraphs:
+ [1] flow_path(rg::RiverGraph, info_node::DataFrame, streamorder; level, min_sto)
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/flow_path.jl:35
+ [2] flow_path(rg::RiverGraph, from::Int64, to::Int64, streamorder; level, min_sto)
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/flow_path.jl:8</code></pre>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="get_coord" class="level2">
+<h2 class="anchored" data-anchor-id="get_coord"><code>get_coord</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>No documentation found for public symbol.</p>
+<p><code>RiverGraphs.get_coord</code> is a <code>Function</code>.</p>
+<pre><code># 2 methods for generic function "get_coord" from RiverGraphs:
+ [1] get_coord(inds::Vector{CartesianIndex{2}})
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:114
+ [2] get_coord(lgl::BitArray)
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:119</code></pre>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="graph_children" class="level2">
+<h2 class="anchored" data-anchor-id="graph_children"><code>graph_children</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<pre><code>graph_children(net, v)</code></pre>
+<div class="sourceCode" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">graph_children</span>(net, <span class="fl">12</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="dt">Any</span>[<span class="fl">1</span>, <span class="fl">2</span>, [<span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">7</span>] <span class="op">=&gt;</span> <span class="fl">8</span>, [<span class="fl">6</span>, <span class="fl">9</span>, <span class="fl">10</span>] <span class="op">=&gt;</span> <span class="fl">11</span>] <span class="op">=&gt;</span> <span class="fl">12</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="graph_flow" class="level2">
+<h2 class="anchored" data-anchor-id="graph_flow"><code>graph_flow</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>Convert a gridded drainage direction to a directed graph</p>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="index2link" class="level2">
+<h2 class="anchored" data-anchor-id="index2link"><code>index2link</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>No documentation found for public symbol.</p>
+<p><code>RiverGraphs.index2link</code> is a <code>Function</code>.</p>
+<pre><code># 1 method for generic function "index2link" from RiverGraphs:
+ [1] index2link(rg::RiverGraph, index::AbstractVector)
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:47</code></pre>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="index2point" class="level2">
+<h2 class="anchored" data-anchor-id="index2point"><code>index2point</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>No documentation found for public symbol.</p>
+<p><code>RiverGraphs.index2point</code> is a <code>Function</code>.</p>
+<pre><code># 1 method for generic function "index2point" from RiverGraphs:
+ [1] index2point(rg::RiverGraph, inds::AbstractVector)
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:56</code></pre>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="kinwave_set_subdomains" class="level2">
+<h2 class="anchored" data-anchor-id="kinwave_set_subdomains"><code>kinwave_set_subdomains</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<pre><code>function kinwave_set_subdomains(graph, toposort, index_pit, streamorder, min_sto)</code></pre>
+<p>Setup subdomains for parallel execution (threading) of the kinematic wave calculation. Subdomains are subbasins based on a minimum stream order <code>min_sto</code> (see also <code>subbasins(g, streamorder, toposort, min_sto)</code>). Subbasins are extracted for each basin outlet in Vector <code>index_pit</code>.</p>
+<section id="arguments" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="arguments">Arguments</h3>
+<ul>
+<li><code>graph</code> directed acyclic graph of the kinematic wave domain</li>
+<li><code>toposort</code> topological order of <code>graph</code></li>
+<li><code>index_pit</code> Vector with basin outlets (pits)</li>
+<li><code>streamorder</code> stream order of the kinematic wave domain</li>
+<li><code>min_sto</code> minimum <code>streamorder</code> value</li>
+</ul>
+</section>
+<section id="output" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="output">Output</h3>
+<ul>
+<li><code>subbas_order</code> grouped subbasin ids (<code>Vector{Vector{Int}}</code>) ordered upstream (first index) to downstream (last index)</li>
+<li><code>indices_subbas</code> list of indices per subbasin id stored as <code>Vector{Vector{Int}}</code></li>
+<li><code>topo_subbas</code> topological order per subbasin id stored as <code>Vector{Vector{Int}}</code></li>
+</ul>
+</section>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="link2index" class="level2">
+<h2 class="anchored" data-anchor-id="link2index"><code>link2index</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>No documentation found for public symbol.</p>
+<p><code>RiverGraphs.link2index</code> is a <code>Function</code>.</p>
+<pre><code># 1 method for generic function "link2index" from RiverGraphs:
+ [1] link2index(links::AbstractVector)
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:39</code></pre>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="link2point" class="level2">
+<h2 class="anchored" data-anchor-id="link2point"><code>link2point</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>No documentation found for public symbol.</p>
+<p><code>RiverGraphs.link2point</code> is a <code>Function</code>.</p>
+<pre><code># 2 methods for generic function "link2point" from RiverGraphs:
+ [1] link2point(rg::RiverGraph, links::AbstractVector)
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:41
+ [2] link2point(rg::RiverGraph)
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:41</code></pre>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="link_flow2next" class="level2">
+<h2 class="anchored" data-anchor-id="link_flow2next"><code>link_flow2next</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>links to main streams</p>
+<section id="return" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="return">Return</h3>
+<ul>
+<li><code>info</code>: 流动方向的记录</li>
+</ul>
+</section>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="move2next" class="level2">
+<h2 class="anchored" data-anchor-id="move2next"><code>move2next</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>No documentation found for public symbol.</p>
+<p><code>RiverGraphs.move2next</code> is a <code>Function</code>.</p>
+<pre><code># 2 methods for generic function "move2next" from RiverGraphs:
+ [1] move2next(rg::RiverGraph, points::Vector{Tuple{Float64, Float64}})
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:86
+ [2] move2next(rg::RiverGraph, vs::AbstractVector{Int64})
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:82</code></pre>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="nrow" class="level2">
+<h2 class="anchored" data-anchor-id="nrow"><code>nrow</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<pre><code>nrow(t)</code></pre>
+<p>Return the number of rows of table <code>t</code>.</p>
+<pre><code>nrow(df::AbstractDataFrame)</code></pre>
+<p>Return the number of rows in an <code>AbstractDataFrame</code> <code>df</code>.</p>
+<p>See also: <a href="#ncol"><code>ncol</code></a>, <a href="#size"><code>size</code></a>.</p>
+<section id="examples-1" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="examples-1">Examples</h3>
+<pre class="jldoctest"><code>julia&gt; df = DataFrame(i=1:10, x=rand(10), y=rand(["a", "b", "c"], 10));
+
+julia&gt; nrow(df)
+10</code></pre>
+</section>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="nv" class="level2">
+<h2 class="anchored" data-anchor-id="nv"><code>nv</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<pre><code>nv(g)</code></pre>
+<p>Return the number of vertices in <code>g</code>.</p>
+<section id="examples-2" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="examples-2">Examples</h3>
+<pre class="jldoctest"><code>julia&gt; using Graphs
+
+julia&gt; nv(SimpleGraph(3))
+3</code></pre>
+</section>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="path_flowdir_guanshan" class="level2">
+<h2 class="anchored" data-anchor-id="path_flowdir_guanshan"><code>path_flowdir_GuanShan</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>No documentation found for public symbol.</p>
+<p><code>RiverGraphs.path_flowdir_GuanShan</code> is of type <code>String</code>.</p>
+<section id="summary" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="summary">Summary</h3>
+<pre><code>mutable struct String</code></pre>
+</section>
+<section id="supertype-hierarchy" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="supertype-hierarchy">Supertype Hierarchy</h3>
+<pre><code>String &lt;: AbstractString &lt;: Any</code></pre>
+</section>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="pcr_dir" class="level2">
+<h2 class="anchored" data-anchor-id="pcr_dir"><code>pcr_dir</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>lat reversed <code>pcr_dir</code></p>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="percentage" class="level2">
+<h2 class="anchored" data-anchor-id="percentage"><code>percentage</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>No documentation found for public symbol.</p>
+<p><code>RiverGraphs.percentage</code> is a <code>Function</code>.</p>
+<pre><code># 1 method for generic function "percentage" from RiverGraphs:
+ [1] percentage(rg::RiverGraph)
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/RiverGraph.jl:45</code></pre>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="point2index" class="level2">
+<h2 class="anchored" data-anchor-id="point2index"><code>point2index</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>No documentation found for public symbol.</p>
+<p><code>RiverGraphs.point2index</code> is a <code>Function</code>.</p>
+<pre><code># 2 methods for generic function "point2index" from RiverGraphs:
+ [1] point2index(ra::SpatRasters.SpatRaster, points)
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:75
+ [2] point2index(rg::RiverGraph, points)
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:69</code></pre>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="read_flowdir" class="level2">
+<h2 class="anchored" data-anchor-id="read_flowdir"><code>read_flowdir</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<ul>
+<li><code>pit</code>: flowdir is <code>0</code></li>
+</ul>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="reverse_index" class="level2">
+<h2 class="anchored" data-anchor-id="reverse_index"><code>reverse_index</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>No documentation found for public symbol.</p>
+<p><code>RiverGraphs.reverse_index</code> is a <code>Function</code>.</p>
+<pre><code># 1 method for generic function "reverse_index" from RiverGraphs:
+ [1] reverse_index(v::AbstractVector{T}, index, index_rev; nodata) where T
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/utils.jl:40</code></pre>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="show_netnode" class="level2">
+<h2 class="anchored" data-anchor-id="show_netnode"><code>show_NetNode</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<pre><code>show_net(net, info_node::DataFrame, info_pour::DataFrame)</code></pre>
+<ul>
+<li><p><code>info_node</code>: returned by <code>fillnodata_upriver</code> and <code>flow_path</code></p></li>
+<li><p><code>info_pour</code>: with the columns of <code>site</code> and <code>idnex_pit</code>.</p>
+<ul>
+<li><code>index_pit</code>: returned by <code>find_pits</code></li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="st_length" class="level2">
+<h2 class="anchored" data-anchor-id="st_length"><code>st_length</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>No documentation found for public symbol.</p>
+<p><code>RiverGraphs.st_length</code> is a <code>Function</code>.</p>
+<pre><code># 1 method for generic function "st_length" from RiverGraphs:
+ [1] st_length(lon::AbstractVector, lat::AbstractVector)
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/sf.jl:29</code></pre>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="st_shrink" class="level2">
+<h2 class="anchored" data-anchor-id="st_shrink"><code>st_shrink</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>No documentation found for public symbol.</p>
+<p><code>RiverGraphs.st_shrink</code> is a <code>Function</code>.</p>
+<pre><code># 3 methods for generic function "st_shrink" from RiverGraphs:
+ [1] st_shrink(mask::BitMatrix, lon::AbstractVector, lat::AbstractVector; cellsize_target)
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/sf.jl:79
+ [2] st_shrink(ra_mask::SpatRasters.SpatRaster{Bool}; cellsize_target)
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/sf.jl:74
+ [3] st_shrink(ra::SpatRasters.SpatRaster{T, N}; nodata, cellsize_target) where {T&lt;:Real, N}
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/sf.jl:65</code></pre>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="st_stream_network" class="level2">
+<h2 class="anchored" data-anchor-id="st_stream_network"><code>st_stream_network!</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>No documentation found for public symbol.</p>
+<p><code>RiverGraphs.st_stream_network!</code> is a <code>Function</code>.</p>
+<pre><code># 1 method for generic function "st_stream_network!" from RiverGraphs:
+ [1] st_stream_network!(rg::RiverGraph, pours; min_sto)
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/st_stream_network.jl:55</code></pre>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="st_subbasins" class="level2">
+<h2 class="anchored" data-anchor-id="st_subbasins"><code>st_subbasins</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>No documentation found for public symbol.</p>
+<p><code>RiverGraphs.st_subbasins</code> is a <code>Function</code>.</p>
+<pre><code># 1 method for generic function "st_subbasins" from RiverGraphs:
+ [1] st_subbasins(ra_basin::SpatRasters.SpatRaster, info_node::DataFrame, ids::AbstractVector; cellsize_target)
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/st_watershed.jl:38</code></pre>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="st_watershed" class="level2">
+<h2 class="anchored" data-anchor-id="st_watershed"><code>st_watershed</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<pre><code>st_watershed(rg::RiverGraph; level::Int=1, kw...)</code></pre>
+<section id="arguments-1" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="arguments-1">Arguments</h3>
+<ul>
+<li><code>min_sto</code>: 过小的sto不认为是stream link</li>
+</ul>
+</section>
+<section id="return-1" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="return-1">Return</h3>
+</section>
+<section id="example" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="example">Example</h3>
+<div class="sourceCode" id="cb38"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> <span class="fu">read_flowdir</span>(f) <span class="co"># flowdir, image(A) should looks normal</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>rg <span class="op">=</span> <span class="fu">RiverGraph</span>(A)</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>ra_basin <span class="op">=</span> <span class="fu">st_watershed</span>(rg; min_sto<span class="op">=</span><span class="fl">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="stream_link" class="level2">
+<h2 class="anchored" data-anchor-id="stream_link"><code>stream_link</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<pre><code>stream_link(g, streamorder, toposort, min_sto)</code></pre>
+<p>Return stream*link with a unique id starting at 1, based on a minimum streamorder <code>min*sto</code>, directed acyclic graph<code>g</code>and topological order<code>toposort</code>.</p>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="stream_network" class="level2">
+<h2 class="anchored" data-anchor-id="stream_network"><code>stream_network</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<pre><code>stream_network(info_node::DataFrame)</code></pre>
+<section id="example-1" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="example-1">Example</h3>
+<div class="sourceCode" id="cb41"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>rg <span class="op">=</span> <span class="fu">RiverGraph</span>(f)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>min_sto <span class="op">=</span> <span class="fl">4</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>strord <span class="op">=</span> <span class="fu">stream_order</span>(rg)</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>links <span class="op">=</span> <span class="fu">stream_link</span>(rg, strord; min_sto)</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>river, info_node <span class="op">=</span> <span class="fu">fillnodata_upriver</span>(rg, links, strord; min_sto, nodata<span class="op">=</span><span class="fl">0</span>)</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="fu">stream_network</span>(info_node)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="stream_order" class="level2">
+<h2 class="anchored" data-anchor-id="stream_order"><code>stream_order</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<pre><code>stream_order(g, toposort)</code></pre>
+<p>Return the Strahler streamorder based on directed acyclic graph <code>g</code> and topological order <code>toposort</code>.</p>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="topological_sort_by_dfs" class="level2">
+<h2 class="anchored" data-anchor-id="topological_sort_by_dfs"><code>topological_sort_by_dfs</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<pre><code>topological_sort_by_dfs(g)</code></pre>
+<p>Return a <a href="https://en.wikipedia.org/wiki/Topological_sorting">topological sort</a> of a directed graph <code>g</code> as a vector of vertices in topological order.</p>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="unlist" class="level2">
+<h2 class="anchored" data-anchor-id="unlist"><code>unlist</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>No documentation found for public symbol.</p>
+<p><code>RiverGraphs.unlist</code> is a <code>Function</code>.</p>
+<pre><code># 2 methods for generic function "unlist" from RiverGraphs:
+ [1] unlist(p::Pair)
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/utils.jl:5
+ [2] unlist(x::Real)
+     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/utils.jl:4</code></pre>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="write_subbasins" class="level2">
+<h2 class="anchored" data-anchor-id="write_subbasins"><code>write_subbasins</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<pre><code>write_subbasins(rg::RiverGraph, info_node::DataFrame, pours::DataFrame)</code></pre>
+<ul>
+<li><code>pours</code>: with columns of <code>name</code> and <code>geometry</code></li>
+</ul>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../api/1-SpatRaster.html" class="pagination-link" aria-label="1. SpatRaster">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">1. SpatRaster</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/jl-pkgs/RiverGraphs.jl/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
