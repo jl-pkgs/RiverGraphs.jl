@@ -69,22 +69,33 @@ end
 """
 function read_flowdir(f::String)
   A_gis = read_gdal(f, 1)#[:, end:-1:1] # 修正颠倒的lat
-  nodata = gdal_nodata(f)[1]
   A = gis2wflow(A_gis)
+  nodata = gdal_nodata(f)[1]
   replace!(A, nodata => 5) # nodata as pit
   A
 end
 
-function RiverGraph(f::String)
+# safe: use nodata as pit
+function RiverGraph(f::String, points=nothing; safe=true)
+  ra = rast(f)
   lon, lat = st_dims(f)
-  # lat = reverse(lat)
-  A = read_flowdir(f)
-  RiverGraph(A; lon, lat)
+  # A_gis = read_gdal(f, 1)#[:, end:-1:1] # 修正颠倒的lat
+  A = gis2wflow(ra.A)
+  pit = UInt8(5)
+
+  if !isnothing(points)
+    index_pit = point2index(ra, points)
+    A[index_pit] .= pit # set pit as 5
+  end
+
+  nodata = gdal_nodata(f)[1]
+  safe && replace!(A, nodata => pit) # nodata as pit
+  RiverGraph(A; lon, lat, nodata)
 end
 
 # 重要的教训，流域边界需设置为pit
 "Convert a gridded drainage direction to a directed graph"
-function graph_flow(ldd::AbstractVector, inds::AbstractVector, pcr_dir::AbstractVector)
+function graph_flow(ldd::AbstractVector, inds::AbstractVector, pcr_dir::AbstractVector; nodata::Int=0)
   # prepare a directed graph to be filled
   n = length(inds)
   graph = DiGraph(n)
@@ -93,7 +104,7 @@ function graph_flow(ldd::AbstractVector, inds::AbstractVector, pcr_dir::Abstract
   for (from_node, from_index) in enumerate(inds)
     ldd_val = ldd[from_node]
     # skip pits to prevent cycles
-    (ldd_val == 5 || ldd_val == 0) && continue
+    (ldd_val == 5 || ldd_val == nodata) && continue
     to_index = from_index + pcr_dir[ldd_val]
     # find the node id of the downstream cell
     to_node = searchsortedfirst(inds, to_index)

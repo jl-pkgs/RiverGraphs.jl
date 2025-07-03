@@ -4,6 +4,7 @@ using Printf, RTableTools
 import RiverGraphs: isscalar
 
 pours = Shapefile.Table("data/shp/Pour_十堰_sp8.shp") |> DataFrame
+points = st_points(pours)
 
 rg = RiverGraph("./data/十堰_500m_flowdir.tif")
 ra_basin, info_node, net_node = st_stream_network!(rg, pours; min_sto=5);

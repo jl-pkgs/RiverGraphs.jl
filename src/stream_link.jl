@@ -72,6 +72,13 @@ function point2index(rg::RiverGraph, points)
   map(p -> rg.index_rev[p[1], p[2]], locs) # index_pit, 流域出水口的位置
 end
 
+function point2index(ra::SpatRaster, points)
+  lon, lat = st_dims(ra)
+  locs = st_location_exact(lon, lat, points) # 查找位置
+  I = LinearIndices(ra.A)
+  map(p -> I[p[1], p[2]], locs)
+end
+
 function move2next(rg::RiverGraph, vs::AbstractVector{Int})
   map(v -> outneighbors(rg.graph, v) |> only, vs)
 end
