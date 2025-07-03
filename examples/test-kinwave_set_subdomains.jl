@@ -22,4 +22,4 @@ end
 # n_pits = length(index_pit)
 # basin = fill(0, length(toposort))
 # basin[index_pit] = [1:n_pits;]
-# basin_fill = fillnodata_upstream(graph, toposort, basin, 0)
+# basin_fill = fillnodata_upbasin(graph, toposort, basin, 0)

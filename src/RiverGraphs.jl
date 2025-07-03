@@ -7,7 +7,8 @@ import RTableTools: cbind
 
 include("IO.jl")
 include("RiverGraph.jl")
-include("fillnodata_upstream.jl")
+include("fillnodata_upbasin.jl")
+include("fillnodata_upriver.jl")
 
 include("flow_path.jl")
 include("st_watershed.jl")
@@ -24,7 +25,7 @@ export active_indices, reverse_index, pcr_dir,
   graph_flow,
   topological_sort_by_dfs,
   stream_order, stream_link, stream_network,
-  fillnodata_upstream, fillnodata_upriver
+  fillnodata_upbasin, fillnodata_upriver
 
 const path_flowdir_GuanShan = abspath("$(@__DIR__)/../data/GuanShan_flwdir.tif")
 

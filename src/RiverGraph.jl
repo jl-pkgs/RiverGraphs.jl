@@ -130,9 +130,27 @@ end
 
 # isvalid_flowdir()
 
-function SpatRaster(rg::RiverGraph, x::AbstractVector; kw...)
+
+function Base.Matrix(g::RiverGraph, v::AbstractVector{T}, nodata::T=T(0)) where {T}
+  reverse_index(v, g.index, g.index_rev; nodata)
+end
+
+function Base.Matrix(g::RiverGraph, xs::Tuple, nodata=0)
+  map(v -> Matrix(g, v, nodata), xs)
+end
+
+Base.Matrix(g::RiverGraph) = Matrix(g, g.data, g.nodata)
+
+
+function SpatRaster(rg::RiverGraph, x::AbstractVector; nodata=nothing, kw...)
   @assert length(rg.index) == length(x)
+  isscalar(nodata) && (nodata = [nodata])
+
   b = st_bbox(rg.lon, rg.lat)
   A = Matrix(rg, x)
-  rast(A, b; kw...)
+  rast(A, b; nodata, kw...)
 end
+
+isscalar(x) = !isa(x, AbstractArray)
+isscalar(::Nothing) = false
+# export isscalar

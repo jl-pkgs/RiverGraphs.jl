@@ -1,14 +1,6 @@
 using SpatRasters: st_cellsize, bbox, st_bbox, bbox_overlap
 using SpatRasters: SpatRaster, rast
 
-
-function get_coord(inds::Vector{CartesianIndex{2}})
-  xs = map(p -> p[1], inds)
-  ys = map(p -> p[2], inds)
-  xs, ys
-end
-get_coord(lgl::BitArray) = get_coord(findall(lgl))
-
 # check manually
 function meshgrid(x, y)
   X = repeat(x, 1, length(y))

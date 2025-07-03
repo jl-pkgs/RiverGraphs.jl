@@ -44,13 +44,3 @@ function reverse_index(v::AbstractVector{T}, index, index_rev; nodata::T=T(0)) w
   end
   R
 end
-
-function Base.Matrix(g::RiverGraph, v::AbstractVector{T}, nodata::T=T(0)) where {T}
-  reverse_index(v, g.index, g.index_rev; nodata)
-end
-
-function Base.Matrix(g::RiverGraph, xs::Tuple, nodata=0)
-  map(v -> Matrix(g, v, nodata), xs)
-end
-
-Base.Matrix(g::RiverGraph) = Matrix(g, g.data, g.nodata)

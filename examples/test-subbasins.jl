@@ -10,7 +10,7 @@ begin
   strord = stream_order(g)
   # min_sto = maximum(strord) - level
   links = stream_link(g, strord; level)
-  basinId = fillnodata_upstream(g, links, 0)
+  basinId = fillnodata_upbasin(g, links, 0)
 
   # @time strord, links, basinId = subbasins(g; min_sto)
   strord_2d, links_2d, basinId_2d =
@@ -56,7 +56,7 @@ begin
   ## [i,j] how to inds
   # xs, ys = get_coord(links_2d .!= 0)
   # vals = filter(x -> x != 0, links_2d)
-  _links = fillnodata_upstream(g, links, 0)
+  _links = fillnodata_upbasin(g, links, 0)
   # _links, info_next = link_flow2next(g, links) # 这里是走到了下一个点
   
   fig = Figure(; size=(1200, 400).*1)

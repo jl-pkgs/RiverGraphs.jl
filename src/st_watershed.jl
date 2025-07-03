@@ -23,7 +23,7 @@ function st_watershed(rg::RiverGraph; level::Int=1, kw...)
   # use river links as pour points
   strord = stream_order(rg)
   links = stream_link(rg, strord; level, kw...)
-  fillnodata_upstream(rg, links; nodata=0)
+  fillnodata_upbasin(rg, links; nodata=0)
 end
 
 
@@ -35,5 +35,5 @@ function st_watershed(rg::RiverGraph, points::Vector{Tuple{Float64,Float64}})
   basin = fill(0, length(rg.toposort))
   basin[index_pit] = [1:n_pits;]
 
-  fillnodata_upstream(rg, basin; nodata=0) # rast
+  fillnodata_upbasin(rg, basin; nodata=0) # rast
 end

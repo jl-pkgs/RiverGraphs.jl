@@ -1,3 +1,5 @@
+import SpatRasters: st_location_exact
+
 """
     stream_link(g, streamorder, toposort, min_sto)
 
@@ -32,19 +34,6 @@ stream_link(g::RiverGraph, strord; level::Int=2, min_sto=nothing) =
   stream_link(g.graph, g.toposort, strord; level, min_sto)
 
 
-
-function getInfo_links(g::RiverGraph, links_2d)
-  con = links_2d .!= 0
-  xs, ys = get_coord(con)
-  vals = filter(x -> x != 0, links_2d)
-  inds = g.index_rev[con][:]
-  DataFrame(; x=xs, y=ys,
-    lon=g.lon[xs], lat=g.lat[ys],
-    link=vals, index=inds)
-end
-
-
-
 link2index(links::AbstractVector) = findall(links .!== 0)
 
 function link2point(rg::RiverGraph, links::AbstractVector)
@@ -76,7 +65,7 @@ end
 # 根据经纬度，找到pits
 function point2index(rg::RiverGraph, points)
   (; lon, lat) = rg
-  locs = st_location_exact2(lon, lat, points) # 查找位置
+  locs = st_location_exact(lon, lat, points) # 查找位置
   map(p -> rg.index_rev[p[1], p[2]], locs) # index_pit, 流域出水口的位置
 end
 
@@ -111,6 +100,27 @@ function add_links!(links, index_pit)
 end
 
 
+## summary 
+function get_coord(inds::Vector{CartesianIndex{2}})
+  xs = map(p -> p[1], inds)
+  ys = map(p -> p[2], inds)
+  xs, ys
+end
+get_coord(lgl::BitArray) = get_coord(findall(lgl))
+
+function getInfo_links(g::RiverGraph, links_2d)
+  con = links_2d .!= 0
+  xs, ys = get_coord(con)
+  vals = filter(x -> x != 0, links_2d)
+
+  inds = g.index_rev[con][:]
+  DataFrame(; x=xs, y=ys,
+    lon=g.lon[xs], lat=g.lat[ys],
+    link=vals, index=inds)
+end
+
+
+
 export find_pits, move2next, add_links!
 export stream_link, getInfo_links
 export point2index,
@@ -118,34 +128,33 @@ export point2index,
   link2index, link2point
 
 
+# function findnear(x::Real, vals::AbstractVector; cell::Real=NaN, tol=1e-2)
+#   diff = abs.(vals .- x)
+#   i = argmin(diff)
+#   isnan(cell) && return i
+#   diff[i] <= (0.5 + tol) * abs(cell) ? i : -1 # 在1个网格内, 0.51 cell
+# end
 
-function findnear(x::Real, vals::AbstractVector; cell::Real=NaN, tol=1e-2)
-  diff = abs.(vals .- x)
-  i = argmin(diff)
-  isnan(cell) && return i
-  diff[i] <= (0.5 + tol) * abs(cell) ? i : -1 # 在1个网格内, 0.51 cell
-end
+# # cellsize需要是准确的
+# function findnear((x, y)::Tuple{Real,Real}, lon::AbstractVector, lat::AbstractVector;
+#   cellx::Real=NaN, celly::Real=NaN, tol=1e-2)
 
-# cellsize需要是准确的
-function findnear((x, y)::Tuple{Real,Real}, lon::AbstractVector, lat::AbstractVector;
-  cellx::Real=NaN, celly::Real=NaN, tol=1e-2)
+#   i = findnear(x, lon; cell=cellx, tol)
+#   j = findnear(y, lat; cell=celly, tol)
+#   (i == -1 || j == -1) && (return nothing) # 查找失败
+#   return i, j
+# end
 
-  i = findnear(x, lon; cell=cellx, tol)
-  j = findnear(y, lat; cell=celly, tol)
-  (i == -1 || j == -1) && (return nothing) # 查找失败
-  return i, j
-end
+# findnear(x::Real, y::Real, lon::AbstractVector, lat::AbstractVector; cellx::Real=NaN, celly::Real=NaN, tol=1e-2) =
+#   findnear((x, y), lon, lat; cellx, celly, tol)
 
-findnear(x::Real, y::Real, lon::AbstractVector, lat::AbstractVector; cellx::Real=NaN, celly::Real=NaN, tol=1e-2) =
-  findnear((x, y), lon, lat; cellx, celly, tol)
+# function st_location_exact2(lon::AbstractVector, lat::AbstractVector, points::Vector{Tuple{T,T}};
+#   rm_empty::Bool=false, cellsize=nothing, tol=1e-2) where {T<:Real}
+#   isnothing(cellsize) && (cellsize = st_cellsize(lon, lat))
+#   cellx, celly = cellsize
 
-function st_location_exact2(lon::AbstractVector, lat::AbstractVector, points::Vector{Tuple{T,T}};
-  rm_empty::Bool=false, cellsize=nothing, tol=1e-2) where {T<:Real}
-  isnothing(cellsize) && (cellsize = st_cellsize(lon, lat))
-  cellx, celly = cellsize
+#   locs = map(p -> findnear(p, lon, lat; cellx, celly, tol), points)
+#   return rm_empty ? _rm_empty(locs) : locs
+# end
 
-  locs = map(p -> findnear(p, lon, lat; cellx, celly, tol), points)
-  return rm_empty ? _rm_empty(locs) : locs
-end
-
-export st_location_exact2
+# export st_location_exact2

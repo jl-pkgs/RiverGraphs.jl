@@ -11,7 +11,7 @@ using RiverGraphs, Test
   level = 2
   strord = stream_order(rg)
   links = stream_link(rg, strord; level)
-  ra_basin = fillnodata_upstream(rg, links; nodata=0)
+  ra_basin = fillnodata_upbasin(rg, links; nodata=0)
   
   river, info_node = fillnodata_upriver(rg, links, strord; level, nodata=0)
   flow_path(rg, info_node, strord; level)
@@ -31,7 +31,7 @@ using RiverGraphs, Test
   level = 1
   strord = stream_order(rg)
   links = stream_link(rg, strord; level)
-  ra_basin = fillnodata_upstream(rg, links; nodata=0)
+  ra_basin = fillnodata_upbasin(rg, links; nodata=0)
   river, info_node = fillnodata_upriver(rg, links, strord; level, nodata=0)
 
   flow_path(rg, info_node, strord; level)

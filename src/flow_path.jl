@@ -47,7 +47,7 @@ function flow_path(g::RiverGraph, info_node::DataFrame, streamorder;
   # 河道上的点, 根据subbasins可以获取流域的点
   index = map(I -> g.index[I], index_g)
   len = river_length(index; lon=g.lon, lat=g.lat)
-  cbind(info_node; length=len, n_node, index=index_g)
+  cbind(info_node; length=len, n_node, index=index_g) # add `length`, `n_node`, `index`
 end
 
 """

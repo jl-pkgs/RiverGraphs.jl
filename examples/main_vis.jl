@@ -1,28 +1,12 @@
 using MakieLayers, GLMakie, Graphs, GraphMakie
 using Test
-import MakieLayers: imagesc
 using NaNStatistics
 using SpatRasters
+import MakieLayers: imagesc, imagesc!
+import GraphMakie: plot, plot!
 
 
-function _imagesc!(fig, A; nodata=0, kw...)
-  ncol = maximum(A)
-  A = replace(A * 1.0, nodata => NaN)
-  nlon, nlat = size(A)
-  A = reshape(A, nlon, nlat, 1)
-
-  _colors = resample_colors(amwg256, ncol)
-  colors = cgrad(_colors, ncol, categorical=true)
-
-  _ticks = 1:ncol
-  ticks = _ticks, string.(_ticks)
-
-  imagesc!(fig, 1:nlon, 1:nlat, A; colors,
-    colorrange=(0.5, ncol + 0.5),
-    force_show_legend=false, colorbar=(; ticks), kw...)
-end
-
-function plot_graph!(ax, g; offset=0.2)
+function plot!(ax::Axis, g::SimpleDiGraph; offset=0.2)
   p = graphplot!(ax, g;
     nlabels=repr.(1:nv(g)),
     nlabels_color=:blue,
@@ -37,50 +21,58 @@ function plot_graph!(ax, g; offset=0.2)
   autolimits!(ax)
 end
 
-function plot_graph(g)
+function plot(g::SimpleDiGraph)
   fig = Figure(; size=(800, 600))
   ax = Axis(fig[1, 1])
-  plot_graph!(ax, g; offset=0.7)
+  plot!(ax, g; offset=0.7)
   fig
 end
 
-# plot_graph(net)
 
-function imagesc(ra::SpatRaster)
+function imagesc(ra::SpatRaster; kw...)
   lon, lat = st_dims(ra)
-  imagesc(lon, lat, ra.A)
+  imagesc(lon, lat, ra.A; kw...)
 end
 
-function imagesc(ax, ra::SpatRaster)
+function imagesc!(ax, ra::SpatRaster; nodata=nothing, kw...)
+  A = ra.A[:, :]
+  isnothing(nodata) && (A = replace(A, nodata => NaN))
   lon, lat = st_dims(ra)
-  imagesc!(ax, lon, lat, ra.A)
+  imagesc!(ax, lon, lat, A; force_show_legend=false, kw...)
 end
 
 
+## 成熟的函数
+function build_colorbar(A; nodata=0)
+  A = replace(A, nodata => NaN)
 
-function build_colorbar(A)
-  ncols = nanmaximum(A) |> Int # colors
+  high = nanmaximum(A) |> Int # colors
+  low = nanminimum(A) |> Int
+  ncols = high - low + 1
+
   _colors = resample_colors(amwg256, ncols)
   colors = cgrad(_colors, ncols, categorical=true)
 
-  _ticks = 1:ncols
+  _ticks = low:high
   ticks = _ticks, string.(_ticks)
-  colorrange = (1, ncols) .+ (-0.5, 0.5)
-  colorrange, colors, ticks
+  colorrange = (low, high) .+ (-0.5, 0.5)
+  A, colorrange, colors, ticks
 end
 
-function plot_basin!(ax, ra::SpatRaster; nodata=0, kw...)
+function plot_discrete!(ax, ra::SpatRaster; nodata=0, kw...)
   lon, lat = st_dims(ra)
-  A = replace(ra.A, nodata => NaN)
-  colorrange, colors, ticks = build_colorbar(A)
-
-  imagesc!(ax, lon, lat, A; colors, colorbar=(;ticks), colorrange, force_show_legend=true)
+  A, colorrange, colors, ticks = build_colorbar(ra.A; nodata)
+  imagesc!(ax, lon, lat, A; colors, colorbar=(; ticks), colorrange, force_show_legend=true)
 end
 
-function plot_basin(ra::SpatRaster; nodata=0, kw...)
+function plot_discrete(ra::SpatRaster; nodata=0, kw...)
   lon, lat = st_dims(ra)
-  A = replace(ra.A, nodata => NaN)
-  colorrange, colors, ticks = build_colorbar(A)
-
+  A, colorrange, colors, ticks = build_colorbar(ra.A; nodata)
   imagesc(lon, lat, A; colors, colorbar, kw...)
+end
+
+
+function plot_links!(ax, info_link)
+  scatter!(ax, info_link.lon, info_link.lat; color=:black) # colormap not work
+  text!(ax, info_link.lon, info_link.lat, text=string.(info_link.link))
 end
