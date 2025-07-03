@@ -4,7 +4,7 @@ module RiverGraphs
 using Graphs, Parameters, DataFrames
 using Printf
 import SpatRasters: st_dims
-import RTableTools: cbind
+import RTableTools: cbind, fwrite, fread
 
 include("IO.jl")
 include("RiverGraph.jl")

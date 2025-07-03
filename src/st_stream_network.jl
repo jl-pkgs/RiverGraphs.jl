@@ -56,7 +56,8 @@ function st_stream_network!(rg::RiverGraph, pours; min_sto=5)
   sites = pours.name
   points = st_points(pours)
 
-  index_pit = find_pits(rg, points) # 这里是往下移动了一个网格
+  # index_pit = find_pits(rg, points) # 这里是往下移动了一个网格
+  index_pit = point2index(rg, points)
   info_pour = DataFrame(; site=sites, index_pit)
 
   strord = stream_order(rg)

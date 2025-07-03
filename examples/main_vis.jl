@@ -13,7 +13,7 @@ function plot(rg::RiverGraph, ra_basin, net_node; size=(1600, 600))
   fig = Figure(; size)
   plot!(fig[1, 1], ra_basin; title="BasinId", fun_axis=rm_ticks!)
 
-  ax, plt = plot!(fig[1, 2], ra_order; title="Stream Order", fun_axis=rm_ticks!, nodata=1)
+  ax, plt = plot!(fig[1, 2], ra_order; title="Stream Order", fun_axis=rm_ticks!, min=2)
   plot_links!(ax, info_link)
 
   plot!(Axis(fig[1, 3]), net_node; offset=0.7)
@@ -61,14 +61,15 @@ end
 
 
 ## 成熟的函数
-function build_colorbar(A; nodata=0)
-  A = replace(A, nodata => NaN)
+function build_colorbar(A; nodata=0, min=nothing)
+  A = replace(A .* 1.0, nodata => NaN)
+  !isnothing(min) && (A[A.<min] .= NaN)
 
   high = nanmaximum(A) |> Int # colors
   low = nanminimum(A) |> Int
   ncols = high - low + 1
 
-  _colors = resample_colors(amwg256, ncols)
+  _colors = resample_colors(amwg256, max(2, ncols))[1:ncols]
   colors = cgrad(_colors, ncols, categorical=true)
 
   _ticks = low:high
@@ -78,15 +79,16 @@ function build_colorbar(A; nodata=0)
 end
 
 
-function plot!(ax, ra::SpatRaster{T,N}; nodata=0, kw...) where {T<:Integer,N}
+function plot!(ax, ra::SpatRaster{T,N}; nodata=0, min=nothing, kw...) where {T<:Integer,N}
   lon, lat = st_dims(ra)
-  A, colorrange, colors, ticks = build_colorbar(ra.A; nodata)
+
+  A, colorrange, colors, ticks = build_colorbar(ra.A * 1.0; nodata, min)
   imagesc!(ax, lon, lat, A; colors, colorbar=(; ticks), colorrange, force_show_legend=true)
 end
 
-function plot(ra::SpatRaster{T,N}; nodata=0, kw...) where {T<:Integer,N}
+function plot(ra::SpatRaster{T,N}; nodata=0, min=nothing, kw...) where {T<:Integer,N}
   lon, lat = st_dims(ra)
-  A, colorrange, colors, ticks = build_colorbar(ra.A; nodata)
+  A, colorrange, colors, ticks = build_colorbar(ra.A; nodata, min)
   imagesc(lon, lat, A; colors, colorrange, colorbar=(; ticks), force_show_legend=true, kw...)
 end
 

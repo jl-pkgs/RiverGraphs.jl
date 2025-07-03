@@ -1,9 +1,10 @@
 
 using Graphs, Parameters
-import SpatRasters: SpatRaster, st_dims
+import SpatRasters: SpatRaster, st_dims, write_gdal
 
 export find_outlet, graph_children
 export read_flowdir
+export percentage
 
 """
     graph_children(net, v)
@@ -41,6 +42,9 @@ end
   nodata::FT = FT(0)
 end
 
+percentage(rg::RiverGraph) = rg.ngrid / prod(size(rg.index_rev))
+
+
 function RiverGraph(data::AbstractArray{FT}, rg::RiverGraph) where {FT}
   (; graph, toposort, names, index, index_rev, nodata, lon, lat) = rg
   ngrid = length(toposort)
@@ -76,10 +80,13 @@ function read_flowdir(f::String)
 end
 
 # safe: use nodata as pit
-function RiverGraph(f::String, points=nothing; safe=true)
-  ra = rast(f)
-  lon, lat = st_dims(f)
+function RiverGraph(f::String, points=nothing; safe=false)
+  RiverGraph(rast(f), points; safe)
+end
+
+function RiverGraph(ra::SpatRaster, points=nothing; safe=false)
   # A_gis = read_gdal(f, 1)#[:, end:-1:1] # 修正颠倒的lat
+  lon, lat = st_dims(ra)
   A = gis2wflow(ra.A)
   pit = UInt8(5)
 
@@ -88,10 +95,11 @@ function RiverGraph(f::String, points=nothing; safe=true)
     A[index_pit] .= pit # set pit as 5
   end
 
-  nodata = gdal_nodata(f)[1]
+  nodata = ra.nodata[1]
   safe && replace!(A, nodata => pit) # nodata as pit
   RiverGraph(A; lon, lat, nodata)
 end
+
 
 # 重要的教训，流域边界需设置为pit
 "Convert a gridded drainage direction to a directed graph"
@@ -105,21 +113,25 @@ function graph_flow(ldd::AbstractVector, inds::AbstractVector, pcr_dir::Abstract
     ldd_val = ldd[from_node]
     # skip pits to prevent cycles
     (ldd_val == 5 || ldd_val == nodata) && continue
-    to_index = from_index + pcr_dir[ldd_val]
-    # find the node id of the downstream cell
-    to_node = searchsortedfirst(inds, to_index)
 
-    # to_node需要在可行的范围内
-    if from_node != to_node
+    # find the node id of the downstream cell
+    to_index = from_index + pcr_dir[ldd_val]
+    to_node = findfirst(==(to_index), inds)
+    # to_node = searchsortedfirst(inds, to_index) # 这里出现了错误
+
+    if !isnothing(to_node) && from_node != to_node
       add_edge!(graph, from_node, to_node)
     end
   end
 
   if is_cyclic(graph)
-    error("""One or more cycles detected in flow graph.
+    cycles = simplecycles(graph)
+    printstyled("""One or more cycles detected in flow graph.
         The provided local drainage direction map may be unsound.
         Verify that each active flow cell flows towards a pit.
-        """)
+        """, color=:red)
+    display(cycles)
+    error()
   end
   return graph
 end

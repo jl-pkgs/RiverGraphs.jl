@@ -64,9 +64,13 @@ function write_subbasins(rg::RiverGraph, info_node::DataFrame, pours::DataFrame;
   sites = pours.name
   points = st_points(pours)
 
-  index = find_pits(rg, points)
+  # index = find_pits(rg, points)
+  index = point2index(rg, points)
   ids = rg.links[index]
+  @show ids
   # info_pour = DataFrame(; link=ids, site=sites, geometry=points)
+  net_node = stream_network(info_node)
+  ra_basin = SpatRaster(rg, rg.basins)
 
   N = length(ids)
   for i in 1:N

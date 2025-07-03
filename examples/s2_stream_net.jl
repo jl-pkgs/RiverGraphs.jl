@@ -2,6 +2,7 @@ includet("main_vis.jl")
 using SpatRasters, ArchGDAL, Shapefile, RiverGraphs, Test
 using Printf, RTableTools
 import RiverGraphs: isscalar
+import Ipaper: table
 
 pours = Shapefile.Table("data/shp/Pour_十堰_sp8.shp") |> DataFrame
 points = st_points(pours)
@@ -12,18 +13,18 @@ ra_basin, info_node, net_node = st_stream_network!(rg, pours; min_sto=5);
 plot(net_node)
 plot(rg, ra_basin, net_node)
 
-begin
-  rg = RiverGraph("./data/十堰_500m_flowdir.tif")
-  ra_basin, info_node, net_node = st_stream_network!(rg, pours[3:3, :]; min_sto=5)
+outdir = "./Project_ShiYan/data/basins/"
+write_subbasins(rg, info_node, pours; outdir)
 
-  plot(net_node)
-  plot(rg, ra_basin, net_node)
-end
+# begin
+#   rg = RiverGraph("./data/十堰_500m_flowdir.tif")
+#   ra_basin, info_node, net_node = st_stream_network!(rg, pours[3:3, :]; min_sto=5)
+#   plot(net_node)
+#   plot(rg, ra_basin, net_node)
+# end
 
 # write_gdal(ra, "Guanshan_subbasins.tif")
 # gdal_polygonize("Guanshan_subbasins.tif", "data/shp/Guanshan_subbasins.shp")
-write_subbasins(rg, info_node, pours)
-
 plot(net)
 plot(_basin)
 

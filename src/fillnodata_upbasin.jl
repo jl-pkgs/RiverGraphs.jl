@@ -20,6 +20,6 @@ function fillnodata_upbasin(g::AbstractGraph, toposort, data; nodata=0)
 end
 
 function fillnodata_upbasin(rg::RiverGraph, data; nodata=0, kw...)
-  vec_fill = fillnodata_upbasin(rg.graph, rg.toposort, data; nodata)
-  SpatRaster(rg, vec_fill; kw...)
+  rg.basins = fillnodata_upbasin(rg.graph, rg.toposort, data; nodata)
+  SpatRaster(rg, rg.basins; kw...)
 end
