@@ -82,7 +82,7 @@ function plot!(ax, ra::SpatRaster{T,N}; nodata=0, min=nothing, kw...) where {T<:
   lon, lat = st_dims(ra)
 
   A, colorrange, colors, ticks = build_colorbar(ra.A * 1.0; nodata, min)
-  imagesc!(ax, lon, lat, A; colors, colorbar=(; ticks), colorrange, force_show_legend=true)
+  imagesc!(ax, lon, lat, A; colors, colorbar=(; ticks), colorrange, force_show_legend=true, kw...)
 end
 
 function plot(ra::SpatRaster{T,N}; nodata=0, min=nothing, kw...) where {T<:Integer,N}
