@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.33">
+<meta name="generator" content="quarto-1.7.34">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -72,14 +72,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-bc185b5c5bdbcb35c2eb49d8a876ef70.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-befe23ebd2f54d8af2c8a89d1a1611f1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-1f2c5671f16b03fccc3dca3f2befe5e0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-881aa8d321e24980e37d9a9b110e67f7.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-1f2c5671f16b03fccc3dca3f2befe5e0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-70036a5793246c9d86baa7c3bf9c5655.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-03b54430f85c8d73068944a5a7c35ea3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-70036a5793246c9d86baa7c3bf9c5655.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -1305,7 +1305,7 @@ julia&gt; nv(SimpleGraph(3))
 <p>No documentation found for public symbol.</p>
 <p><code>RiverGraphs.point2index</code> is a <code>Function</code>.</p>
 <pre><code># 2 methods for generic function "point2index" from RiverGraphs:
- [1] point2index(ra::SpatRasters.SpatRaster, points)
+ [1] point2index(ra::SpatialRasterLite.SpatRaster, points)
      @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:75
  [2] point2index(rg::RiverGraph, points)
      @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:69</code></pre>
@@ -1400,9 +1400,9 @@ julia&gt; nv(SimpleGraph(3))
 <pre><code># 3 methods for generic function "st_shrink" from RiverGraphs:
  [1] st_shrink(mask::BitMatrix, lon::AbstractVector, lat::AbstractVector; cellsize_target)
      @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/sf.jl:79
- [2] st_shrink(ra_mask::SpatRasters.SpatRaster{Bool}; cellsize_target)
+ [2] st_shrink(ra_mask::SpatialRasterLite.SpatRaster{Bool}; cellsize_target)
      @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/sf.jl:74
- [3] st_shrink(ra::SpatRasters.SpatRaster{T, N}; nodata, cellsize_target) where {T&lt;:Real, N}
+ [3] st_shrink(ra::SpatialRasterLite.SpatRaster{T, N}; nodata, cellsize_target) where {T&lt;:Real, N}
      @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/sf.jl:65</code></pre>
 </div>
 </div>
@@ -1438,7 +1438,7 @@ julia&gt; nv(SimpleGraph(3))
 <p>No documentation found for public symbol.</p>
 <p><code>RiverGraphs.st_subbasins</code> is a <code>Function</code>.</p>
 <pre><code># 1 method for generic function "st_subbasins" from RiverGraphs:
- [1] st_subbasins(ra_basin::SpatRasters.SpatRaster, info_node::DataFrame, ids::AbstractVector; cellsize_target)
+ [1] st_subbasins(ra_basin::SpatialRasterLite.SpatRaster, info_node::DataFrame, ids::AbstractVector; cellsize_target)
      @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/st_watershed.jl:38</code></pre>
 </div>
 </div>

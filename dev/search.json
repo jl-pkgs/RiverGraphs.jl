@@ -314,7 +314,7 @@
     "href": "api/z-index.html#point2index",
     "title": "Reference",
     "section": "point2index",
-    "text": "point2index\n\n\n\n\n\n\nNo documentation found for public symbol.\nRiverGraphs.point2index is a Function.\n# 2 methods for generic function \"point2index\" from RiverGraphs:\n [1] point2index(ra::SpatRasters.SpatRaster, points)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:75\n [2] point2index(rg::RiverGraph, points)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:69",
+    "text": "point2index\n\n\n\n\n\n\nNo documentation found for public symbol.\nRiverGraphs.point2index is a Function.\n# 2 methods for generic function \"point2index\" from RiverGraphs:\n [1] point2index(ra::SpatialRasterLite.SpatRaster, points)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:75\n [2] point2index(rg::RiverGraph, points)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/stream_link.jl:69",
     "crumbs": [
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
     ]
@@ -364,7 +364,7 @@
     "href": "api/z-index.html#st_shrink",
     "title": "Reference",
     "section": "st_shrink",
-    "text": "st_shrink\n\n\n\n\n\n\nNo documentation found for public symbol.\nRiverGraphs.st_shrink is a Function.\n# 3 methods for generic function \"st_shrink\" from RiverGraphs:\n [1] st_shrink(mask::BitMatrix, lon::AbstractVector, lat::AbstractVector; cellsize_target)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/sf.jl:79\n [2] st_shrink(ra_mask::SpatRasters.SpatRaster{Bool}; cellsize_target)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/sf.jl:74\n [3] st_shrink(ra::SpatRasters.SpatRaster{T, N}; nodata, cellsize_target) where {T&lt;:Real, N}\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/sf.jl:65",
+    "text": "st_shrink\n\n\n\n\n\n\nNo documentation found for public symbol.\nRiverGraphs.st_shrink is a Function.\n# 3 methods for generic function \"st_shrink\" from RiverGraphs:\n [1] st_shrink(mask::BitMatrix, lon::AbstractVector, lat::AbstractVector; cellsize_target)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/sf.jl:79\n [2] st_shrink(ra_mask::SpatialRasterLite.SpatRaster{Bool}; cellsize_target)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/sf.jl:74\n [3] st_shrink(ra::SpatialRasterLite.SpatRaster{T, N}; nodata, cellsize_target) where {T&lt;:Real, N}\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/sf.jl:65",
     "crumbs": [
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
     ]
@@ -384,7 +384,7 @@
     "href": "api/z-index.html#st_subbasins",
     "title": "Reference",
     "section": "st_subbasins",
-    "text": "st_subbasins\n\n\n\n\n\n\nNo documentation found for public symbol.\nRiverGraphs.st_subbasins is a Function.\n# 1 method for generic function \"st_subbasins\" from RiverGraphs:\n [1] st_subbasins(ra_basin::SpatRasters.SpatRaster, info_node::DataFrame, ids::AbstractVector; cellsize_target)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/st_watershed.jl:38",
+    "text": "st_subbasins\n\n\n\n\n\n\nNo documentation found for public symbol.\nRiverGraphs.st_subbasins is a Function.\n# 1 method for generic function \"st_subbasins\" from RiverGraphs:\n [1] st_subbasins(ra_basin::SpatialRasterLite.SpatRaster, info_node::DataFrame, ids::AbstractVector; cellsize_target)\n     @ ~/work/RiverGraphs.jl/RiverGraphs.jl/src/st_watershed.jl:38",
     "crumbs": [
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>Reference</span>"
     ]
