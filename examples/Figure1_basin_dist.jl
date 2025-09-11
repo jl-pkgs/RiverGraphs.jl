@@ -1,5 +1,5 @@
 using GLMakie, MakieLayers
-using SpatRasters, ArchGDAL
+using SpatialRasterLite, ArchGDAL
 using Ipaper
 
 import MakieLayers: imagesc!

@@ -1,4 +1,4 @@
-using SpatRasters, ArchGDAL, RiverGraphs, Test
+using SpatialRasterLite, ArchGDAL, RiverGraphs, Test
 using Shapefile
 
 @testset "st_shrink" begin

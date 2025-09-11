@@ -1,6 +1,6 @@
-using SpatRasters: st_cellsize, bbox, st_bbox, bbox_overlap
-using SpatRasters: SpatRaster, rast
-import SpatRasters: bbox2dims, _zip
+using SpatialRasterLite: st_cellsize, bbox, st_bbox, bbox_overlap
+using SpatialRasterLite: SpatRaster, rast
+import SpatialRasterLite: bbox2dims, _zip
 
 # check manually
 function meshgrid(x, y)

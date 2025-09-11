@@ -1,4 +1,4 @@
-import SpatRasters: gdal_nodata, read_gdal
+import SpatialRasterLite: gdal_nodata, read_gdal
 
 ## Note: 
 # 1. The dimemsion of `dem`: [lon, lat], which is different from ArcGIS. Hence, DIR

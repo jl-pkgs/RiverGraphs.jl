@@ -1,5 +1,5 @@
 includet("main_vis.jl")
-using SpatRasters, ArchGDAL, Shapefile, RiverGraphs, Test
+using SpatialRasterLite, ArchGDAL, Shapefile, RiverGraphs, Test
 using Printf, RTableTools
 import RiverGraphs: isscalar
 import Ipaper: table

@@ -1,4 +1,4 @@
-import SpatRasters: st_points
+import SpatialRasterLite: st_points
 # st_points(geoms::Vector{Union{Missing,Shapefile.Point}}) = map(p -> (p.x, p.y), geoms)
 st_points(geoms::Vector) = map(p -> (p.x, p.y), geoms)
 st_points(shp::DataFrame) = st_points(shp.geometry)

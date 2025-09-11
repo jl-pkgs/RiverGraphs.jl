@@ -1,5 +1,5 @@
 using NaNStatistics, Test
-using SpatRasters, RiverGraphs
+using SpatialRasterLite, RiverGraphs
 import MakieLayers: imagesc, imagesc!
 import GraphMakie: plot, plot!
 using MakieLayers, GLMakie, GraphMakie

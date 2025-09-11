@@ -1,4 +1,4 @@
-import SpatRasters: st_location_exact
+import SpatialRasterLite: st_location_exact
 export st_watershed, st_subbasins, write_subbasins
 
 """

@@ -1,4 +1,4 @@
-import SpatRasters: st_location_exact
+import SpatialRasterLite: st_location_exact
 
 """
     stream_link(g, streamorder, toposort, min_sto)

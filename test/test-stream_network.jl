@@ -1,4 +1,4 @@
-using SpatRasters, ArchGDAL, DataFrames, RiverGraphs, Test
+using SpatialRasterLite, ArchGDAL, DataFrames, RiverGraphs, Test
 using Shapefile
 
 INDIR = "$(@__DIR__)/../" |> abspath

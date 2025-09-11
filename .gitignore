@@ -10,3 +10,12 @@ Manifest.toml
 *debug*
 
 Project_*
+
+*.nc
+*.tif
+shp
+*.csv
+
+subbasins
+basins
+*.pdf

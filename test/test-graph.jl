@@ -1,4 +1,4 @@
-using SpatRasters, ArchGDAL
+using SpatialRasterLite, ArchGDAL
 using RiverGraphs, Test
 
 

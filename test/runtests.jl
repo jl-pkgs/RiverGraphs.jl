@@ -1,5 +1,5 @@
 using RiverGraphs, Test
-import SpatRasters, ArchGDAL
+import SpatialRasterLite, ArchGDAL
 
 
 include("test-st_shrink.jl")

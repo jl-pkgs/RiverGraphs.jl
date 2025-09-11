@@ -1,6 +1,6 @@
 
 using Graphs, Parameters
-import SpatRasters: SpatRaster, st_dims, write_gdal
+import SpatialRasterLite: SpatRaster, st_dims, write_gdal
 
 export find_outlet, graph_children
 export read_flowdir
