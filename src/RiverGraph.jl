@@ -61,7 +61,7 @@ function RiverGraph(A::AbstractMatrix{FT}; nodata=FT(0), kw...) where {FT}
   index, index_rev = active_indices(A, nodata)
   ldd = A[index]
 
-  graph = graph_flow(ldd, index, pcr_dir)
+  graph = graph_flow(ldd, index, index_rev, pcr_dir)
   toposort = topological_sort_by_dfs(graph)
   ngrid = length(toposort)
   RiverGraph(; ngrid, graph, toposort, data=ldd, nodata, index, index_rev, kw...)
@@ -102,24 +102,66 @@ end
 
 
 # 重要的教训，流域边界需设置为pit
-"Convert a gridded drainage direction to a directed graph"
-function graph_flow(ldd::AbstractVector, inds::AbstractVector, pcr_dir::AbstractVector; nodata::Int=0)
+"""
+    graph_flow(ldd, inds, index_rev, pcr_dir; nodata=0)
+
+Convert a gridded drainage direction to a directed graph.
+
+`index_rev` maps 2-D CartesianIndex to 1-D node id in O(1).
+Previously `findfirst(==(to_index), inds)` scanned the entire `inds`
+array for every cell — O(N) per lookup, O(N²) total. For N ≈ 3.5M
+active cells, this was infeasible. Replaced with matrix direct access
+so the full loop runs O(N).
+"""
+function graph_flow(ldd::AbstractVector, inds::AbstractVector,
+    index_rev::AbstractMatrix, pcr_dir::AbstractVector; nodata::Int=0)
   # prepare a directed graph to be filled
   n = length(inds)
   graph = DiGraph(n)
 
   # loop over ldd, adding the edge to the downstream node
-  for (from_node, from_index) in enumerate(inds)
+  @inbounds for (from_node, from_index) in enumerate(inds)
     ldd_val = ldd[from_node]
     # skip pits to prevent cycles
     (ldd_val == 5 || ldd_val == nodata) && continue
 
-    # find the node id of the downstream cell
+    # Map the downstream cell to its node id in O(1). Values of 0 represent
+    # cells outside the active domain.
     to_index = from_index + pcr_dir[ldd_val]
-    to_node = findfirst(==(to_index), inds)
-    # to_node = searchsortedfirst(inds, to_index) # 这里出现了错误
+    checkbounds(Bool, index_rev, to_index) || continue
+    to_node = index_rev[to_index]
 
-    if !isnothing(to_node) && from_node != to_node
+    if to_node != 0 && from_node != to_node
+      add_edge!(graph, from_node, to_node)
+    end
+  end
+
+  if is_cyclic(graph)
+    cycles = simplecycles(graph)
+    printstyled("""One or more cycles detected in flow graph.
+        The provided local drainage direction map may be unsound.
+        Verify that each active flow cell flows towards a pit.
+        """, color=:red)
+    display(cycles)
+    error()
+  end
+  return graph
+end
+
+# Backward-compatible method. Prefer passing index_rev to avoid allocating a Dict.
+function graph_flow(ldd::AbstractVector, inds::AbstractVector,
+    pcr_dir::AbstractVector; nodata::Int=0)
+  index_rev = Dict(index => node for (node, index) in enumerate(inds))
+  n = length(inds)
+  graph = DiGraph(n)
+
+  @inbounds for (from_node, from_index) in enumerate(inds)
+    ldd_val = ldd[from_node]
+    (ldd_val == 5 || ldd_val == nodata) && continue
+
+    to_index = from_index + pcr_dir[ldd_val]
+    to_node = get(index_rev, to_index, 0)
+    if to_node != 0 && from_node != to_node
       add_edge!(graph, from_node, to_node)
     end
   end

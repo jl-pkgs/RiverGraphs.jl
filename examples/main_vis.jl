@@ -1,21 +1,29 @@
 using NaNStatistics, Test
-using SpatialRasterLite, RiverGraphs
+using SpatialRasterLite, ArchGDAL, RiverGraphs
 import MakieLayers: imagesc, imagesc!
 import GraphMakie: plot, plot!
 using MakieLayers, GLMakie, GraphMakie
 
 # plot RiverGraph
-function plot(rg::RiverGraph, ra_basin, net_node; size=(1600, 600))
+function plot(rg::RiverGraph, ra_basin, net_node; size=(1600, 600), min_sto=2,
+  show_title=true)
   ra_order = SpatRaster(rg, rg.strord)
   info_link = link2point(rg)
 
   fig = Figure(; size)
-  plot!(fig[1, 1], ra_basin; title="BasinId", fun_axis=rm_ticks!)
+  title_1 = show_title ? "BasinId" : ""
+  title_2 = show_title ? "Stream Order" : ""
 
-  ax, plt = plot!(fig[1, 2], ra_order; title="Stream Order", fun_axis=rm_ticks!, min=2)
+  plot!(fig[1, 1], ra_basin; title=title_1, fun_axis=rm_ticks!)
+  ax, plt = plot!(fig[1, 2], ra_order; title=title_2, fun_axis=rm_ticks!, min=min_sto)
   plot_links!(ax, info_link)
 
-  plot!(Axis(fig[1, 3]), net_node; offset=0.7)
+  ax = Axis(fig[1, 3])
+  plot!(ax, net_node; offset=0.7)
+  ax.leftspinevisible = true
+  ax.rightspinevisible = true
+  ax.bottomspinevisible = true
+  ax.topspinevisible = true
 
   colgap!(fig.layout.content[2].content, 10)
   colgap!(fig.layout, 10)
@@ -96,5 +104,5 @@ function plot_links!(ax::Axis, info_link::DataFrame)
   points = info_link.geometry
   link = info_link.link
   scatter!(ax, points; color=:black) # colormap not work
-  text!(ax, points, text=string.(link))
+  text!(ax, points, text=string.(link), fontsize=14)
 end

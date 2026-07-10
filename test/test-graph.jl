@@ -1,5 +1,27 @@
 using SpatialRasterLite, ArchGDAL
 using RiverGraphs, Test
+import Graphs
+
+
+@testset "graph_flow reverse index" begin
+  A = UInt8[6 0; 5 0]
+  inds, index_rev = active_indices(A, UInt8(0))
+  ldd = A[inds]
+
+  graph = graph_flow(ldd, inds, index_rev, pcr_dir)
+  graph_compat = graph_flow(ldd, inds, pcr_dir)
+
+  @test Graphs.nv(graph) == 2
+  @test Graphs.has_edge(graph, 1, 2)
+  @test collect(Graphs.edges(graph)) == collect(Graphs.edges(graph_compat))
+
+  # A downstream index outside the raster must be ignored safely.
+  A_boundary = reshape(UInt8[4], 1, 1)
+  inds_boundary, index_rev_boundary = active_indices(A_boundary, UInt8(0))
+  graph_boundary = graph_flow(A_boundary[inds_boundary], inds_boundary,
+    index_rev_boundary, pcr_dir)
+  @test Graphs.ne(graph_boundary) == 0
+end
 
 
 # flowdir, image(A) should looks normal
