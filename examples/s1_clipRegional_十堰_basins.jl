@@ -13,5 +13,4 @@ ra_basin = st_watershed(rg, points)
 
 # strord = stream_order(rg) # 255 as missing
 imagesc(ra_basin)
-
 find_outlet(rg.graph, rg.toposort, strord; min_sto=3)

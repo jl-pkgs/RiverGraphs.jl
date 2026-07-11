@@ -1,4 +1,5 @@
-include("main_vis.jl")
+using Revise
+includet("main_vis.jl")
 using SpatialRasterLite, ArchGDAL, Shapefile, RiverGraphs, Test
 using Printf, RTableTools
 
@@ -8,7 +9,7 @@ import Ipaper: table
 pours = Shapefile.Table("data/shp/Pour_十堰_sp8.shp") |> DataFrame
 points = st_points(pours)
 
-rg = RiverGraph("./data/十堰_500m_flowdir.tif")
+rg = RiverGraph("./data/GuanShan_flwdir.tif")
 ra_basin, info_node, net_node = st_stream_network!(rg, pours; min_sto=5);
 
 plot(net_node)
