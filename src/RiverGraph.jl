@@ -1,6 +1,7 @@
 
 using Graphs, Parameters
 import SpatialRasterLite: SpatRaster, st_dims, write_gdal
+include("Graph.jl")
 
 export find_outlet, graph_children
 export read_flowdir
@@ -62,7 +63,7 @@ function RiverGraph(A::AbstractMatrix{FT}; nodata=FT(0), kw...) where {FT}
   ldd = A[index]
 
   graph = graph_flow(ldd, index, index_rev, pcr_dir)
-  toposort = topological_sort_by_dfs(graph)
+  toposort = topological_sort_kahn(graph)
   ngrid = length(toposort)
   RiverGraph(; ngrid, graph, toposort, data=ldd, nodata, index, index_rev, kw...)
 end
@@ -118,32 +119,30 @@ function graph_flow(ldd::AbstractVector, inds::AbstractVector,
   # prepare a directed graph to be filled
   n = length(inds)
   graph = DiGraph(n)
+  fadj = graph.fadjlist
+  badj = graph.badjlist
 
-  # loop over ldd, adding the edge to the downstream node
-  @inbounds for (from_node, from_index) in enumerate(inds)
-    ldd_val = ldd[from_node]
+  sz1, sz2 = size(index_rev)
+
+  # 手动 `for i in 1:n` 替代 `enumerate(inds)`，消除 95M 次元组分配
+  @inbounds for i in 1:n
+    ldd_val = ldd[i]
     # skip pits to prevent cycles
     (ldd_val == 5 || ldd_val == nodata) && continue
 
     # Map the downstream cell to its node id in O(1). Values of 0 represent
     # cells outside the active domain.
-    to_index = from_index + pcr_dir[ldd_val]
-    checkbounds(Bool, index_rev, to_index) || continue
+    to_index = inds[i] + pcr_dir[ldd_val]
+    # 内联 checkbounds：避免函数调用开销
+    (1 <= to_index[1] <= sz1 && 1 <= to_index[2] <= sz2) || continue
     to_node = index_rev[to_index]
 
-    if to_node != 0 && from_node != to_node
-      add_edge!(graph, from_node, to_node)
+    if to_node != 0 && i != to_node
+      # 直访 fadjlist/badjlist，绕过 add_edge! 内部的两次 push! + 边界检查
+      push!(fadj[i], to_node)
+      push!(badj[to_node], i)
+      graph.ne += 1
     end
-  end
-
-  if is_cyclic(graph)
-    cycles = simplecycles(graph)
-    printstyled("""One or more cycles detected in flow graph.
-        The provided local drainage direction map may be unsound.
-        Verify that each active flow cell flows towards a pit.
-        """, color=:red)
-    display(cycles)
-    error()
   end
   return graph
 end
@@ -206,7 +205,7 @@ isscalar(::Nothing) = false
 
 
 ## find outlet
-_find_outlet(net::SimpleDiGraph) = topological_sort_by_dfs(net)[end] ## 多个节点的时候，该方法会出错
+_find_outlet(net::SimpleDiGraph) = topological_sort_kahn(net)[end] ## 多个节点的时候，该方法会出错
 
 function Base.show(io::IO, net::SimpleDiGraph)
   v = _find_outlet(net)

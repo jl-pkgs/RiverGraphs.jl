@@ -25,7 +25,7 @@ include("sf.jl")
 export RiverGraph
 export active_indices, reverse_index, pcr_dir,
   graph_flow,
-  topological_sort_by_dfs,
+  topological_sort_kahn,
   stream_order, stream_link, stream_network,
   fillnodata_upbasin, fillnodata_upriver
 

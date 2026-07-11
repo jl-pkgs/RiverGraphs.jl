@@ -27,9 +27,10 @@ end
   rm("01_松柏（二）_info_node.csv")
 
   # find_outlet
+  # link/strord 序列依赖拓扑序；采用 Kahn 后顺序与 Graphs.jl 默认 DFS 不同。
   out = find_outlet(rg)
-  @test out.link == [1, 7, 12, 14, 19, 20, 29]
-  @test out.strord == [5, 6, 6, 6, 6, 5, 7]
+  @test out.link == [13, 16, 19, 24, 26, 27, 29]
+  @test out.strord == [5, 5, 6, 6, 6, 6, 7]
 
   display(info_node)
   @test nrow(info_node) == 23

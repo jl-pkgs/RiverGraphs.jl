@@ -26,14 +26,26 @@ the 1D internal domain, providing an Int which can be used as a linear index. Va
 represent inactive cells.
 """
 function active_indices(A::AbstractMatrix, nodata)
-  all_inds = CartesianIndices(size(A))
-  indices = filter(i -> !isequal(A[i], nodata), all_inds) # 不为NA的全部收纳
-
-  reverse_indices = zeros(Int, size(A))
-  for (i, I) in enumerate(indices)
-    reverse_indices[I] = i
+  sz = size(A)
+  # 两遍：先 count 预分配，再填充。避免 filter 闭包与 enumerate 元组分配
+  N = 0
+  @inbounds for i in eachindex(A)
+    !isequal(A[i], nodata) && (N += 1)
   end
-  return indices, reverse_indices
+
+  indices = Vector{CartesianIndex{2}}(undef, N)
+  reverse_indices = zeros(Int, sz)
+
+  k = 0
+  @inbounds for I in CartesianIndices(sz)
+    if !isequal(A[I], nodata)
+      k += 1
+      indices[k] = I
+      reverse_indices[I] = k
+    end
+  end
+
+  indices, reverse_indices
 end
 
 

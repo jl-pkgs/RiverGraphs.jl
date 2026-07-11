@@ -16,6 +16,12 @@ Project_*
 shp
 *.csv
 
+data
 subbasins
 basins
+
 *.pdf
+*.md
+*.pptx
+
+.pi-subagents

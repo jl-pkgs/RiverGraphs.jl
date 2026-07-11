@@ -109,7 +109,7 @@ function kinwave_set_subdomains(graph, toposort, index_pit, streamorder;
       # upstream to downstream
       index_basin = findall(x -> x == i, basin_fill) # this is index
       g, vmap = induced_subgraph(graph, index_basin)
-      toposort_b = topological_sort_by_dfs(g)
+      toposort_b = topological_sort_kahn(g)
       streamorder_subbas = streamorder[vmap]
 
       links = stream_link(g, toposort_b, streamorder_subbas; level)
@@ -119,7 +119,7 @@ function kinwave_set_subdomains(graph, toposort, index_pit, streamorder;
 
       if n_subbas > 1
         graph_subbas = graph_from_nodes(g, links, links_fill)
-        toposort_subbas = topological_sort_by_dfs(graph_subbas)
+        toposort_subbas = topological_sort_kahn(graph_subbas)
         dist = Graphs.Experimental.Traversals.distances(
           Graph(graph_subbas),
           toposort_subbas[end],
@@ -144,7 +144,7 @@ function kinwave_set_subdomains(graph, toposort, index_pit, streamorder;
         for s in 1:n_subbas
           subbas_s = findall(x -> x == s, links_fill)
           sg, _ = induced_subgraph(g, subbas_s)
-          toposort_sg = topological_sort_by_dfs(sg)
+          toposort_sg = topological_sort_kahn(sg)
           inds = index_basin[subbas_s[toposort_sg]]
           push!(topo_subbas, inds)
           push!(indices_subbas, index_toposort[inds])
