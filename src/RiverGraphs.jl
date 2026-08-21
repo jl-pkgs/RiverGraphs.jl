@@ -8,6 +8,7 @@ import RTableTools: cbind, fwrite, fread
 
 include("IO.jl")
 include("RiverGraph.jl")
+include("validate_flowdir.jl")
 include("constrained_flowdir.jl")
 include("priority_flood.jl")
 include("flowdir_qc.jl")
