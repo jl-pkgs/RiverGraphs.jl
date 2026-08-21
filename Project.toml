@@ -15,6 +15,9 @@ SpatialRasterLite = "25a4c9b9-c310-4d6e-b9a7-fa79274760a1"
 ArchGDAL = "c9ce4bd3-c3d5-55b8-8973-c0e20141b8c3"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
+[extensions]
+RiverGraphsArchGDALExt = "ArchGDAL"
+
 [sources]
 SpatialRasterLite = {url = "https://github.com/jl-pkgs/SpatialRasterLite.jl"}
 
