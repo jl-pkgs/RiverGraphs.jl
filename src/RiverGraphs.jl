@@ -9,6 +9,7 @@ import RTableTools: cbind, fwrite, fread
 include("IO.jl")
 include("RiverGraph.jl")
 include("constrained_flowdir.jl")
+include("priority_flood.jl")
 include("fillnodata_upbasin.jl")
 include("fillnodata_upriver.jl")
 
