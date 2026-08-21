@@ -36,4 +36,10 @@ using RiverGraphs, Test
 
   rg = RiverGraph(state.flowdir; nodata=UInt8(0))
   @test rg.ngrid == length(dem)
+
+  qc = flowdir_qc(state.flowdir, state.paths)
+  @test qc.river_match == 1.0
+  @test qc.matched_river_edges == qc.river_edges
+  @test qc.interior_nonriver_sinks == 0
+  @test qc.river_sinks == 1
 end
