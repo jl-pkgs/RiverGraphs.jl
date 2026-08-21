@@ -9,9 +9,11 @@ outward from the seeds and raised only when necessary to preserve a drainage
 path back to an already processed cell.
 
 `min_slope > 0` adds a tiny positive gradient across filled flats so a later D8
-calculation has an unambiguous lower neighbour. `boundary_outlets=true` also
-uses valid cells on the outer raster edge as outlets. Set it to `false` for a
-basin/domain that should drain only to the supplied river network.
+calculation has an unambiguous lower neighbour. Priority-Flood uses one constant
+vertical epsilon per 8-neighbour step (`min_slope * min(dx, dy)`), which keeps
+the heap ordering monotone while still removing flats. `boundary_outlets=true`
+also uses valid cells on the outer raster edge as outlets. Set it to `false` for
+a basin/domain that should drain only to the supplied river network.
 
 This function is intended to create a routing surface. It does not represent a
 geomorphically corrected DEM.
@@ -24,6 +26,7 @@ function priority_flood_dem(dem::AbstractMatrix,
   dx, dy = cellsize
   dx > 0 && dy > 0 || throw(ArgumentError("cellsize must be positive"))
   min_slope >= 0 || throw(ArgumentError("min_slope must be non-negative"))
+  step_drop = min_slope * min(dx, dy)
 
   T = eltype(dem) <: AbstractFloat ? eltype(dem) : Float64
   flooded = T.(dem)
@@ -74,14 +77,12 @@ function priority_flood_dem(dem::AbstractMatrix,
       _invalid_dem_value(dem[J], nodata) && continue
 
       visited[J] = true
-      d = pcr_dir[dir]
-      distance = hypot(abs(d[1]) * dx, abs(d[2]) * dy)
-      z_required = z_from + min_slope * distance
+      z_required = z_from + step_drop
       z_new = max(Float64(flooded[J]), z_required)
 
       # Preserve a representable positive gradient for Float32 routing DEMs.
       value = T(z_new)
-      if min_slope > 0 && Float64(value) <= z_from
+      if step_drop > 0 && Float64(value) <= z_from
         value = nextfloat(T(z_from))
       end
       flooded[J] = value
