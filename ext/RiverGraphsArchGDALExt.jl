@@ -1,7 +1,8 @@
 module RiverGraphsArchGDALExt
 
 import ArchGDAL as AG
-import RiverGraphs: read_river_lines
+import RiverGraphs
+import RiverGraphs: read_river_lines, hydro_enforced_flowdir
 
 """
     read_river_lines(path::AbstractString; layer=0, strict=true)
@@ -34,6 +35,19 @@ function read_river_lines(path::AbstractString;
   end
 
   lines
+end
+
+"""
+    hydro_enforced_flowdir(dem, path, lon, lat; layer=0, strict=true, kwargs...)
+
+Read a GIS river vector file with ArchGDAL and run RiverGraphs' complete
+hydro-enforcement pipeline on the supplied raster grid.
+"""
+function hydro_enforced_flowdir(dem::AbstractMatrix, path::AbstractString,
+  lon::AbstractVector, lat::AbstractVector;
+  layer::Integer=0, strict::Bool=true, kwargs...)
+  lines = read_river_lines(path; layer, strict)
+  RiverGraphs.hydro_enforced_flowdir(dem, lines, lon, lat; kwargs...)
 end
 
 function _append_river_geometry!(lines, geom; strict::Bool)
