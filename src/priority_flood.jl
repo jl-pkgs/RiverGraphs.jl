@@ -108,6 +108,60 @@ function priority_flood_dem(dem::AbstractMatrix,
 end
 
 
+"""
+    hydro_enforced_flowdir(dem, paths; ...)
+    hydro_enforced_flowdir(dem, lines, lon, lat; ...)
+
+Full hydro-enforcement pipeline for a coarse DEM plus trusted high-resolution
+river centreline data:
+
+1. orient each river path upstream -> downstream;
+2. optionally repair one-cell raster confluence gaps;
+3. lower only the river corridor and enforce a monotonic channel profile;
+4. resolve remaining terrain depressions/flats with river-seeded Priority-Flood;
+5. compute hillslope D8 from the routing DEM;
+6. overwrite channel D8 from the trusted river paths;
+7. validate the final drainage graph for cycles.
+
+`boundary_outlets=false` is useful for a clipped basin that should drain only to
+the supplied river network. With `return_dem=true`, return a named tuple with
+`flowdir`, the final routing `dem`, and the oriented/snapped raster `paths` for
+quality control.
+"""
+function hydro_enforced_flowdir(dem::AbstractMatrix,
+  paths::AbstractVector{<:AbstractVector{CartesianIndex{2}}};
+  nodata=nothing, cellsize::Tuple{<:Real,<:Real}=(1.0, 1.0),
+  direction::Symbol=:geometry, junction_radius::Integer=0,
+  burn_depth::Real=0.0, burn_width::Integer=0,
+  bank_drop::Real=0.01, min_slope::Real=1e-4,
+  boundary_outlets::Bool=true, outlet::Symbol=:keep,
+  validate::Bool=true, return_dem::Bool=false)
+
+  oriented = map(path -> orient_flowpath(path, dem; direction, nodata), paths)
+  connected = junction_radius > 0 ?
+    snap_flowpath_junctions(oriented; maxdist=junction_radius) : oriented
+
+  conditioned = condition_river_dem(dem, connected;
+    nodata, cellsize, burn_depth, burn_width, bank_drop, min_slope)
+  routing_dem = priority_flood_dem(conditioned, connected;
+    nodata, cellsize, min_slope, boundary_outlets)
+
+  ldd = d8_flowdir(routing_dem; nodata, cellsize)
+  force_flowpaths!(ldd, connected; outlet)
+  validate && RiverGraph(ldd; nodata=UInt8(0))
+
+  return_dem ? (; flowdir=ldd, dem=routing_dem, paths=connected) : ldd
+end
+
+function hydro_enforced_flowdir(dem::AbstractMatrix, lines::AbstractVector,
+  lon::AbstractVector, lat::AbstractVector; kw...)
+  size(dem) == (length(lon), length(lat)) ||
+    throw(DimensionMismatch("DEM size must equal (length(lon), length(lat))"))
+  paths = rasterize_flowpaths(lines, lon, lat)
+  hydro_enforced_flowdir(dem, paths; kw...)
+end
+
+
 # Minimal binary min-heap. Keeping keys and linear raster indices in separate
 # primitive arrays avoids a DataStructures dependency and is substantially more
 # memory-efficient than heap entries containing CartesianIndex tuples on very
@@ -159,4 +213,4 @@ function _minheap_pop!(keys::Vector{Float64}, values::Vector{Int})
 end
 
 
-export priority_flood_dem
+export priority_flood_dem, hydro_enforced_flowdir
