@@ -93,6 +93,33 @@ end
   @test conditioned[CartesianIndex(4, 2)] < conditioned[CartesianIndex(3, 2)]
 end
 
+@testset "River-seeded priority flood" begin
+  dem = fill(5.0f0, 5, 5)
+  seed = CartesianIndex(1, 3)
+  dem[seed] = 1.0f0
+  sink = CartesianIndex(3, 3)
+  dem[sink] = 0.0f0
+
+  flooded = priority_flood_dem(dem, [seed];
+    cellsize=(30.0, 30.0), min_slope=1e-3, boundary_outlets=false)
+
+  @test eltype(flooded) == Float32
+  @test flooded[seed] == dem[seed]
+  @test flooded[sink] > dem[sink]
+
+  ldd = d8_flowdir(flooded; cellsize=(30.0, 30.0))
+  for I in CartesianIndices(dem)
+    I == seed && continue
+    @test ldd[I] != UInt8(5)
+  end
+
+  # The overload accepting river paths uses all channel cells as flood seeds.
+  river = [[CartesianIndex(1, 3), CartesianIndex(2, 3)]]
+  flooded2 = priority_flood_dem(dem, river;
+    cellsize=(30.0, 30.0), min_slope=1e-3, boundary_outlets=false)
+  @test flooded2[sink] > dem[sink]
+end
+
 @testset "Force river paths" begin
   ldd = fill(UInt8(5), 3, 3)
   main = [CartesianIndex(2, 2), CartesianIndex(3, 2)]
