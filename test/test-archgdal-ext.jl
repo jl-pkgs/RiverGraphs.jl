@@ -45,5 +45,12 @@ import ArchGDAL
     @test all(length(path) >= 2 for path in paths)
     @test all(maximum(max(abs(d[1]), abs(d[2]))
       for d in diff(path)) == 1 for path in paths)
+
+    dem = [100.0f0 - i - j for i in eachindex(lon), j in eachindex(lat)]
+    state = hydro_enforced_flowdir(dem, path, lon, lat;
+      cellsize=(30.0, 30.0), boundary_outlets=true, return_dem=true)
+    @test size(state.flowdir) == size(dem)
+    @test length(state.paths) == 3
+    @test RiverGraph(state.flowdir; nodata=UInt8(0)).ngrid == length(dem)
   end
 end
