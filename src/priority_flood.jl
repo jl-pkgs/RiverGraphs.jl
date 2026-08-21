@@ -122,7 +122,7 @@ river centreline data:
 4. resolve remaining terrain depressions/flats with river-seeded Priority-Flood;
 5. compute hillslope D8 from the routing DEM;
 6. overwrite channel D8 from the trusted river paths;
-7. validate the final drainage graph for cycles.
+7. validate the final D8 functional graph for cycles with O(N) state memory.
 
 `boundary_outlets=false` is useful for a clipped basin that should drain only to
 the supplied river network. With `return_dem=true`, return a named tuple with
@@ -149,7 +149,7 @@ function hydro_enforced_flowdir(dem::AbstractMatrix,
 
   ldd = d8_flowdir(routing_dem; nodata, cellsize)
   force_flowpaths!(ldd, connected; outlet)
-  validate && RiverGraph(ldd; nodata=UInt8(0))
+  validate && validate_flowdir(ldd; nodata=UInt8(0))
 
   return_dem ? (; flowdir=ldd, dem=routing_dem, paths=connected) : ldd
 end
