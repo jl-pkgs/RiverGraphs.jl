@@ -3,6 +3,14 @@ using RiverGraphs, Test
 import Graphs
 
 
+@testset "TauDEM flow direction" begin
+  tau = reshape(UInt8.(1:8), 2, 4)
+  gis = reshape(UInt8[1, 2, 4, 8, 16, 32, 64, 128], 2, 4)
+  @test RiverGraphs.tau2gis(tau) == gis
+  @test RiverGraphs.gis2tau(gis) == tau
+end
+
+
 @testset "graph_flow reverse index" begin
   A = UInt8[6 0; 5 0]
   inds, index_rev = active_indices(A, UInt8(0))

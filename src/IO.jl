@@ -68,10 +68,7 @@ end
 
 function tau2gis(A::AbstractArray)
   R = copy(A)
-  for i in 1:8
-    replace!(R, DIR_TAU[i] => DIR_GIS[i])
-  end
-  R
+  replace!(R, (DIR_TAU .=> DIR_GIS)...)
 end
 
 function gis2wflow(A::AbstractArray)

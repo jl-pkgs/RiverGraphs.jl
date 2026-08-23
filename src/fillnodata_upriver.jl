@@ -38,6 +38,11 @@ function fillnodata_upriver(rg::RiverGraph, links::AbstractVector, strord::Abstr
     end
   end
 
-  info_node = flow_path(rg, DataFrame(info_node), strord; min_sto)
+  if isempty(info_node)
+    info_node = DataFrame(from=Int[], to=Int[], value=Int[], value_next=Int[],
+      length=Float64[], n_node=Int[], index=Vector{Int}[])
+  else
+    info_node = flow_path(rg, DataFrame(info_node), strord; min_sto)
+  end
   res, info_node
 end

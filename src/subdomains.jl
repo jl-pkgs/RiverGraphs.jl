@@ -1,6 +1,14 @@
 using Base.Threads: nthreads
 export kinwave_set_subdomains
 
+"Wflow-compatible alias for filling upstream cells from downstream values."
+fillnodata_upstream(graph, toposort, data, nodata) =
+  fillnodata_upbasin(graph, toposort, data; nodata)
+
+"Return stream-link outlets as subbasin IDs for a minimum stream order."
+subbasins(graph, streamorder, toposort, min_sto::Int) =
+  stream_link(graph, toposort, streamorder; min_sto)
+
 """
     subbasins_order(g, outlet, max_dist)
 
@@ -168,4 +176,8 @@ function kinwave_set_subdomains(graph, toposort, index_pit, streamorder;
   end
 
   return subbas_order, indices_subbas, topo_subbas
+end
+
+function kinwave_set_subdomains(graph, toposort, index_pit, streamorder, min_sto::Int)
+  kinwave_set_subdomains(graph, toposort, index_pit, streamorder; min_sto)
 end

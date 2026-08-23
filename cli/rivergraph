@@ -1,0 +1,102 @@
+#!/bin/sh
+#=
+exec julia --startup-file=no --project="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)" "$0" "$@"
+=#
+
+using RiverGraphs, ArchGDAL, ArgParse
+import RTableTools: fwrite
+import SpatialRasterLite: SpatRaster, rast, st_dims, write_gdal
+
+const OUTPUTS = Set(("order", "links", "basins", "network"))
+
+function cli_settings()
+  settings = ArgParseSettings(
+    description="从 D8 flowdir GeoTIFF 提取河网结构",
+    epilog="示例：cli/rivergraph flowdir.tif -o order,links --min-sto 5")
+  @add_arg_table! settings begin
+    "flowdir"
+      help = "flowdir GeoTIFF 文件"
+      required = true
+    "-o", "--outputs"
+      help = "输出：order,links,basins,network 或 all（逗号分隔）"
+      default = "all"
+    "-d", "--outdir"
+      help = "输出目录；默认 output/<flowdir文件名>"
+    "-f", "--format"
+      help = "输入编码：arcgis 或 taudem"
+      default = "arcgis"
+    "--min-sto"
+      help = "最小 Strahler 等级"
+      arg_type = Int
+      default = 5
+      dest_name = "min_sto"
+  end
+  settings
+end
+
+function read_graph(flowdir, format)
+  format == "arcgis" && return RiverGraph(flowdir)
+  ra = rast(flowdir)
+  lon, lat = st_dims(ra)
+  ldd = RiverGraphs.gis2wflow(RiverGraphs.tau2gis(ra.A))
+  RiverGraph(ldd; lon, lat, nodata=only(ra.nodata))
+end
+
+function save_raster(raster, path)
+  write_gdal(raster, path; nodata=0)
+  println("✓ $path")
+end
+
+save_raster(rg, values, path) =
+  save_raster(SpatRaster(rg, values; nodata=0), path)
+
+function main(args)
+  parsed = parse_args(args, cli_settings(); as_symbols=true)
+  flowdir = abspath(parsed[:flowdir])
+  format = lowercase(parsed[:format])
+  min_sto = parsed[:min_sto]
+  outputs = parsed[:outputs] == "all" ? OUTPUTS :
+            Set(strip.(split(parsed[:outputs], ',')))
+
+  isfile(flowdir) || error("文件不存在：$flowdir")
+  format in ("arcgis", "taudem") || error("--format 仅支持 arcgis 或 taudem")
+  min_sto > 0 || error("--min-sto 必须大于 0")
+  issubset(outputs, OUTPUTS) || error("--outputs 包含未知类型")
+
+  stem = splitext(basename(flowdir))[1]
+  outdir = abspath(something(parsed[:outdir], joinpath("output", stem)))
+  outfile(name, ext) = joinpath(outdir, "$(stem)_$name.$ext")
+  mkpath(outdir)
+
+  println("读取：$flowdir（$format）")
+  rg = read_graph(flowdir, format)
+  strord = stream_order(rg)
+  "order" in outputs && save_raster(rg, strord, outfile("stream_order", "tif"))
+  any(x -> x in outputs, ("links", "basins", "network")) || return
+
+  max_sto = maximum(strord)
+  min_sto <= max_sto || error("min_sto=$min_sto 超过最大 Strahler 等级 $max_sto")
+  links = stream_link(rg, strord; min_sto)
+
+  if "basins" in outputs
+    basins = fillnodata_upbasin(rg, links; nodata=0)
+    save_raster(basins, outfile("subbasins", "tif"))
+  end
+
+  if "links" in outputs || "network" in outputs
+    river, network = fillnodata_upriver(rg, links, strord; min_sto, nodata=0)
+    "links" in outputs && save_raster(rg, river, outfile("stream_link", "tif"))
+    if "network" in outputs
+      path = outfile("network", "csv")
+      fwrite(network, path)
+      println("✓ $path")
+    end
+  end
+end
+
+try
+  main(ARGS)
+catch err
+  println(stderr, "错误：", sprint(showerror, err))
+  exit(1)
+end
