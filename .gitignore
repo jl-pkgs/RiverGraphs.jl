@@ -25,3 +25,5 @@ basins
 *.pptx
 
 .pi-subagents
+node_modules
+dist

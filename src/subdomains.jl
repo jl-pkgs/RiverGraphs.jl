@@ -178,6 +178,83 @@ function kinwave_set_subdomains(graph, toposort, index_pit, streamorder;
   return subbas_order, indices_subbas, topo_subbas
 end
 
-function kinwave_set_subdomains(graph, toposort, index_pit, streamorder, min_sto::Int)
-  kinwave_set_subdomains(graph, toposort, index_pit, streamorder; min_sto)
+function kinwave_set_subdomains(
+    graph::SimpleDiGraph{Int},
+    toposort::Vector{Int},
+    index_pit::Vector{Int},
+    streamorder::Vector{Int},
+    min_sto::Int,
+)::Tuple{Vector{Vector{Int}},Vector{Vector{Int}},Vector{Vector{Int}}}
+  if nthreads() > 1
+    n_pits = length(index_pit)
+    basin = fill(0, length(toposort))
+    basin[index_pit] = collect(1:n_pits)
+    basin_fill = fillnodata_upstream(graph, toposort, basin, 0)
+
+    index_toposort = fill(0, length(toposort))
+    for (order_idx, node_idx) in enumerate(toposort)
+      index_toposort[node_idx] = order_idx
+    end
+
+    order_subbas = Vector{Vector{Int}}()
+    indices_subbas = Vector{Vector{Int}}()
+    topo_subbas = Vector{Vector{Int}}()
+    order_indices = Int[]
+    total_subbas = 0
+    for pit_idx in 1:n_pits
+      basin_indices = findall(isequal(pit_idx), basin_fill)
+      basin_graph, vertex_map = induced_subgraph(graph, basin_indices)
+      basin_toposort = topological_sort_by_dfs(basin_graph)
+      basin_streamorder = streamorder[vertex_map]
+      subbas = subbasins(basin_graph, basin_streamorder, basin_toposort, min_sto)
+      subbas_fill = fillnodata_upstream(basin_graph, basin_toposort, subbas, 0)
+      n_subbas = max(count(>(0), subbas), 1)
+
+      if n_subbas > 1
+        subbas_graph = graph_from_nodes(basin_graph, subbas, subbas_fill)
+        subbas_toposort = topological_sort_by_dfs(subbas_graph)
+        distances = Graphs.Experimental.Traversals.distances(
+          Graph(subbas_graph),
+          subbas_toposort[end],
+        )
+        max_distance = maximum([distances; 1])
+        grouped_subbas = subbasins_order(subbas_graph, subbas_toposort[end], max_distance)
+      else
+        grouped_subbas = [[1]]
+      end
+
+      for group in grouped_subbas
+        group .+= total_subbas
+      end
+      total_subbas += n_subbas
+      append!(order_subbas, grouped_subbas)
+      append!(order_indices, eachindex(grouped_subbas))
+
+      if n_subbas > 1
+        for subbas_idx in 1:n_subbas
+          local_indices = findall(isequal(subbas_idx), subbas_fill)
+          local_graph, _ = induced_subgraph(basin_graph, local_indices)
+          local_toposort = topological_sort_by_dfs(local_graph)
+          node_indices = basin_indices[local_indices[local_toposort]]
+          push!(topo_subbas, node_indices)
+          push!(indices_subbas, index_toposort[node_indices])
+        end
+      else
+        node_indices = basin_indices[basin_toposort]
+        push!(topo_subbas, node_indices)
+        push!(indices_subbas, index_toposort[node_indices])
+      end
+    end
+
+    subbas_order = Vector{Vector{Int}}(undef, maximum(order_indices))
+    for group_idx in eachindex(subbas_order)
+      subbas_order[group_idx] = reduce(vcat, order_subbas[order_indices .== group_idx])
+    end
+  else
+    subbas_order = [[1]]
+    indices_subbas = [collect(eachindex(toposort))]
+    topo_subbas = [toposort]
+  end
+
+  return subbas_order, indices_subbas, topo_subbas
 end

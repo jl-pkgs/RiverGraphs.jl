@@ -51,7 +51,7 @@ function adjacent_nodes_at_edge(graph::SimpleDiGraph{Int})
 end
 
 "Return the source and destination edge of each node of a directed graph."
-function adjacent_edges_at_node(graph::SimpleDiGraph{Int}, nodes_at_edge::NodesAtEdge)
+function adjacent_edges_at_node(graph::SimpleDiGraph{Int}, nodes_at_edge)
   source_edges = Vector{Int}[]
   destination_edges = Vector{Int}[]
   for node_idx in 1:nv(graph)
@@ -197,7 +197,7 @@ function NetworkLand(
   end
   indices, reverse_indices = active_indices(subcatch_2d, nodata)
   graph, local_drain_direction = get_drainage_network(ldd_2d, indices; pits_2d)
-  order = topological_sort_kahn(graph)
+  order = topological_sort_by_dfs(graph)
   return NetworkLand(;
     modelsize=size(subcatch_2d),
     indices,
@@ -226,7 +226,7 @@ function NetworkRiver(
     reverse_indices[cartesian_idx] = river_idx
   end
   graph, local_drain_direction = get_drainage_network(ldd_2d, indices; pits_2d)
-  order = topological_sort_kahn(graph)
+  order = topological_sort_by_dfs(graph)
   return NetworkRiver(;
     indices,
     reverse_indices,
@@ -245,8 +245,8 @@ function network_subdomains(network::Union{NetworkLand,NetworkRiver}, min_stream
     network.graph,
     network.order,
     pit_indices,
-    network.streamorder;
-    min_sto=min_streamorder,
+    network.streamorder,
+    min_streamorder,
   )
   @reset network.order_of_subdomains = order
   @reset network.order_subdomain = topological_order
@@ -280,7 +280,7 @@ function filter_upstream_nodes(
     excluded::Vector{Bool},
 )::Vector{Vector{Int}}
   upstream_nodes = Vector{Int}[]
-  for node_idx in topological_sort_kahn(graph)
+  for node_idx in topological_sort_by_dfs(graph)
     push!(upstream_nodes, filter(index -> !excluded[index], inneighbors(graph, node_idx)))
   end
   return upstream_nodes

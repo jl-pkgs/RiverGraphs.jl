@@ -16,6 +16,7 @@ include("flow_path.jl")
 include("st_watershed.jl")
 include("stream_order.jl")
 include("stream_link.jl")
+include("catchment_area.jl")
 include("st_stream_network.jl")
 include("subdomains.jl")
 

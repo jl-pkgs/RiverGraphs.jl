@@ -32,6 +32,14 @@ end
 end
 
 
+@testset "reservoir catchment area" begin
+  rg = RiverGraph(UInt8[6 0; 5 0]; lon=[0.0, 1000.0], lat=[0.0, 1000.0], nodata=UInt8(0))
+  @test upstream_nodes(rg, 2) == [2, 1]
+  @test catchment_area(rg, 2) == 2.0
+  @test catchment_stats(rg, 2) == (; outlet=2, upstream_nodes=2, area_km2=2.0)
+end
+
+
 # flowdir, image(A) should looks normal
 @testset "RiverGraph stream_net" begin
   rg = RiverGraph(path_flowdir_GuanShan)

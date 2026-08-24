@@ -1,0 +1,29 @@
+#!/bin/sh
+#=
+exec julia --startup-file=no --project="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)" "$0" "$@"
+=#
+
+using RiverGraphs, ArchGDAL
+
+function main(args)
+  length(args) in (3, 4) || error(
+    "用法：cli/reservoir_area flowdir.tif lon lat [cell_area_km2]")
+
+  flowdir = abspath(args[1])
+  isfile(flowdir) || error("文件不存在：$flowdir")
+  point = (parse(Float64, args[2]), parse(Float64, args[3]))
+  cell_area = length(args) == 4 ? parse(Float64, args[4]) : nothing
+  !isnothing(cell_area) && cell_area <= 0 && error("cell_area_km2 必须大于 0")
+
+  stats = catchment_stats(RiverGraph(flowdir), point; cell_area_km2=cell_area)
+  println("outlet=$(stats.outlet)")
+  println("upstream_nodes=$(stats.upstream_nodes)")
+  println("area_km2=$(stats.area_km2)")
+end
+
+try
+  main(ARGS)
+catch err
+  println(stderr, "错误：", sprint(showerror, err))
+  exit(1)
+end
