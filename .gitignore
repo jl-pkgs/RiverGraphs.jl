@@ -27,3 +27,6 @@ basins
 .pi-subagents
 node_modules
 dist
+
+ui
+cli

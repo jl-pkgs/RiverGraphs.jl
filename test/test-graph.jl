@@ -40,6 +40,43 @@ end
 end
 
 
+@testset "GuanShan reach table" begin
+  rg = RiverGraph(path_flowdir_GuanShan)
+  elevation = zeros(rg.ngrid)
+  for (rank, node) in enumerate(rg.toposort)
+    elevation[node] = rg.ngrid - rank
+  end
+
+  result = delineate_reaches(rg; min_sto=4, elevation)
+  reaches = result.reaches
+
+  @test nrow(reaches) == 17
+  @test count(iszero, reaches.downSegId) == 1
+  @test all(>(0), reaches.length)
+  @test all(>(0), reaches.slope)
+  @test all((reaches.downSegId .== 0) .| (reaches.downSegId .> reaches.segId))
+  @test count(>(0), result.river_reach.A) == 125
+  @test count(>(0), result.hru_id.A) == rg.ngrid
+  @test nrow(result.hrus) == nrow(reaches)
+  @test result.hrus.HRUid == result.hrus.hruSegId == reaches.segId
+
+  runoff_grid = zeros(size(rg.index_rev)..., 3)
+  for t in axes(runoff_grid, 3), node in 1:rg.ngrid
+    i, j = Tuple(rg.index[node])
+    runoff_grid[i, j, t] = (node + t) * 1e-9
+  end
+  inputs = aggregate_hru_runoff(rg, runoff_grid;
+    min_sto=4, elevation, cell_area_m2=1.0)
+
+  @test size(inputs.runoff) == (17, 3)
+  @test sum(inputs.hrus.area) == rg.ngrid
+  for t in axes(runoff_grid, 3)
+    grid_volume = sum(runoff_grid[index[1], index[2], t] for index in rg.index)
+    @test isapprox(sum(inputs.runoff[:, t] .* inputs.hrus.area), grid_volume)
+  end
+end
+
+
 # flowdir, image(A) should looks normal
 @testset "RiverGraph stream_net" begin
   rg = RiverGraph(path_flowdir_GuanShan)
