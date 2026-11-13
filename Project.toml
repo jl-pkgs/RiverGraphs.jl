@@ -1,7 +1,7 @@
 name = "RiverGraphs"
 uuid = "aa7e97f5-0372-4209-959a-d9291069df36"
-authors = ["Dongdong Kong <kongdd@users.noreply.github.com>"]
 version = "0.1.1"
+authors = ["Dongdong Kong <kongdd@users.noreply.github.com>"]
 
 [deps]
 Accessors = "7d9f7c33-5ae7-4f3b-8dc6-eff91059b697"
@@ -17,13 +17,13 @@ ArchGDAL = "c9ce4bd3-c3d5-55b8-8973-c0e20141b8c3"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [sources]
-SpatialRasterLite = {url = "https://github.com/jl-pkgs/SpatialRasterLite.jl"}
+SpatialRasterLite = {rev = "master", url = "https://github.com/jl-pkgs/SpatialRasterLite.jl"}
 
 [compat]
 Accessors = "0.1"
 DataFrames = "1.7.0"
 Graphs = "1.13.0"
-Parameters = "0.12.3"
+Parameters = "0.12, 0.13"
 Printf = "1.11.0"
 RTableTools = "0.1.4"
 Shapefile = "0.13.2"
