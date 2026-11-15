@@ -1792,9 +1792,11 @@ stream_network(info_node)</code></pre>
 <h2 class="anchored">`write_subbasins`</h2>
 <p>:::{.callout appearance="minimal"}</p>
 
-<pre><code class="language-julia">write_subbasins(rg::RiverGraph, info_node::DataFrame, pours::DataFrame)</code></pre>
+<pre><code class="language-julia">write_subbasins(rg::RiverGraph, info_node::DataFrame, pours::DataFrame; overwrite=true)</code></pre>
 <ul>
 <li><p><code>pours</code>: with columns of <code>name</code> and <code>geometry</code></p>
+</li>
+<li><p><code>overwrite</code>: 是否覆盖已有文件，默认 <code>true</code>；为 <code>false</code> 时跳过已有文件。</p>
 </li>
 </ul>
 
