@@ -1,14 +1,14 @@
+using SpatialRasterLite, ArchGDAL, Shapefile, RiverGraphs
 include("main_vis.jl")
-using SpatialRasterLite, ArchGDAL, Shapefile, RiverGraphs, Test
-using Printf, RTableTools
 
-import RiverGraphs: isscalar
-import Ipaper: table
+## 
+f_pour = "/mnt/z/GitHub/cug-hydro/RiverGraphs.jl/data/shp/Pour_十堰_sp8.shp"
+f_flowdir = "/mnt/z/GitHub/cug-hydro/RiverGraphs.jl/data/十堰_500m_flowdir.tif"
 
-pours = Shapefile.Table("data/shp/Pour_十堰_sp8.shp") |> DataFrame
+pours = Shapefile.Table(f_pour) |> DataFrame
 points = st_points(pours)
 
-rg = RiverGraph("./data/十堰_500m_flowdir.tif")
+rg = RiverGraph(f_flowdir)
 ra_basin, info_node, net_node = st_stream_network!(rg, pours; min_sto=5);
 
 plot(net_node)

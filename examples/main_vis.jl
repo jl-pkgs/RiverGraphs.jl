@@ -1,8 +1,7 @@
-using NaNStatistics, Test
-using SpatialRasterLite, ArchGDAL, RiverGraphs
+using RiverGraphs, SpatialRasterLite, ArchGDAL, NaNStatistics
+using MakieLayers, GLMakie, GraphMakie
 import MakieLayers: imagesc, imagesc!
 import GraphMakie: plot, plot!
-using MakieLayers, GLMakie, GraphMakie
 
 # plot RiverGraph
 function plot(rg::RiverGraph, ra_basin, net_node; size=(1600, 600), min_sto=2,

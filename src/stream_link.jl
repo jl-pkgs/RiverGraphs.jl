@@ -69,7 +69,11 @@ end
 function point2index(rg::RiverGraph, points)
   (; lon, lat) = rg
   locs = st_location_exact(lon, lat, points) # 查找位置
-  map(p -> rg.index_rev[p[1], p[2]], locs) # index_pit, 流域出水口的位置
+  map(zip(points, locs)) do (point, p)
+    index = rg.index_rev[p[1], p[2]] # index_pit, 流域出水口的位置
+    index == 0 && throw(ArgumentError("Point $point is on an inactive raster cell"))
+    index
+  end
 end
 
 function point2index(ra::SpatRaster, points)

@@ -1,13 +1,12 @@
-```{r}
+# %% 
 pacman::p_load(
   Ipaper, data.table, dplyr, lubridate, 
   ggplot2, patchwork, terra, 
   stringr, tidyterra, 
   rcolors, gg.layers
 )
-```
 
-```{r}
+# %% 
 fs = dir2("./Project_ShiYan/data/basins/", "*.tif")
 f = fs[1]
 
@@ -26,9 +25,8 @@ g = wrap_plots(ps, nrow = 2) +
 write_fig(g, 'd:/Rplot.pdf', 10, 5)
 # ra = rast(f)
 # plot(ra)
-```
 
-```{r}
+# %% 
 nbrk <- 10
 cols <- get_color(rcolors$amwg256, nbrk) %>% rev()
 # cols[c(0, 1) + nbrk / 2] <- "grey90"
@@ -45,4 +43,3 @@ plot_basin <- function(ra) {
 }
 p = plot_basin(ra)
 write_fig(p, 'd:/Rplot.pdf', 10, 5)
-```

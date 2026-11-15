@@ -6,7 +6,9 @@ using Printf, RTableTools
 import RiverGraphs: isscalar
 import Ipaper: table
 
+## 
 pours = Shapefile.Table("data/shp/Pour_十堰_sp8.shp") |> DataFrame
+pours = filter(row -> row.name == "孤山", pours) # 孤山栅格仅覆盖该站点
 points = st_points(pours)
 
 rg = RiverGraph("./data/GuanShan_flwdir.tif")
@@ -20,6 +22,7 @@ save("Figure1_十堰_river_network.png", fig)
 outdir = "./Project_ShiYan/data/basins/"
 write_subbasins(rg, info_node, pours; outdir)
 
+## 
 # begin
 #   rg = RiverGraph("./data/十堰_500m_flowdir.tif")
 #   ra_basin, info_node, net_node = st_stream_network!(rg, pours[3:3, :]; min_sto=5)

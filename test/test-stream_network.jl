@@ -15,6 +15,12 @@ rg = RiverGraph("$INDIR//data/十堰_500m_flowdir.tif")
   index = point2index(rg, points)
   points_bak = index2point(rg, index)
   @test point2index(rg, points_bak) == index
+
+  inactive = findfirst(iszero, rg.index_rev)
+  if !isnothing(inactive)
+    point = (rg.lon[inactive[1]], rg.lat[inactive[2]])
+    @test_throws ArgumentError point2index(rg, [point])
+  end
 end
 
 @testset "st_stream_network" begin

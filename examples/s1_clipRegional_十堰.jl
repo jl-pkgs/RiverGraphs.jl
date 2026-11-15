@@ -1,8 +1,8 @@
 using RiverGraphs, SpatialRasterLite, ArchGDAL, Shapefile
 using GLMakie, MakieLayers
-using SpatialRasterLite: write_gdal
 include("main_vis.jl")
 
+## 
 pour = Shapefile.Table("data/shp/Pour_十堰_sp8.shp")
 points = map(x -> (x.x, x.y), pour.geometry) #|> x -> cat(x..., dims=1)
 
