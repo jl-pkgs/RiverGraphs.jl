@@ -54,12 +54,13 @@ end
 
 
 """
-    write_subbasins(rg::RiverGraph, info_node::DataFrame, pours::DataFrame)
+    write_subbasins(rg::RiverGraph, info_node::DataFrame, pours::DataFrame; overwrite=true)
 
 - `pours`: with columns of `name` and `geometry`
+- `overwrite`: 是否覆盖已有文件，默认 `true`；为 `false` 时跳过已有文件。
 """
 function write_subbasins(rg::RiverGraph, info_node::DataFrame, pours::DataFrame;
-  outdir="./OUTPUT")
+  outdir="./OUTPUT", overwrite::Bool=true)
   !isdir(outdir) && mkpath(outdir)
 
   sites = pours.name
@@ -88,7 +89,7 @@ function write_subbasins(rg::RiverGraph, info_node::DataFrame, pours::DataFrame;
 
     f_tif = @sprintf("%s/%02d_%s_basinId.tif", outdir, i, site)
     f_csv = @sprintf("%s/%02d_%s_info_node.csv", outdir, i, site)
-    write_gdal(_basin, f_tif; nodata=0)
-    fwrite(_info_node, f_csv)
+    (overwrite || !isfile(f_tif)) && write_gdal(_basin, f_tif; nodata=0)
+    (overwrite || !isfile(f_csv)) && fwrite(_info_node, f_csv)
   end
 end

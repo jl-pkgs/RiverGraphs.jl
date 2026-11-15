@@ -29,6 +29,8 @@ end
 
   # no warnings
   write_subbasins(rg, info_node, pours[1:1, :]; outdir=".")
+  write_subbasins(rg, info_node, pours[1:1, :]; outdir=".") # 重复写入默认覆盖
+  write_subbasins(rg, info_node, pours[1:1, :]; outdir=".", overwrite=false) # 跳过已有文件
   rm("01_松柏（二）_basinId.tif")
   rm("01_松柏（二）_info_node.csv")
 
